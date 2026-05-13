@@ -151,6 +151,7 @@
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
 
         #add-doc-preview { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; display: none; margin: 10px auto; border: 2px solid var(--primary-light); }
+        #vault-preview { width: 100%; max-height: 250px; border-radius: 14px; object-fit: contain; display: none; margin: 10px 0; border: 2px dashed #fcd34d; padding: 5px; }
     </style>
 </head>
 <body>
@@ -169,7 +170,7 @@
     <div class="bg-shape shape-2"></div>
     <div id="toast-container"></div>
 
-    <!-- ==================== NEW: PREMIUM FORGOT PASSWORD MODAL ==================== -->
+    <!-- ==================== PREMIUM FORGOT PASSWORD MODAL ==================== -->
     <div class="modal-overlay" id="modal-forgot">
         <div class="modal-content">
             <div style="text-align: right;"><i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-forgot')"></i></div>
@@ -177,10 +178,21 @@
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter your registered Email ID to securely view your password.</p>
             
             <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="forgot-email" placeholder="Registered Gmail"></div>
-            
             <div id="forgot-result" style="display:none; padding:15px; border-radius:14px; background:rgba(16,185,129,0.1); color:var(--secondary); font-weight:800; font-size:14px; text-align:center; margin-bottom:15px; border: 1px solid rgba(16,185,129,0.3);"></div>
-            
             <button class="btn btn-primary" onclick="App.recoverPassword()">Get Password</button>
+        </div>
+    </div>
+
+    <!-- ==================== HEALTH VAULT VIEW MODAL (FOR PATIENTS) ==================== -->
+    <div class="modal-overlay" id="modal-vault-view">
+        <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
+            <div class="flex-between" style="margin-bottom: 15px;">
+                <h3 class="heading" style="font-size: 20px;" id="vault-view-title">My Records</h3>
+                <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-vault-view')"></i>
+            </div>
+            <div id="vault-view-content" style="display: flex; flex-direction: column; gap: 15px;">
+                <!-- Images load here dynamically -->
+            </div>
         </div>
     </div>
 
@@ -299,6 +311,7 @@
             </div>
         </div>
 
+        <!-- 1st PRIORITY: Booking Hub -->
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 10px;">சிகிச்சை முன்பதிவு</h3>
         <div class="booking-hub">
             <div class="booking-option" onclick="App.openModal('modal-general')">
@@ -314,23 +327,29 @@
 
         <div class="hero-section" id="ui-hero-banner"></div>
 
+        <!-- 2nd PRIORITY: AI Tip Card (Rotating) -->
         <div class="ai-tip-card">
             <div class="ai-tip-header">
                 <div style="font-size: 28px; color: var(--secondary);"><i class="fa-solid fa-robot"></i></div>
-                <div><h4 style="font-size: 15px; font-weight: 800; color: #064e3b;">Senthil AI ஹெல்த் கோச்</h4><p style="font-size: 12px; color: #047857; font-weight: 700;">உங்களுக்கான குறிப்பு:</p></div>
+                <div>
+                    <h4 style="font-size: 15px; font-weight: 800; color: #064e3b;">Senthil AI ஹெல்த் கோச்</h4>
+                    <p style="font-size: 12px; color: #047857; font-weight: 700;">உங்களுக்கான குறிப்பு:</p>
+                </div>
             </div>
             <div style="background: rgba(255,255,255,0.6); padding: 15px; border-radius: 14px;">
                 <p style="font-size: 13px; font-weight: 800; color: #064e3b; line-height: 1.5;" id="ai-dynamic-tip">உயரம் மற்றும் எடையை Vitals பக்கத்தில் அப்டேட் செய்யவும்.</p>
             </div>
-            <button id="diet-plan-btn" class="btn btn-success btn-sm" style="display: none; margin-top: 5px; width: 100%;" onclick="App.showToast('உங்கள் டயட் சார்ட் டவுன்லோட் செய்யப்படுகிறது...', 'success')">எனக்கான டயட் சார்ட்</button>
+            <!-- Dynamic PDF/Text Download Button -->
+            <button id="diet-plan-btn" class="btn btn-success btn-sm" style="display: none; margin-top: 5px; width: 100%;" onclick="App.downloadDietChart()"><i class="fa-solid fa-download"></i> எனக்கான டயட் சார்ட்</button>
         </div>
 
+        <!-- 3rd PRIORITY: Health Vault -->
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">எனது மருத்துவ ஆவணங்கள்</h3>
-        <div class="doc-vault-card" onclick="App.showToast('பழைய மருந்துச் சீட்டுகள் விரைவில் இணைக்கப்படும்.', 'success')">
+        <div class="doc-vault-card" onclick="App.openVault('prescription')">
             <i class="fa-solid fa-file-prescription"></i>
             <div><h4 style="font-size: 14px; font-weight: 800; color: #92400e;">பழைய மருந்துச் சீட்டுகள்</h4><p style="font-size: 11px; color: #b45309; font-weight: 600;">(View Prescriptions)</p></div>
         </div>
-        <div class="doc-vault-card" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #bfdbfe; margin-bottom: 25px;" onclick="App.showToast('லேப் ரிப்போர்ட்கள் விரைவில் இணைக்கப்படும்.', 'success')">
+        <div class="doc-vault-card" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #bfdbfe; margin-bottom: 25px;" onclick="App.openVault('lab')">
             <i class="fa-solid fa-vial-circle-check" style="color: var(--primary);"></i>
             <div><h4 style="font-size: 14px; font-weight: 800; color: #1e40af;">லேப் ரிப்போர்ட்கள்</h4><p style="font-size: 11px; color: #1e3a8a; font-weight: 600;">(View Lab Reports)</p></div>
         </div>
@@ -433,8 +452,9 @@
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px;" id="admin-stats"></div>
 
         <div class="admin-tabs">
-            <div class="admin-tab active" onclick="App.switchAdminTab('admin-queue', this)">Live Queue</div>
+            <div class="admin-tab active" onclick="App.switchAdminTab('admin-queue', this)">Queue</div>
             <div class="admin-tab" onclick="App.switchAdminTab('admin-patients', this)">Patients</div>
+            <div class="admin-tab" onclick="App.switchAdminTab('admin-vault', this)">Vault</div>
             <div class="admin-tab" onclick="App.switchAdminTab('admin-docs', this)">Doctors Setup</div>
         </div>
 
@@ -447,6 +467,27 @@
             <div id="admin-patient-list"></div>
         </div>
 
+        <!-- NEW: ADMIN HEALTH VAULT UPLOAD -->
+        <div id="admin-vault" class="admin-tab-content" style="display: none;">
+            <div class="card">
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Upload Health Records</h4>
+                <div class="input-group"><label>Select Patient</label><div class="input-group no-label no-icon"><select id="vault-patient"></select></div></div>
+                <div class="input-group"><label>Record Type</label><div class="input-group no-label no-icon"><select id="vault-type"><option value="prescription">Prescription / மருந்துச் சீட்டு</option><option value="lab">Lab Report / லேப் ரிப்போர்ட்</option></select></div></div>
+                
+                <div class="input-group no-label">
+                    <label style="background: var(--warning); color: white; padding: 15px; border-radius: 14px; display: block; cursor: pointer; text-align: center; font-weight: 800; margin-bottom: 5px;">
+                        <i class="fa-solid fa-camera"></i> Capture or Select Document
+                        <input type="file" accept="image/*" style="display: none;" onchange="App.handleVaultFile(event)">
+                    </label>
+                </div>
+                <img id="vault-preview">
+                
+                <button class="btn btn-primary" onclick="App.uploadVaultDoc()">Secure Upload to Vault</button>
+            </div>
+            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Recently Uploaded</h3>
+            <div id="admin-vault-list"></div>
+        </div>
+
         <div id="admin-docs" class="admin-tab-content" style="display: none;">
             <div class="card">
                 <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Create Doctor Portal Access</h4>
@@ -455,7 +496,7 @@
                 
                 <div class="input-group no-label">
                     <label style="background: var(--primary); color: white; padding: 15px; border-radius: 14px; display: block; cursor: pointer; text-align: center; font-weight: 800;">
-                        <i class="fa-solid fa-image"></i> Upload Photo
+                        <i class="fa-solid fa-image"></i> Upload Doctor Photo
                         <input type="file" accept="image/*" style="display: none;" onchange="App.handleFile(event)">
                     </label>
                 </div>
@@ -507,6 +548,7 @@
 
     <!-- ==================== CORE ARCHITECTURE & LOGIC ==================== -->
     <script>
+        // --- SPLASH SCREEN LOGIC ---
         window.addEventListener('load', () => {
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
@@ -514,6 +556,7 @@
             }, 2000); 
         });
 
+        // --- AI TIPS DATA (Vast Array for Rotation) ---
         const AITipsDB = {
             underweight: ["எடை குறைவாக உள்ளது. எடப்பாடி தட்டு வடை செட்டுடன், சத்தான சுண்டல் சேர்த்து உண்ணவும்.", "தினமும் பேரீச்சம்பழம் மற்றும் வாழைப்பழம் சாப்பிடுவது உடல் எடையை சீராக அதிகரிக்க உதவும்.", "காலை உணவை தவிர்க்க வேண்டாம். சத்தான சிறுதானிய கஞ்சிகளை உணவில் சேர்க்கவும்."],
             normal: ["நீங்கள் மிகவும் ஆரோக்கியமாக உள்ளீர்கள்! இதே உணவுப் பழக்கத்தைத் தொடரவும்.", "தினமும் 3 லிட்டர் தண்ணீர் குடிப்பது உங்கள் சருமத்தையும் உடலையும் புத்துணர்ச்சியாக வைக்கும்.", "நஞ்சப்பா பைபாஸ் சாலையில் தினமும் 30 நிமிடம் நடைபயிற்சி செய்வது இதயத்திற்கு நல்லது."],
@@ -529,21 +572,28 @@
                     { id: 101, email: "siva@gmail.com", password: "123", name: "Dr. Sivasankar", spec: "Cardiology", runningToken: 2, image: "https://ui-avatars.com/api/?name=Dr+S&background=ebf8ff&color=2563eb&size=150", days: "Mon - Sat", times: "10:00 AM - 02:00 PM" },
                     { id: 102, email: "priya@gmail.com", password: "123", name: "Dr. Priya", spec: "Pediatrics", runningToken: 0, image: "https://ui-avatars.com/api/?name=Dr+P&background=f0fdf4&color=10b981&size=150", days: "Mon - Fri", times: "04:00 PM - 08:00 PM" }
                 ],
-                appointments: [{ id: 1001, userId: 1, doctorId: 101, date: "2026-05-13", time: "General Token", token: 5, status: "Approved" }],
-                tempImg: ""
+                appointments: [{ id: 1001, userId: 1, doctorId: 101, date: new Date().toISOString().split('T')[0], time: "10:30 AM", token: 5, status: "Approved" }],
+                documents: [], // NEW: Health Vault Data
+                tempImg: "",
+                tempVaultImg: ""
             },
 
+            // --- Database Loader for Demo Persistence ---
             loadData: () => {
-                const data = localStorage.getItem('senthil_final_production');
+                const data = localStorage.getItem('senthil_final_v3');
                 if (data) App.state = JSON.parse(data);
             },
-            saveData: () => { localStorage.setItem('senthil_final_production', JSON.stringify(App.state)); },
+            saveData: () => {
+                localStorage.setItem('senthil_final_v3', JSON.stringify(App.state));
+            },
 
+            // --- Utilities ---
             showToast: (msg, type='success') => {
                 const c = document.getElementById('toast-container');
                 const t = document.createElement('div'); t.className = `toast`;
                 t.innerHTML = `<i class="fa-solid ${type==='success'?'fa-circle-check':'fa-circle-exclamation'}" style="font-size: 24px; color: ${type==='success'?'var(--secondary)':'var(--danger)'};"></i><div style="font-size: 13px; font-weight: 800; line-height: 1.4;">${msg}</div>`;
-                c.appendChild(t); setTimeout(() => { t.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(()=>t.remove(), 400); }, 3000);
+                c.appendChild(t);
+                setTimeout(() => { t.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(()=>t.remove(), 400); }, 3000);
             },
             navigate: (id) => {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -562,20 +612,15 @@
             closeModal: (id) => document.getElementById(id).classList.remove('active'),
 
             handleFile: (e) => {
-                const f = e.target.files[0];
-                const r = new FileReader();
+                const f = e.target.files[0]; const r = new FileReader();
                 r.onloadend = () => { App.state.tempImg = r.result; const p = document.getElementById('add-doc-preview'); p.src = r.result; p.style.display = 'block'; };
                 if(f) r.readAsDataURL(f);
             },
 
             // --- Authentication ---
             signup: () => {
-                const name = document.getElementById('reg-name').value.trim();
-                const phone = document.getElementById('reg-phone').value.trim();
-                const email = document.getElementById('reg-email').value.trim();
-                const pass = document.getElementById('reg-pass').value;
-                const pass2 = document.getElementById('reg-pass2').value;
-
+                const name = document.getElementById('reg-name').value.trim(); const phone = document.getElementById('reg-phone').value.trim();
+                const email = document.getElementById('reg-email').value.trim(); const pass = document.getElementById('reg-pass').value; const pass2 = document.getElementById('reg-pass2').value;
                 if (!name || !phone || !email || !pass || !pass2) return App.showToast('All fields are required', 'error');
                 if (pass !== pass2) return App.showToast('Passwords do not match', 'error');
                 
@@ -585,8 +630,7 @@
                 App.state.currentUser = newUser; App.saveData(); App.initPatient();
             },
             login: () => {
-                const email = document.getElementById('login-email').value.trim();
-                const pass = document.getElementById('login-password').value;
+                const email = document.getElementById('login-email').value.trim(); const pass = document.getElementById('login-password').value;
                 const user = App.state.users.find(u => u.email === email && u.password === pass);
                 if(user) { App.state.currentUser = { ...user, role: 'patient' }; App.saveData(); return App.initPatient(); }
                 const doctor = App.state.doctors.find(d => d.email === email && d.password === pass);
@@ -624,7 +668,7 @@
                 
                 if(user) {
                     res.style.display = 'block'; res.style.color = "var(--secondary)"; res.style.borderColor = "rgba(16,185,129,0.3)"; res.style.background = "rgba(16,185,129,0.1)";
-                    res.innerHTML = `Your Password: <span style="color:var(--dark); font-size:16px;">${user.password}</span>`;
+                    res.innerHTML = `Patient Password: <span style="color:var(--dark); font-size:16px;">${user.password}</span>`;
                 } else if(doc) {
                     res.style.display = 'block'; res.style.color = "var(--primary)"; res.style.borderColor = "rgba(37,99,235,0.3)"; res.style.background = "rgba(37,99,235,0.1)";
                     res.innerHTML = `Doctor Password: <span style="color:var(--dark); font-size:16px;">${doc.password}</span>`;
@@ -636,9 +680,7 @@
 
             // --- Reset Demo ---
             resetDemo: () => {
-                if(confirm("Are you sure? This will wipe all current demo data.")) {
-                    localStorage.removeItem('senthil_final_production'); location.reload();
-                }
+                if(confirm("Are you sure? This will wipe all current demo data.")) { localStorage.removeItem('senthil_final_v3'); location.reload(); }
             },
 
             runClock: () => { setInterval(() => { const now = new Date(); const clockEl = document.getElementById('ui-clock'); const dateEl = document.getElementById('ui-date'); if(clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}); if(dateEl) dateEl.innerText = now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); }, 1000); },
@@ -646,8 +688,7 @@
             // --- Patient Dashboard ---
             initPatient: () => {
                 const u = App.state.currentUser;
-                document.getElementById('ui-name').innerText = u.name;
-                document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
+                document.getElementById('ui-name').innerText = u.name; document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
                 const hr = new Date().getHours(); document.getElementById('ui-greeting').innerText = hr < 12 ? 'Good Morning,' : hr < 17 ? 'Good Afternoon,' : 'Good Evening,';
                 document.getElementById('patient-dock').style.display = 'flex';
                 App.renderHome(); App.switchTab('screen-patient-home', 'nav-home');
@@ -659,7 +700,7 @@
                 if(myAppts.length > 0) {
                     const doc = App.state.doctors.find(d => d.id === myAppts[0].doctorId);
                     heroHtml = `<div class="trust-badge" style="margin-bottom:15px; margin-top:0;"><div class="status-dot"></div> Live Token Linked</div>
-                        <div class="flex-between"><div><p style="font-size:12px; color:#cbd5e1; font-weight:700;">Active Appointment</p><h2 style="font-size:22px; font-weight:800; margin-top:2px;">${doc?.name || 'General Doctor'}</h2><p style="font-size:13px; font-weight:600; margin-top:5px;">Token #${myAppts[0].token} | ${myAppts[0].date}</p></div>
+                        <div class="flex-between"><div><p style="font-size:12px; color:#cbd5e1; font-weight:700;">Active Appointment</p><h2 style="font-size:22px; font-weight:800; margin-top:2px;">${doc ? doc.name : 'General Duty Doctor'}</h2><p style="font-size:13px; font-weight:600; margin-top:5px;">Token #${myAppts[0].token} | ${myAppts[0].date}</p></div>
                         <div style="background:rgba(255,255,255,0.2); padding:12px 18px; border-radius:18px; font-weight:800; font-size:14px; text-align:center;">${myAppts[0].time}</div></div>`;
                 } else {
                     heroHtml = `<div class="trust-badge" style="margin-bottom:15px; margin-top:0;"><div class="status-dot"></div> System Online</div>
@@ -676,15 +717,38 @@
                 `).join('');
                 App.updateHomeAITip();
             },
+            
+            // --- NEW: AI Diet Chart Downloader ---
+            downloadDietChart: () => {
+                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
+                const h = document.getElementById('prof-height')?.value || u.height; const w = document.getElementById('prof-weight')?.value || u.weight;
+                if(!h || !w || h == 0) return App.showToast("உயரம் மற்றும் எடையை Vitals-ல் அப்டேட் செய்யவும்.", "warning");
+                
+                const bmi = (w / ((h/100)**2)).toFixed(1);
+                let cat = '', diet = '';
+                if(bmi < 18.5) { cat = 'UNDERWEIGHT'; diet = "காலை: இட்லி/தோசை உளுந்து சுண்டலுடன்.\nமதியம்: சாதம், பருப்பு, நெய், முட்டை.\nஇரவு: சத்தான கஞ்சி அல்லது சப்பாத்தி.\nடிப்ஸ்: தினமும் பேரீச்சம்பழம், வாழைப்பழம் சாப்பிடவும்."; }
+                else if(bmi < 25) { cat = 'NORMAL'; diet = "காலை: இட்லி/தோசை சட்னியுடன்.\nமதியம்: சரிவிகித உணவு (காய்கறிகள் அதிகம்).\nஇரவு: எளிதில் செரிக்கும் உணவு.\nடிப்ஸ்: இதே ஆரோக்கியமான பழக்கத்தை தொடரவும்."; }
+                else if(bmi < 30) { cat = 'OVERWEIGHT'; diet = "காலை: ஓட்ஸ் அல்லது கோதுமை உப்புமா.\nமதியம்: சாதம் குறைத்து, காய்கறிகள் அதிகம்.\nஇரவு: சப்பாத்தி அல்லது சூப்.\nடிப்ஸ்: தினமும் 45 நிமிடம் நடைபயிற்சி அவசியம்."; }
+                else { cat = 'OBESE'; diet = "காலை: பழங்கள் மற்றும் முளைகட்டிய தானியங்கள்.\nமதியம்: காய்கறி சாலட், சிறுதானிய உணவு.\nஇரவு: காய்கறி சூப் மட்டும்.\nடிப்ஸ்: துரித உணவுகளை முற்றிலும் தவிர்க்கவும். வெதுவெதுப்பான நீர் குடிக்கவும்."; }
+
+                const text = `Senthil Multi Speciality Hospital\n==================================\n\nநோயாளி பெயர் (Patient): ${u.name}\nஉடல் நிறை குறியீடு (BMI Score): ${bmi} (${cat})\n\nஉங்களுக்கான பிரத்யேக டயட் சார்ட்:\n----------------------------------\n${diet}\n\nDisclaimer: This is an AI generated diet chart. Please consult your doctor for severe conditions.\nThank you for choosing Senthil Hospital!`;
+                
+                const blob = new Blob([text], { type: 'text/plain' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url; a.download = `Senthil_Diet_Chart_${u.name.replace(/\s+/g, '_')}.txt`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                App.showToast('Diet Chart Downloaded Successfully!', 'success');
+            },
+
             updateHomeAITip: () => {
                 const tip = document.getElementById('ai-dynamic-tip'); const dietBtn = document.getElementById('diet-plan-btn');
                 if(!tip || !App.state.currentUser) return;
                 const u = App.state.users.find(x => x.id == App.state.currentUser.id);
                 if(!u) return;
 
-                const h = document.getElementById('prof-height')?.value || u.height;
-                const w = document.getElementById('prof-weight')?.value || u.weight;
-
+                const h = document.getElementById('prof-height')?.value || u.height; const w = document.getElementById('prof-weight')?.value || u.weight;
                 if(!h || !w || h == 0) {
                     tip.innerText = "உயரம் மற்றும் எடையை Vitals பக்கத்தில் அப்டேட் செய்யவும்.";
                     if(dietBtn) dietBtn.style.display = 'none'; return;
@@ -694,11 +758,9 @@
                 let cat = '';
                 if(bmi < 18.5) cat = 'underweight'; else if(bmi < 25) cat = 'normal'; else if(bmi < 30) cat = 'overweight'; else cat = 'obese';
 
-                const tipsArr = AITipsDB[cat];
-                const randTip = tipsArr[Math.floor(Math.random() * tipsArr.length)];
-                
+                const tipsArr = AITipsDB[cat]; const randTip = tipsArr[Math.floor(Math.random() * tipsArr.length)];
                 tip.innerHTML = `<span style="font-size:11px; background:rgba(16,185,129,0.2); padding:4px 8px; border-radius:8px; display:inline-block; margin-bottom:8px;">BMI Score: ${bmi}</span><br/>${randTip}`;
-                if(dietBtn) { dietBtn.style.display = 'block'; dietBtn.innerText = `எனக்கான டயட் சார்ட் டவுன்லோட் (${cat.toUpperCase()})`; }
+                if(dietBtn) { dietBtn.style.display = 'block'; dietBtn.innerHTML = `<i class="fa-solid fa-download"></i> டயட் சார்ட் டவுன்லோட் (${cat.toUpperCase()})`; }
             },
 
             // --- Modals & Booking Actions ---
@@ -709,10 +771,14 @@
                 document.getElementById('mod-doc-days').innerText = doc.days || 'Mon - Sat'; document.getElementById('mod-doc-times').innerText = doc.times || '10:00 AM - 05:00 PM';
                 document.getElementById('mod-doc-id').value = doc.id; App.openModal('modal-doctor');
             },
-            bookGeneralToken: () => {
-                const docId = 0; const today = new Date().toISOString().split('T')[0];
-                App.closeModal('modal-doctor'); App.createBookingLogic(docId, today, "General Token");
+            
+            // --- FIX: General Token Logic ---
+            confirmGeneralToken: () => {
+                const today = new Date().toISOString().split('T')[0];
+                App.createBookingLogic(0, today, "Walk-in (General)");
+                App.closeModal('modal-general');
             },
+            
             goToSlotBooking: () => {
                 const docId = parseInt(document.getElementById('mod-doc-id').value);
                 App.closeModal('modal-doctor'); App.switchTab('screen-patient-book', 'nav-book');
@@ -730,11 +796,11 @@
                 const exists = App.state.appointments.filter(a => a.doctorId === docId && a.date === date);
                 const token = exists.length > 0 ? Math.max(...exists.map(e => e.token)) + 1 : 1;
                 App.state.appointments.push({ id: Date.now(), userId: App.state.currentUser.id, doctorId: docId, date, time, token, status: "Pending" });
-                App.saveData(); App.showToast('Token Generated! Waiting for Doctor Approval.'); App.switchTab('screen-patient-queue', 'nav-queue');
+                App.saveData(); App.showToast('Token Generated! Waiting for Approval.'); App.switchTab('screen-patient-queue', 'nav-queue');
             },
             rebookLast: () => {
-                const history = App.state.appointments.filter(a => a.userId === App.state.currentUser.id);
-                if(history.length === 0) return App.showToast('No past appointments found', 'error');
+                const history = App.state.appointments.filter(a => a.userId === App.state.currentUser.id && a.doctorId !== 0);
+                if(history.length === 0) return App.showToast('No specific past appointments found', 'error');
                 App.openDoctorModal(history[history.length-1].doctorId);
             },
 
@@ -750,7 +816,7 @@
                     document.getElementById('tok-my').innerText = active.token;
                     document.getElementById('tok-doc').innerText = doc ? `${doc.name} | ${active.time}` : `General Duty | ${active.time}`;
                     
-                    let runT = doc ? doc.runningToken : Math.floor(active.token * 0.6);
+                    let runT = doc ? doc.runningToken : Math.floor(active.token * 0.6); // mock for general
                     document.getElementById('tok-run').innerText = runT;
                     
                     let diff = active.token - runT;
@@ -829,7 +895,8 @@
 
             // --- Status Notification System ---
             changeApptStatus: (id, status, isDoctorDashboard = false) => {
-                const a = App.state.appointments.find(x => x.id === id); a.status = status; App.saveData();
+                const a = App.state.appointments.find(x => x.id === id);
+                a.status = status; App.saveData();
                 const u = App.state.users.find(x => x.id === a.userId);
                 let msg = `Status updated to ${status}.`;
                 if(status === 'Approved') msg = `Confirmed! ${u ? u.name : 'Patient'} notified.`;
@@ -847,11 +914,57 @@
                 if(App.state.currentUser.role === 'admin') App.renderAdminAppts(); else if(App.state.currentUser.role === 'doctor') App.renderDoctorAppts(); else { App.renderQueueHistory(); App.renderHome(); }
             },
 
+            // --- NEW: HEALTH VAULT SYSTEM (PATIENT + ADMIN) ---
+            openVault: (type) => {
+                const myDocs = App.state.documents.filter(d => d.userId === App.state.currentUser.id && d.type === type).reverse();
+                document.getElementById('vault-view-title').innerText = type === 'prescription' ? 'My Prescriptions' : 'My Lab Reports';
+                
+                if(myDocs.length === 0) {
+                    document.getElementById('vault-view-content').innerHTML = `<div style="text-align:center; padding:20px;"><i class="fa-solid fa-folder-open" style="font-size:40px; color:#cbd5e1; margin-bottom:10px;"></i><p style="font-size:13px; font-weight:700; color:var(--text-muted);">No records found. Admin will upload them here.</p></div>`;
+                } else {
+                    document.getElementById('vault-view-content').innerHTML = myDocs.map(d => `
+                        <div style="border: 1px solid #e2e8f0; border-radius: 16px; padding: 10px; text-align: center;">
+                            <img src="${d.file}" style="width:100%; max-height: 250px; object-fit:contain; border-radius:10px;">
+                            <p style="font-size:11px; font-weight:800; color:var(--primary); margin-top:8px;">Uploaded: ${d.date}</p>
+                        </div>
+                    `).join('');
+                }
+                App.openModal('modal-vault-view');
+            },
+
+            handleVaultFile: (e) => {
+                const f = e.target.files[0]; const r = new FileReader();
+                r.onloadend = () => { App.state.tempVaultImg = r.result; const p = document.getElementById('vault-preview'); p.src = r.result; p.style.display = 'block'; };
+                if(f) r.readAsDataURL(f);
+            },
+
+            uploadVaultDoc: () => {
+                const uId = parseInt(document.getElementById('vault-patient').value);
+                const type = document.getElementById('vault-type').value;
+                if(!uId || !App.state.tempVaultImg) return App.showToast("Select patient and image", "error");
+                
+                const date = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+                App.state.documents.push({ id: Date.now(), userId: uId, type, file: App.state.tempVaultImg, date });
+                
+                App.state.tempVaultImg = ""; document.getElementById('vault-preview').style.display = 'none';
+                App.saveData(); App.showToast("Document Uploaded to Vault!"); App.renderAdminVault();
+            },
+
+            renderAdminVault: () => {
+                document.getElementById('vault-patient').innerHTML = `<option value="">Choose Patient...</option>` + App.state.users.map(u => `<option value="${u.id}">${u.name} (${u.phone})</option>`).join('');
+                const recent = App.state.documents.slice().reverse().slice(0, 5); // show last 5
+                
+                document.getElementById('admin-vault-list').innerHTML = recent.map(d => {
+                    const u = App.state.users.find(x => x.id === d.userId);
+                    return `<div class="card flex-between"><div><h4 style="font-size:14px; font-weight:800;">${u?.name}</h4><p style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:capitalize;">${d.type} | ${d.date}</p></div><img src="${d.file}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;"></div>`;
+                }).join('') || '<p style="font-size:13px; color:var(--text-muted);">No documents uploaded yet.</p>';
+            },
+
             // --- Admin System ---
             initAdmin: () => {
                 document.getElementById('patient-dock').style.display = 'none';
                 App.navigate('screen-admin-dashboard');
-                App.renderAdminStats(); App.renderAdminAppts(); App.renderAdminPatients(); App.renderAdminDoctors();
+                App.renderAdminStats(); App.renderAdminAppts(); App.renderAdminPatients(); App.renderAdminDoctors(); App.renderAdminVault();
                 App.showToast('Welcome Admin!');
             },
             renderAdminStats: () => {
@@ -868,6 +981,7 @@
                 document.querySelectorAll('.admin-tab-content').forEach(t => t.style.display = 'none');
                 document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
                 document.getElementById(tabId).style.display = 'block'; el.classList.add('active');
+                if(tabId === 'admin-vault') App.renderAdminVault();
             },
             renderAdminAppts: () => {
                 const list = App.state.appointments.slice().reverse();
@@ -887,7 +1001,7 @@
                     return `
                     <div class="card">
                         <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;"><i class="fa-solid fa-user-injured" style="color:var(--primary);"></i> ${u ? u.name : 'Unknown'}</h4><span class="badge ${b}">${a.status}</span></div>
-                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Doc: ${d ? d.name : 'General'} | Token: ${a.token} | ${a.date} ${a.time}</p>
+                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Doc: ${d ? d.name : 'General Token'} | Token: ${a.token} | ${a.date} ${a.time}</p>
                         <div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Reschedule</button></div>
                         <div style="display:flex; gap:10px;"><a href="tel:${u?u.phone:''}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call Patient</a>${actions}</div>
                     </div>`;
