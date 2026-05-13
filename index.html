@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Zeni Health | Premium Ecosystem</title>
+    <title>Senthil Multi Speciality Hospital</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
     <style>
@@ -21,6 +21,24 @@
 
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
         body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
+
+        /* ================= OPENING ANIMATION (SPLASH SCREEN) ================= */
+        #splash-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg-color); z-index: 100000;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease-out;
+        }
+        .splash-content { text-align: center; }
+        .splash-icon { font-size: 65px; color: var(--danger); margin-bottom: 20px; animation: heartbeat 1.5s infinite; filter: drop-shadow(0 10px 15px rgba(239,68,68,0.4)); }
+        .splash-title { font-size: 32px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
+        .splash-subtitle { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px; }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); }
+            42% { transform: scale(1.15); } 70% { transform: scale(1); }
+        }
+        /* ===================================================================== */
 
         /* Background */
         .bg-shape { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; animation: drift 20s infinite alternate ease-in-out; }
@@ -93,7 +111,19 @@
         .hero-section::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); }
         .trust-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
         .status-dot { width: 8px; height: 8px; background: var(--secondary); border-radius: 50%; box-shadow: 0 0 10px var(--secondary); }
-        .ai-tip-card { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #d1fae5; padding: 18px; border-radius: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 20px; transition: 0.5s opacity; }
+        
+        .ai-tip-card { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #d1fae5; padding: 18px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
+        .ai-tip-header { display: flex; align-items: center; gap: 15px; }
+
+        /* Booking Hub */
+        .booking-hub { background: white; border-radius: 24px; padding: 20px; border: 2px solid #e2e8f0; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .booking-option { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 18px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; background: #f8fafc; }
+        .booking-option:hover { border-color: var(--primary-light); background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
+        .booking-option i { font-size: 20px; color: var(--primary); background: #eff6ff; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
+
+        /* Document Vault */
+        .doc-vault-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fde68a; padding: 15px; border-radius: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; cursor: pointer; }
+        .doc-vault-card i { font-size: 24px; color: var(--warning); }
         
         /* Grid & Scroll Rows */
         .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
@@ -119,18 +149,42 @@
         .admin-tab.active { background: var(--dark); color: white; }
 
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
+
+        #add-doc-preview { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; display: none; margin: 10px auto; border: 2px solid var(--primary-light); }
     </style>
 </head>
 <body>
+
+    <!-- ==================== SPLASH SCREEN ==================== -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <i class="fa-solid fa-heart-pulse splash-icon"></i>
+            <h1 class="splash-title">Senthil</h1>
+            <p class="splash-subtitle">Multi Speciality Hospital</p>
+        </div>
+    </div>
 
     <!-- Background Elements -->
     <div class="bg-shape shape-1"></div>
     <div class="bg-shape shape-2"></div>
     <div id="toast-container"></div>
 
+    <!-- ==================== NEW: PREMIUM FORGOT PASSWORD MODAL ==================== -->
+    <div class="modal-overlay" id="modal-forgot">
+        <div class="modal-content">
+            <div style="text-align: right;"><i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-forgot')"></i></div>
+            <h3 class="heading" style="font-size: 22px; margin-bottom: 10px;">Recover Access</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter your registered Email ID to securely view your password.</p>
+            
+            <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="forgot-email" placeholder="Registered Gmail"></div>
+            
+            <div id="forgot-result" style="display:none; padding:15px; border-radius:14px; background:rgba(16,185,129,0.1); color:var(--secondary); font-weight:800; font-size:14px; text-align:center; margin-bottom:15px; border: 1px solid rgba(16,185,129,0.3);"></div>
+            
+            <button class="btn btn-primary" onclick="App.recoverPassword()">Get Password</button>
+        </div>
+    </div>
+
     <!-- ==================== MODALS ==================== -->
-    
-    <!-- Modal 1: Doctor Profile & General Token -->
     <div class="modal-overlay" id="modal-doctor">
         <div class="modal-content">
             <div style="text-align: right;"><i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-doctor')"></i></div>
@@ -145,14 +199,22 @@
                 <p style="font-size: 13px; font-weight: 600; color: var(--text-main);" id="mod-doc-times">10:00 AM - 02:00 PM</p>
             </div>
             <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn btn-primary" onclick="App.bookGeneralToken()">Get General Token (Today)</button>
+                <button class="btn btn-primary" onclick="App.bookGeneralToken()">Get Token for Doctor</button>
                 <button class="btn btn-outline" onclick="App.goToSlotBooking()">Book Specific Time Slot</button>
             </div>
             <input type="hidden" id="mod-doc-id">
         </div>
     </div>
 
-    <!-- Modal 2: Admin/Doctor/Patient Reschedule Appt -->
+    <div class="modal-overlay" id="modal-general">
+        <div class="modal-content">
+            <h3 class="heading" style="font-size: 20px; margin-bottom: 15px;">General Token</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">பொது பரிசோதனைக்கு இதைத் தேர்ந்தெடுக்கவும். உள்ளே சென்றதும் டியூட்டி டாக்டர் உங்களை கவனிப்பார்.</p>
+            <button class="btn btn-primary" onclick="App.confirmGeneralToken()">இப்போதே டோக்கன் எடு</button>
+            <button class="btn btn-outline" style="margin-top: 10px;" onclick="App.closeModal('modal-general')">Cancel</button>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modal-reschedule">
         <div class="modal-content">
             <h3 class="heading" style="font-size: 20px; margin-bottom: 15px;">Update Appointment</h3>
@@ -173,7 +235,7 @@
                 <div style="width: 80px; height: 80px; background: white; border-radius: 24px; display: inline-flex; justify-content: center; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.06); margin-bottom: 20px; transform: rotate(10deg);">
                     <i class="fa-solid fa-heart-pulse text-gradient" style="font-size: 40px; transform: rotate(-10deg);"></i>
                 </div>
-                <h1 class="heading">Zeni <span class="text-gradient">Health</span></h1>
+                <h1 class="heading" style="font-size: 28px;">Senthil <span class="text-gradient">Hospital</span></h1>
                 <p style="font-weight: 600; color: var(--text-muted); margin-top: 5px;">World-Class Ecosystem</p>
             </div>
             
@@ -184,7 +246,7 @@
             
             <div class="flex-between" style="margin-top: 30px; font-size: 14px; font-weight: 800;">
                 <span style="color: var(--primary); cursor: pointer;" onclick="App.navigate('screen-signup')">Create Account</span>
-                <span style="color: var(--text-muted); cursor: pointer;">Forgot Password?</span>
+                <span style="color: var(--text-muted); cursor: pointer;" onclick="App.openForgotModal()">Forgot Password?</span>
             </div>
 
             <div style="text-align: center; margin-top: 50px;">
@@ -217,8 +279,8 @@
                 <h1 class="heading" style="color: white;">Admin HQ</h1>
                 <p style="color: #94a3b8; font-weight: 600; font-size: 14px; margin-top: 5px;">Master Control Access</p>
             </div>
-            <div class="input-group no-label"><i class="fa-solid fa-user"></i><input type="text" id="admin-user" placeholder="Admin ID" style="background: rgba(255,255,255,0.1); color: white; border:none;"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="admin-pass" placeholder="Password" style="background: rgba(255,255,255,0.1); color: white; border:none;"></div>
+            <div class="input-group no-label"><i class="fa-solid fa-user"></i><input type="text" id="admin-user" placeholder="Admin ID (admin)" style="background: rgba(255,255,255,0.1); color: white; border:none;"></div>
+            <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="admin-pass" placeholder="Password (admin)" style="background: rgba(255,255,255,0.1); color: white; border:none;"></div>
             <button class="btn btn-primary" onclick="App.adminLogin()">Access System</button>
             <div style="text-align: center; margin-top: 30px;"><span style="color: #cbd5e1; font-size: 14px; font-weight: 800; cursor: pointer;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Patient Login</span></div>
         </div>
@@ -237,11 +299,40 @@
             </div>
         </div>
 
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 10px;">சிகிச்சை முன்பதிவு</h3>
+        <div class="booking-hub">
+            <div class="booking-option" onclick="App.openModal('modal-general')">
+                <i class="fa-solid fa-bolt"></i>
+                <div><h4 style="font-size: 15px; font-weight: 800;">General Token (பொது)</h4><p style="font-size: 11px; color: var(--text-muted);">யாரேனும் ஒரு மருத்துவரிடம் டோக்கன் எடுக்க.</p></div>
+            </div>
+            <div style="height: 1px; background: #e2e8f0; margin: 15px 0;"></div>
+            <div class="booking-option" onclick="window.scrollTo({top: 800, behavior: 'smooth'})">
+                <i class="fa-solid fa-user-doctor"></i>
+                <div><h4 style="font-size: 15px; font-weight: 800;">Choose Specific Doctor</h4><p style="font-size: 11px; color: var(--text-muted);">குறிப்பிட்ட மருத்துவரைத் தேர்ந்தெடுக்க கீழே பார்க்கவும்.</p></div>
+            </div>
+        </div>
+
         <div class="hero-section" id="ui-hero-banner"></div>
 
-        <div class="ai-tip-card" id="ai-tip-box">
-            <div style="font-size: 24px; color: var(--secondary);"><i class="fa-solid fa-robot"></i></div>
-            <div><h4 style="font-size: 14px; font-weight: 800; color: #064e3b;">Zeni AI Alert</h4><p style="font-size: 12px; color: #047857; font-weight: 600; margin-top: 2px; line-height: 1.4;" id="ai-tip-text">எடப்பாடி வெயிலுக்கு தினமும் 3 லிட்டர் தண்ணீர் குடிக்கவும்.</p></div>
+        <div class="ai-tip-card">
+            <div class="ai-tip-header">
+                <div style="font-size: 28px; color: var(--secondary);"><i class="fa-solid fa-robot"></i></div>
+                <div><h4 style="font-size: 15px; font-weight: 800; color: #064e3b;">Senthil AI ஹெல்த் கோச்</h4><p style="font-size: 12px; color: #047857; font-weight: 700;">உங்களுக்கான குறிப்பு:</p></div>
+            </div>
+            <div style="background: rgba(255,255,255,0.6); padding: 15px; border-radius: 14px;">
+                <p style="font-size: 13px; font-weight: 800; color: #064e3b; line-height: 1.5;" id="ai-dynamic-tip">உயரம் மற்றும் எடையை Vitals பக்கத்தில் அப்டேட் செய்யவும்.</p>
+            </div>
+            <button id="diet-plan-btn" class="btn btn-success btn-sm" style="display: none; margin-top: 5px; width: 100%;" onclick="App.showToast('உங்கள் டயட் சார்ட் டவுன்லோட் செய்யப்படுகிறது...', 'success')">எனக்கான டயட் சார்ட்</button>
+        </div>
+
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">எனது மருத்துவ ஆவணங்கள்</h3>
+        <div class="doc-vault-card" onclick="App.showToast('பழைய மருந்துச் சீட்டுகள் விரைவில் இணைக்கப்படும்.', 'success')">
+            <i class="fa-solid fa-file-prescription"></i>
+            <div><h4 style="font-size: 14px; font-weight: 800; color: #92400e;">பழைய மருந்துச் சீட்டுகள்</h4><p style="font-size: 11px; color: #b45309; font-weight: 600;">(View Prescriptions)</p></div>
+        </div>
+        <div class="doc-vault-card" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #bfdbfe; margin-bottom: 25px;" onclick="App.showToast('லேப் ரிப்போர்ட்கள் விரைவில் இணைக்கப்படும்.', 'success')">
+            <i class="fa-solid fa-vial-circle-check" style="color: var(--primary);"></i>
+            <div><h4 style="font-size: 14px; font-weight: 800; color: #1e40af;">லேப் ரிப்போர்ட்கள்</h4><p style="font-size: 11px; color: #1e3a8a; font-weight: 600;">(View Lab Reports)</p></div>
         </div>
 
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Available Doctors</h3>
@@ -254,9 +345,6 @@
             <div class="action-btn" onclick="App.switchTab('screen-patient-queue', 'nav-queue')"><i class="fa-solid fa-ticket"></i><span>Token</span></div>
             <div class="action-btn" style="color:var(--danger);" onclick="App.showToast('Calling Ambulance...', 'error')"><i class="fa-solid fa-truck-medical" style="color:var(--danger);"></i><span>SOS</span></div>
         </div>
-
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Hospital Updates</h3>
-        <div id="patient-feed-container"></div>
     </div>
 
     <!-- ==================== 5. BOOK APPOINTMENT ==================== -->
@@ -292,7 +380,7 @@
         <div id="patient-history-container"></div>
     </div>
 
-    <!-- ==================== 7. AI SMART PROFILE SYSTEM ==================== -->
+    <!-- ==================== 7. AI SMART PROFILE SYSTEM (ORIGINAL) ==================== -->
     <div id="screen-patient-profile" class="screen">
         <div class="flex-between" style="margin-bottom: 25px;">
             <h2 class="heading">My Profile</h2>
@@ -336,10 +424,13 @@
 
     <!-- ==================== 8. ADMIN DASHBOARD ==================== -->
     <div id="screen-admin-dashboard" class="screen">
-        <div class="flex-between" style="margin-bottom: 25px;">
+        <div class="flex-between" style="margin-bottom: 20px;">
             <div><h2 class="heading" style="font-size: 28px;">Admin HQ</h2><p style="font-size: 13px; font-weight: 800; color: var(--primary);">Master Control</p></div>
             <button class="btn btn-danger btn-sm" style="border-radius: 14px;" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
         </div>
+
+        <!-- NEW: AI ADMIN ANALYTICS -->
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px;" id="admin-stats"></div>
 
         <div class="admin-tabs">
             <div class="admin-tab active" onclick="App.switchAdminTab('admin-queue', this)">Live Queue</div>
@@ -361,7 +452,14 @@
                 <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Create Doctor Portal Access</h4>
                 <div class="input-group no-label"><i class="fa-solid fa-user-doctor"></i><input type="text" id="add-doc-name" placeholder="Dr. Name"></div>
                 <div class="input-group no-label"><i class="fa-solid fa-stethoscope"></i><input type="text" id="add-doc-spec" placeholder="Specialization"></div>
-                <div class="input-group no-label"><i class="fa-solid fa-image"></i><input type="url" id="add-doc-img" placeholder="Photo URL (Optional)"></div>
+                
+                <div class="input-group no-label">
+                    <label style="background: var(--primary); color: white; padding: 15px; border-radius: 14px; display: block; cursor: pointer; text-align: center; font-weight: 800;">
+                        <i class="fa-solid fa-image"></i> Upload Photo
+                        <input type="file" accept="image/*" style="display: none;" onchange="App.handleFile(event)">
+                    </label>
+                </div>
+                <img id="add-doc-preview">
                 
                 <h4 style="font-size: 13px; font-weight: 800; margin: 15px 0 10px 0; color: var(--text-muted);">Doctor Login Credentials</h4>
                 <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="add-doc-email" placeholder="Doctor's Gmail"></div>
@@ -372,6 +470,9 @@
             <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Manage Doctors</h3>
             <div id="admin-doc-list"></div>
         </div>
+        
+        <!-- ONE CLICK DEMO RESET -->
+        <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger-bg); margin-top: 30px; width: 100%; padding: 15px;" onclick="App.resetDemo()"><i class="fa-solid fa-rotate-right"></i> Reset All Demo Data</button>
     </div>
 
     <!-- ==================== 9. DOCTOR DASHBOARD ==================== -->
@@ -406,47 +507,43 @@
 
     <!-- ==================== CORE ARCHITECTURE & LOGIC ==================== -->
     <script>
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 800); }
+            }, 2000); 
+        });
+
+        const AITipsDB = {
+            underweight: ["எடை குறைவாக உள்ளது. எடப்பாடி தட்டு வடை செட்டுடன், சத்தான சுண்டல் சேர்த்து உண்ணவும்.", "தினமும் பேரீச்சம்பழம் மற்றும் வாழைப்பழம் சாப்பிடுவது உடல் எடையை சீராக அதிகரிக்க உதவும்.", "காலை உணவை தவிர்க்க வேண்டாம். சத்தான சிறுதானிய கஞ்சிகளை உணவில் சேர்க்கவும்."],
+            normal: ["நீங்கள் மிகவும் ஆரோக்கியமாக உள்ளீர்கள்! இதே உணவுப் பழக்கத்தைத் தொடரவும்.", "தினமும் 3 லிட்டர் தண்ணீர் குடிப்பது உங்கள் சருமத்தையும் உடலையும் புத்துணர்ச்சியாக வைக்கும்.", "நஞ்சப்பா பைபாஸ் சாலையில் தினமும் 30 நிமிடம் நடைபயிற்சி செய்வது இதயத்திற்கு நல்லது."],
+            overweight: ["எடை சற்று அதிகமாக உள்ளது. எண்ணெயில் பொரித்த உணவுகளைக் குறைத்து, காய்கறிகளை அதிகம் சேர்க்கவும்.", "தினமும் குறைந்தது 45 நிமிடம் நடைபயிற்சி அவசியம். பேக்கரி இனிப்புகளைத் தவிர்க்கவும்.", "இரவு உணவை 8 மணிக்குள் முடித்துக்கொள்வது உடல் எடையை குறைக்க பெரிதும் உதவும்."],
+            obese: ["உடல் பருமன் அதிகமாக உள்ளது. மருத்துவரைச் சந்தித்து முறையான டயட் சார்ட் பெறுவது அவசியம்.", "துரித உணவுகள் (Fast food) மற்றும் மைதா பண்டங்களை முற்றிலும் தவிர்க்கவும்.", "தினமும் வெதுவெதுப்பான சீரகத் தண்ணீர் குடிப்பது செரிமானத்தை சீராக்கி கொழுப்பைக் குறைக்கும்."]
+        };
+
         const App = {
             state: {
                 currentUser: null,
-                users: [
-                    { id: 1, name: "Anantharaj", email: "ananth@gmail.com", phone: "9876543210", password: "Password1", age: "32", blood: "B+", height: "", weight: "", emergency: "", history: "" }
-                ],
+                users: [{ id: 1, name: "Anantharaj", email: "ananth@gmail.com", phone: "9876543210", password: "123", age: "32", blood: "B+", height: "", weight: "", emergency: "", history: "" }],
                 doctors: [
-                    { id: 101, email: "siva@gmail.com", password: "doc123", name: "Dr. Sivasankar", spec: "Cardiology", runningToken: 2, image: "https://ui-avatars.com/api/?name=Dr+S&background=ebf8ff&color=2563eb&size=150", days: "Mon - Sat", times: "10:00 AM - 02:00 PM" },
-                    { id: 102, email: "priya@gmail.com", password: "doc123", name: "Dr. Priya", spec: "Pediatrics", runningToken: 0, image: "https://ui-avatars.com/api/?name=Dr+P&background=f0fdf4&color=10b981&size=150", days: "Mon - Fri", times: "04:00 PM - 08:00 PM" }
+                    { id: 101, email: "siva@gmail.com", password: "123", name: "Dr. Sivasankar", spec: "Cardiology", runningToken: 2, image: "https://ui-avatars.com/api/?name=Dr+S&background=ebf8ff&color=2563eb&size=150", days: "Mon - Sat", times: "10:00 AM - 02:00 PM" },
+                    { id: 102, email: "priya@gmail.com", password: "123", name: "Dr. Priya", spec: "Pediatrics", runningToken: 0, image: "https://ui-avatars.com/api/?name=Dr+P&background=f0fdf4&color=10b981&size=150", days: "Mon - Fri", times: "04:00 PM - 08:00 PM" }
                 ],
-                appointments: [
-                    { id: 1001, userId: 1, doctorId: 101, date: "2026-05-13", time: "General Token", token: 5, status: "Approved" }
-                ],
-                announcements: [
-                    { title: "Zeni Health Edappadi Live", content: "Enjoy our new world-class ecosystem right from your mobile.", icon: "fa-bullhorn", color: "var(--primary)" }
-                ],
-                tips: [
-                    "எடப்பாடி வெயிலுக்கு தினமும் 3 லிட்டர் தண்ணீர் குடிக்கவும்.",
-                    "தட்டு வடை செட் சாப்பிட்ட பின் சிறிது சீரகம் சாப்பிடவும், செரிமானத்திற்கு நல்லது.",
-                    "நஞ்சப்பா மற்றும் அரசு மருத்துவமனை அருகில் நமது Zeni மையம் 24 மணி நேரமும் செயல்படுகிறது.",
-                    "விசைத்தறி தொழிலாளர்கள் நெசவு துகள்களிலிருந்து காக்க மாஸ்க் அணியவும்."
-                ],
-                tipIndex: 0
+                appointments: [{ id: 1001, userId: 1, doctorId: 101, date: "2026-05-13", time: "General Token", token: 5, status: "Approved" }],
+                tempImg: ""
             },
 
-            // --- Database Loader for Demo Persistence ---
             loadData: () => {
-                const data = localStorage.getItem('zeni_db');
+                const data = localStorage.getItem('senthil_final_production');
                 if (data) App.state = JSON.parse(data);
             },
-            saveData: () => {
-                localStorage.setItem('zeni_db', JSON.stringify(App.state));
-            },
+            saveData: () => { localStorage.setItem('senthil_final_production', JSON.stringify(App.state)); },
 
-            // --- Utilities ---
             showToast: (msg, type='success') => {
                 const c = document.getElementById('toast-container');
                 const t = document.createElement('div'); t.className = `toast`;
                 t.innerHTML = `<i class="fa-solid ${type==='success'?'fa-circle-check':'fa-circle-exclamation'}" style="font-size: 24px; color: ${type==='success'?'var(--secondary)':'var(--danger)'};"></i><div style="font-size: 13px; font-weight: 800; line-height: 1.4;">${msg}</div>`;
-                c.appendChild(t);
-                setTimeout(() => { t.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(()=>t.remove(), 400); }, 3000);
+                c.appendChild(t); setTimeout(() => { t.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(()=>t.remove(), 400); }, 3000);
             },
             navigate: (id) => {
                 document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
@@ -455,13 +552,21 @@
             switchTab: (screenId, navId) => {
                 App.navigate(screenId);
                 document.querySelectorAll('.dock-item').forEach(n => n.classList.remove('active'));
-                document.getElementById(navId).classList.add('active');
+                if(navId) document.getElementById(navId)?.classList.add('active');
                 if(screenId === 'screen-patient-book') App.renderBookingForm();
                 if(screenId === 'screen-patient-queue') App.renderQueueHistory();
                 if(screenId === 'screen-patient-profile') App.loadProfileData();
+                if(screenId === 'screen-patient-home') App.renderHome();
             },
             openModal: (id) => document.getElementById(id).classList.add('active'),
             closeModal: (id) => document.getElementById(id).classList.remove('active'),
+
+            handleFile: (e) => {
+                const f = e.target.files[0];
+                const r = new FileReader();
+                r.onloadend = () => { App.state.tempImg = r.result; const p = document.getElementById('add-doc-preview'); p.src = r.result; p.style.display = 'block'; };
+                if(f) r.readAsDataURL(f);
+            },
 
             // --- Authentication ---
             signup: () => {
@@ -475,78 +580,75 @@
                 if (pass !== pass2) return App.showToast('Passwords do not match', 'error');
                 
                 const newUser = { id: Date.now(), name, phone, email, password: pass, age: '', blood: '', height: '', weight: '', emergency: '', history: '' };
-                App.state.users.push(newUser);
-                App.saveData();
-                
-                App.showToast('Profile created securely! Auto logging in...'); 
+                App.state.users.push(newUser); App.saveData();
                 ['reg-name', 'reg-phone', 'reg-email', 'reg-pass', 'reg-pass2'].forEach(id => document.getElementById(id).value = '');
-                
-                App.state.currentUser = newUser;
-                App.saveData();
-                App.initPatient();
+                App.state.currentUser = newUser; App.saveData(); App.initPatient();
             },
             login: () => {
                 const email = document.getElementById('login-email').value.trim();
                 const pass = document.getElementById('login-password').value;
-                
                 const user = App.state.users.find(u => u.email === email && u.password === pass);
-                if(user) { App.state.currentUser = user; App.saveData(); return App.initPatient(); }
-                
+                if(user) { App.state.currentUser = { ...user, role: 'patient' }; App.saveData(); return App.initPatient(); }
                 const doctor = App.state.doctors.find(d => d.email === email && d.password === pass);
                 if(doctor) { App.state.currentUser = { role: 'doctor', ...doctor }; App.saveData(); return App.initDoctor(); }
-
                 App.showToast('Invalid credentials', 'error');
             },
             adminLogin: () => {
                 const u = document.getElementById('admin-user').value.trim().toLowerCase();
                 const p = document.getElementById('admin-pass').value.trim();
-                if (u === 'anantharajmech' && p === '0987654321') {
+                if ((u === 'admin' && p === 'admin') || (u === 'anantharajmech' && p === '0987654321')) {
                     document.getElementById('patient-dock').style.display = 'none';
-                    App.state.currentUser = { role: 'admin' }; 
-                    App.saveData();
-                    App.initAdmin();
-                } else {
-                    App.showToast('Invalid Admin Credentials', 'error');
-                }
+                    document.getElementById('admin-user').value = ''; document.getElementById('admin-pass').value = '';
+                    App.state.currentUser = { id: 'admin1', name: 'Admin', role: 'admin' }; 
+                    App.saveData(); App.initAdmin();
+                } else { App.showToast("Use 'admin' as ID & Password", 'error'); }
             },
             logout: () => {
                 App.state.currentUser = null; document.getElementById('patient-dock').style.display = 'none';
-                App.saveData();
-                App.navigate('screen-login'); App.showToast('Logged out securely');
+                App.saveData(); App.navigate('screen-login'); App.showToast('Logged out securely');
             },
 
-            // --- Clock & Tips Engine ---
-            runClock: () => {
-                setInterval(() => {
-                    const now = new Date();
-                    const clockEl = document.getElementById('ui-clock');
-                    const dateEl = document.getElementById('ui-date');
-                    if(clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'});
-                    if(dateEl) dateEl.innerText = now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-                }, 1000);
-                
-                setInterval(() => {
-                    const box = document.getElementById('ai-tip-box');
-                    if(box) {
-                        box.style.opacity = 0;
-                        setTimeout(() => {
-                            App.state.tipIndex = (App.state.tipIndex + 1) % App.state.tips.length;
-                            document.getElementById('ai-tip-text').innerText = App.state.tips[App.state.tipIndex];
-                            box.style.opacity = 1;
-                        }, 500);
-                    }
-                }, 6000);
+            // --- Premium Forgot Password Logic ---
+            openForgotModal: () => {
+                document.getElementById('forgot-email').value = '';
+                document.getElementById('forgot-result').style.display = 'none';
+                App.openModal('modal-forgot');
             },
+            recoverPassword: () => {
+                const email = document.getElementById('forgot-email').value.trim();
+                const res = document.getElementById('forgot-result');
+                if(!email) return App.showToast("Enter your email", "error");
+                
+                const user = App.state.users.find(u => u.email === email);
+                const doc = App.state.doctors.find(d => d.email === email);
+                
+                if(user) {
+                    res.style.display = 'block'; res.style.color = "var(--secondary)"; res.style.borderColor = "rgba(16,185,129,0.3)"; res.style.background = "rgba(16,185,129,0.1)";
+                    res.innerHTML = `Your Password: <span style="color:var(--dark); font-size:16px;">${user.password}</span>`;
+                } else if(doc) {
+                    res.style.display = 'block'; res.style.color = "var(--primary)"; res.style.borderColor = "rgba(37,99,235,0.3)"; res.style.background = "rgba(37,99,235,0.1)";
+                    res.innerHTML = `Doctor Password: <span style="color:var(--dark); font-size:16px;">${doc.password}</span>`;
+                } else {
+                    res.style.display = 'block'; res.style.color = "var(--danger)"; res.style.borderColor = "rgba(239,68,68,0.3)"; res.style.background = "rgba(239,68,68,0.1)";
+                    res.innerHTML = `Email not found in our system.`;
+                }
+            },
+
+            // --- Reset Demo ---
+            resetDemo: () => {
+                if(confirm("Are you sure? This will wipe all current demo data.")) {
+                    localStorage.removeItem('senthil_final_production'); location.reload();
+                }
+            },
+
+            runClock: () => { setInterval(() => { const now = new Date(); const clockEl = document.getElementById('ui-clock'); const dateEl = document.getElementById('ui-date'); if(clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}); if(dateEl) dateEl.innerText = now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); }, 1000); },
 
             // --- Patient Dashboard ---
             initPatient: () => {
                 const u = App.state.currentUser;
                 document.getElementById('ui-name').innerText = u.name;
                 document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
-                
-                const hr = new Date().getHours();
-                document.getElementById('ui-greeting').innerText = hr < 12 ? 'Good Morning,' : hr < 17 ? 'Good Afternoon,' : 'Good Evening,';
-                
+                const hr = new Date().getHours(); document.getElementById('ui-greeting').innerText = hr < 12 ? 'Good Morning,' : hr < 17 ? 'Good Afternoon,' : 'Good Evening,';
                 document.getElementById('patient-dock').style.display = 'flex';
                 App.renderHome(); App.switchTab('screen-patient-home', 'nav-home');
                 App.showToast(`Welcome back, ${u.name}!`);
@@ -557,7 +659,7 @@
                 if(myAppts.length > 0) {
                     const doc = App.state.doctors.find(d => d.id === myAppts[0].doctorId);
                     heroHtml = `<div class="trust-badge" style="margin-bottom:15px; margin-top:0;"><div class="status-dot"></div> Live Token Linked</div>
-                        <div class="flex-between"><div><p style="font-size:12px; color:#cbd5e1; font-weight:700;">Active Appointment</p><h2 style="font-size:22px; font-weight:800; margin-top:2px;">${doc.name}</h2><p style="font-size:13px; font-weight:600; margin-top:5px;">Token #${myAppts[0].token} | ${myAppts[0].date}</p></div>
+                        <div class="flex-between"><div><p style="font-size:12px; color:#cbd5e1; font-weight:700;">Active Appointment</p><h2 style="font-size:22px; font-weight:800; margin-top:2px;">${doc?.name || 'General Doctor'}</h2><p style="font-size:13px; font-weight:600; margin-top:5px;">Token #${myAppts[0].token} | ${myAppts[0].date}</p></div>
                         <div style="background:rgba(255,255,255,0.2); padding:12px 18px; border-radius:18px; font-weight:800; font-size:14px; text-align:center;">${myAppts[0].time}</div></div>`;
                 } else {
                     heroHtml = `<div class="trust-badge" style="margin-bottom:15px; margin-top:0;"><div class="status-dot"></div> System Online</div>
@@ -572,65 +674,71 @@
                         <p style="font-size: 10px; font-weight: 700; color: var(--primary);">${d.spec}</p>
                     </div>
                 `).join('');
+                App.updateHomeAITip();
+            },
+            updateHomeAITip: () => {
+                const tip = document.getElementById('ai-dynamic-tip'); const dietBtn = document.getElementById('diet-plan-btn');
+                if(!tip || !App.state.currentUser) return;
+                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
+                if(!u) return;
 
-                document.getElementById('patient-feed-container').innerHTML = App.state.announcements.slice().reverse().map(a => `
-                    <div class="card" style="display:flex; gap:15px; align-items:center;">
-                        <div style="width:50px; height:50px; border-radius:16px; background:${a.color}15; color:${a.color}; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0;"><i class="fa-solid ${a.icon}"></i></div>
-                        <div><h4 style="font-size:15px; font-weight:800;">${a.title}</h4><p style="font-size:12px; color:var(--text-muted); font-weight:600; margin-top:2px;">${a.content}</p></div>
-                    </div>
-                `).join('');
+                const h = document.getElementById('prof-height')?.value || u.height;
+                const w = document.getElementById('prof-weight')?.value || u.weight;
+
+                if(!h || !w || h == 0) {
+                    tip.innerText = "உயரம் மற்றும் எடையை Vitals பக்கத்தில் அப்டேட் செய்யவும்.";
+                    if(dietBtn) dietBtn.style.display = 'none'; return;
+                }
+                
+                const bmi = (w / ((h/100)**2)).toFixed(1);
+                let cat = '';
+                if(bmi < 18.5) cat = 'underweight'; else if(bmi < 25) cat = 'normal'; else if(bmi < 30) cat = 'overweight'; else cat = 'obese';
+
+                const tipsArr = AITipsDB[cat];
+                const randTip = tipsArr[Math.floor(Math.random() * tipsArr.length)];
+                
+                tip.innerHTML = `<span style="font-size:11px; background:rgba(16,185,129,0.2); padding:4px 8px; border-radius:8px; display:inline-block; margin-bottom:8px;">BMI Score: ${bmi}</span><br/>${randTip}`;
+                if(dietBtn) { dietBtn.style.display = 'block'; dietBtn.innerText = `எனக்கான டயட் சார்ட் டவுன்லோட் (${cat.toUpperCase()})`; }
             },
 
             // --- Modals & Booking Actions ---
             openDoctorModal: (id) => {
                 const doc = App.state.doctors.find(d => d.id === id);
                 document.getElementById('mod-doc-img').src = doc.image || 'https://ui-avatars.com/api/?name='+doc.name+'&background=random';
-                document.getElementById('mod-doc-name').innerText = doc.name;
-                document.getElementById('mod-doc-spec').innerText = doc.spec;
-                document.getElementById('mod-doc-days').innerText = doc.days || 'Mon - Sat';
-                document.getElementById('mod-doc-times').innerText = doc.times || '10:00 AM - 05:00 PM';
-                document.getElementById('mod-doc-id').value = doc.id;
-                App.openModal('modal-doctor');
+                document.getElementById('mod-doc-name').innerText = doc.name; document.getElementById('mod-doc-spec').innerText = doc.spec;
+                document.getElementById('mod-doc-days').innerText = doc.days || 'Mon - Sat'; document.getElementById('mod-doc-times').innerText = doc.times || '10:00 AM - 05:00 PM';
+                document.getElementById('mod-doc-id').value = doc.id; App.openModal('modal-doctor');
             },
             bookGeneralToken: () => {
-                const docId = parseInt(document.getElementById('mod-doc-id').value);
-                const today = new Date().toISOString().split('T')[0];
-                App.closeModal('modal-doctor');
-                App.createBookingLogic(docId, today, "General Token");
+                const docId = 0; const today = new Date().toISOString().split('T')[0];
+                App.closeModal('modal-doctor'); App.createBookingLogic(docId, today, "General Token");
             },
             goToSlotBooking: () => {
                 const docId = parseInt(document.getElementById('mod-doc-id').value);
-                App.closeModal('modal-doctor');
-                App.switchTab('screen-patient-book', 'nav-book');
+                App.closeModal('modal-doctor'); App.switchTab('screen-patient-book', 'nav-book');
                 document.getElementById('book-doctor').value = docId;
             },
             renderBookingForm: () => {
                 document.getElementById('book-doctor').innerHTML = `<option value="">Choose Specialist...</option>` + App.state.doctors.map(d => `<option value="${d.id}">${d.name} (${d.spec})</option>`).join('');
             },
             createBooking: () => {
-                const docId = parseInt(document.getElementById('book-doctor').value);
-                const date = document.getElementById('book-date').value;
-                const time = document.getElementById('book-time').value;
+                const docId = parseInt(document.getElementById('book-doctor').value); const date = document.getElementById('book-date').value; const time = document.getElementById('book-time').value;
                 if(!docId || !date || !time) return App.showToast('Select all details', 'error');
                 App.createBookingLogic(docId, date, time);
             },
             createBookingLogic: (docId, date, time) => {
                 const exists = App.state.appointments.filter(a => a.doctorId === docId && a.date === date);
                 const token = exists.length > 0 ? Math.max(...exists.map(e => e.token)) + 1 : 1;
-
                 App.state.appointments.push({ id: Date.now(), userId: App.state.currentUser.id, doctorId: docId, date, time, token, status: "Pending" });
-                App.saveData();
-                App.showToast('Token Generated! Waiting for Doctor Approval.');
-                App.switchTab('screen-patient-queue', 'nav-queue');
+                App.saveData(); App.showToast('Token Generated! Waiting for Doctor Approval.'); App.switchTab('screen-patient-queue', 'nav-queue');
             },
             rebookLast: () => {
                 const history = App.state.appointments.filter(a => a.userId === App.state.currentUser.id);
                 if(history.length === 0) return App.showToast('No past appointments found', 'error');
-                const lastDocId = history[history.length-1].doctorId;
-                App.openDoctorModal(lastDocId);
+                App.openDoctorModal(history[history.length-1].doctorId);
             },
 
-            // --- Queue & History ---
+            // --- Smart Wait Time Estimator ---
             renderQueueHistory: () => {
                 const myAppts = App.state.appointments.filter(a => a.userId === App.state.currentUser.id).reverse();
                 const active = myAppts.find(a => a.status === 'Approved' || a.status === 'Pending' || a.status === 'In Progress');
@@ -640,55 +748,45 @@
                     liveSec.style.display = 'block';
                     const doc = App.state.doctors.find(d => d.id === active.doctorId);
                     document.getElementById('tok-my').innerText = active.token;
-                    document.getElementById('tok-doc').innerText = `${doc.name} | ${active.time}`;
-                    document.getElementById('tok-run').innerText = doc.runningToken;
+                    document.getElementById('tok-doc').innerText = doc ? `${doc.name} | ${active.time}` : `General Duty | ${active.time}`;
                     
-                    let diff = active.token - doc.runningToken;
-                    let prog = active.token > 0 ? (doc.runningToken / active.token) * 100 : 0;
+                    let runT = doc ? doc.runningToken : Math.floor(active.token * 0.6);
+                    document.getElementById('tok-run').innerText = runT;
+                    
+                    let diff = active.token - runT;
+                    let prog = active.token > 0 ? (runT / active.token) * 100 : 0;
                     prog = Math.min(Math.max(prog, 0), 100);
 
                     const progressFill = document.getElementById('tok-progress');
                     const statusBox = document.getElementById('tok-status');
-                    
                     progressFill.style.width = `${prog}%`;
                     
                     if (active.status === 'Pending') {
-                        statusBox.innerHTML = 'Waiting for Doctor Approval...';
-                        progressFill.style.background = 'var(--warning)';
+                        statusBox.innerHTML = 'Waiting for Doctor Approval...'; progressFill.style.background = 'var(--warning)';
                     } else if (diff <= 0) {
-                        statusBox.innerHTML = `<span style="color: var(--danger);"><i class="fa-solid fa-door-open"></i> Proceed to Doctor</span>`;
-                        progressFill.style.background = 'var(--danger)';
+                        statusBox.innerHTML = `<span style="color: var(--danger);"><i class="fa-solid fa-door-open"></i> Proceed to Doctor Room</span>`; progressFill.style.background = 'var(--danger)';
                     } else {
-                        statusBox.innerHTML = `<i class="fa-regular fa-clock"></i> Est. Wait: ~${diff * 10} mins`;
-                        progressFill.style.background = 'var(--secondary)';
+                        // Dynamic wait time calculation (10 mins per token)
+                        statusBox.innerHTML = `<i class="fa-regular fa-clock"></i> Est. Wait Time: ~${diff * 10} mins`; progressFill.style.background = 'var(--secondary)';
                     }
-                    
                     document.getElementById('live-token-widget').setAttribute('data-active-id', active.id);
-                } else {
-                    liveSec.style.display = 'none';
-                }
+                } else { liveSec.style.display = 'none'; }
 
                 document.getElementById('patient-history-container').innerHTML = myAppts.map(a => {
                     const d = App.state.doctors.find(doc => doc.id === a.doctorId);
                     let badgeClass = a.status.toLowerCase().replace(' ', '-');
-                    
                     let actions = '';
                     if(a.status === 'Pending' || a.status === 'Approved') {
-                        actions = `<button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})">Reschedule</button>
-                                   <button class="btn btn-danger btn-sm" onclick="App.cancelBooking(${a.id})">Cancel</button>`;
-                    } else {
-                        actions = `<button class="btn btn-primary btn-sm" onclick="App.openDoctorModal(${d.id})">Book Again</button>`;
-                    }
+                        actions = `<button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})">Reschedule</button><button class="btn btn-danger btn-sm" onclick="App.cancelBooking(${a.id})">Cancel</button>`;
+                    } else { if(d) actions = `<button class="btn btn-primary btn-sm" onclick="App.openDoctorModal(${d.id})">Book Again</button>`; }
 
-                    return `<div class="card"><div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;">${d.name}</h4><span class="badge ${badgeClass}">${a.status}</span></div><p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">Token #${a.token} | ${a.date} | ${a.time}</p><div style="display:flex; gap:10px;">${actions}</div></div>`;
+                    return `<div class="card"><div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;">${d ? d.name : 'General Token'}</h4><span class="badge ${badgeClass}">${a.status}</span></div><p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">Token #${a.token} | ${a.date} | ${a.time}</p><div style="display:flex; gap:10px;">${actions}</div></div>`;
                 }).join('') || '<p style="font-size:13px; font-weight:700; color:var(--text-muted);">No history available.</p>';
             },
             cancelBooking: (id) => {
                 if(!confirm('Cancel this appointment?')) return;
                 const a = App.state.appointments.find(x => x.id === id);
-                if(a) a.status = 'Cancelled';
-                App.saveData();
-                App.showToast('Appointment Cancelled.'); App.renderQueueHistory(); App.renderHome();
+                if(a) a.status = 'Cancelled'; App.saveData(); App.showToast('Appointment Cancelled.'); App.renderQueueHistory(); App.renderHome();
             },
             cancelBookingFromWidget: () => {
                 const id = document.getElementById('live-token-widget').getAttribute('data-active-id');
@@ -697,80 +795,74 @@
 
             // --- AI Profile System ---
             loadProfileData: () => {
-                const u = App.state.currentUser;
-                ['name', 'phone', 'email', 'age', 'blood', 'height', 'weight', 'emergency', 'history'].forEach(k => { if(document.getElementById('prof-'+k)) document.getElementById('prof-'+k).value = u[k] || ''; });
+                if(!App.state.currentUser) return;
+                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
+                if(u) {
+                    ['name', 'phone', 'email', 'age', 'blood', 'height', 'weight', 'emergency', 'history'].forEach(k => { 
+                        const el = document.getElementById('prof-'+k); if(el) el.value = u[k] || ''; 
+                    });
+                }
                 App.calculateBMI();
             },
             calculateBMI: () => {
                 const h = parseFloat(document.getElementById('prof-height').value) / 100;
                 const w = parseFloat(document.getElementById('prof-weight').value);
-                const valEl = document.getElementById('ai-bmi-value');
-                const statEl = document.getElementById('ai-bmi-status');
+                const valEl = document.getElementById('ai-bmi-value'); const statEl = document.getElementById('ai-bmi-status');
                 
                 if(h > 0 && w > 0) {
-                    const bmi = (w / (h * h)).toFixed(1);
-                    valEl.innerText = bmi;
+                    const bmi = (w / (h * h)).toFixed(1); valEl.innerText = bmi;
                     if(bmi < 18.5) { statEl.innerText = "Underweight - Focus on Diet"; statEl.style.color = "#fef08a"; }
                     else if(bmi <= 24.9) { statEl.innerText = "Healthy - Great Job!"; statEl.style.color = "#6ee7b7"; }
                     else if(bmi <= 29.9) { statEl.innerText = "Overweight - Daily Walk needed"; statEl.style.color = "#fca5a5"; }
                     else { statEl.innerText = "Obese - Consult Doctor"; statEl.style.color = "#ef4444"; }
-                } else {
-                    valEl.innerText = "--"; statEl.innerText = "Update BMI to know"; statEl.style.color = "white";
-                }
+                    App.updateHomeAITip();
+                } else { valEl.innerText = "--"; statEl.innerText = "Update BMI to know"; statEl.style.color = "white"; }
             },
             saveProfile: () => {
-                const u = App.state.currentUser;
-                ['name', 'phone', 'age', 'blood', 'height', 'weight', 'emergency', 'history'].forEach(k => { u[k] = document.getElementById('prof-'+k).value; });
-                App.saveData();
-                App.showToast('Profile & AI Data updated securely!'); 
-                document.getElementById('ui-name').innerText = u.name; 
-                document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
+                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
+                if(!u) return;
+                ['name', 'phone', 'age', 'blood', 'height', 'weight', 'emergency', 'history'].forEach(k => { const el = document.getElementById('prof-'+k); if(el) u[k] = el.value; });
+                App.state.currentUser = { ...u, role: 'patient' }; App.saveData(); App.showToast('Profile & AI Data updated securely!'); 
+                document.getElementById('ui-name').innerText = u.name; document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
+                App.updateHomeAITip();
             },
 
             // --- Status Notification System ---
             changeApptStatus: (id, status, isDoctorDashboard = false) => {
-                const a = App.state.appointments.find(x => x.id === id);
-                a.status = status;
-                App.saveData();
-                
+                const a = App.state.appointments.find(x => x.id === id); a.status = status; App.saveData();
                 const u = App.state.users.find(x => x.id === a.userId);
                 let msg = `Status updated to ${status}.`;
-                if(status === 'Approved') msg = `Confirmed! ${u.name} notified.`;
-                if(status === 'Rejected') msg = `${u.name} has been notified of rejection.`;
-                
+                if(status === 'Approved') msg = `Confirmed! ${u ? u.name : 'Patient'} notified.`;
+                if(status === 'Rejected') msg = `${u ? u.name : 'Patient'} has been notified of rejection.`;
                 App.showToast(msg, status==='Rejected'?'error':'success'); 
-                
-                if(isDoctorDashboard) App.renderDoctorAppts();
-                else App.renderAdminAppts();
+                if(isDoctorDashboard) App.renderDoctorAppts(); else App.renderAdminAppts();
             },
-            openRescheduleModal: (id) => {
-                document.getElementById('resch-appt-id').value = id;
-                App.openModal('modal-reschedule');
-            },
+            openRescheduleModal: (id) => { document.getElementById('resch-appt-id').value = id; App.openModal('modal-reschedule'); },
             confirmReschedule: () => {
                 const id = parseInt(document.getElementById('resch-appt-id').value);
-                const date = document.getElementById('resch-date').value;
-                const time = document.getElementById('resch-time').value;
+                const date = document.getElementById('resch-date').value; const time = document.getElementById('resch-time').value;
                 if(!date || !time) return App.showToast('Select Date & Time', 'error');
-                
                 const a = App.state.appointments.find(x => x.id === id);
-                a.date = date; a.time = time; a.status = 'Pending';
-                App.saveData();
-                
-                App.closeModal('modal-reschedule');
-                App.showToast('Updated! Waiting for Doctor Approval.');
-                
-                if(App.state.currentUser.role === 'admin') App.renderAdminAppts();
-                else if(App.state.currentUser.role === 'doctor') App.renderDoctorAppts();
-                else { App.renderQueueHistory(); App.renderHome(); }
+                a.date = date; a.time = time; a.status = 'Pending'; App.saveData(); App.closeModal('modal-reschedule'); App.showToast('Updated! Waiting for Doctor Approval.');
+                if(App.state.currentUser.role === 'admin') App.renderAdminAppts(); else if(App.state.currentUser.role === 'doctor') App.renderDoctorAppts(); else { App.renderQueueHistory(); App.renderHome(); }
             },
 
             // --- Admin System ---
             initAdmin: () => {
                 document.getElementById('patient-dock').style.display = 'none';
                 App.navigate('screen-admin-dashboard');
-                App.renderAdminAppts(); App.renderAdminPatients(); App.renderAdminDoctors();
+                App.renderAdminStats(); App.renderAdminAppts(); App.renderAdminPatients(); App.renderAdminDoctors();
                 App.showToast('Welcome Admin!');
+            },
+            renderAdminStats: () => {
+                const today = new Date().toISOString().split('T')[0];
+                const todayAppts = App.state.appointments.filter(a => a.date === today);
+                const pending = todayAppts.filter(a => a.status === 'Pending').length;
+                document.getElementById('admin-stats').innerHTML = `
+                    <div style="background:var(--dark); color:white; padding:15px; border-radius:20px; text-align:center;"><h2 style="font-size:24px;">${App.state.users.length}</h2><p style="font-size:10px; font-weight:800; color:var(--primary-light); text-transform:uppercase;">Patients</p></div>
+                    <div style="background:var(--secondary); color:white; padding:15px; border-radius:20px; text-align:center;"><h2 style="font-size:24px;">${todayAppts.length}</h2><p style="font-size:10px; font-weight:800; color:#d1fae5; text-transform:uppercase;">Tokens</p></div>
+                    <div style="background:var(--warning); color:white; padding:15px; border-radius:20px; text-align:center;"><h2 style="font-size:24px;">${pending}</h2><p style="font-size:10px; font-weight:800; color:#fef3c7; text-transform:uppercase;">Pending</p></div>
+                `;
             },
             switchAdminTab: (tabId, el) => {
                 document.querySelectorAll('.admin-tab-content').forEach(t => t.style.display = 'none');
@@ -794,12 +886,10 @@
 
                     return `
                     <div class="card">
-                        <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;"><i class="fa-solid fa-user-injured" style="color:var(--primary);"></i> ${u.name}</h4><span class="badge ${b}">${a.status}</span></div>
-                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Doc: ${d.name} | Token: ${a.token} | ${a.date} ${a.time}</p>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Reschedule</button>
-                        </div>
-                        <div style="display:flex; gap:10px;"><a href="tel:${u.phone}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call Patient</a>${actions}</div>
+                        <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;"><i class="fa-solid fa-user-injured" style="color:var(--primary);"></i> ${u ? u.name : 'Unknown'}</h4><span class="badge ${b}">${a.status}</span></div>
+                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Doc: ${d ? d.name : 'General'} | Token: ${a.token} | ${a.date} ${a.time}</p>
+                        <div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Reschedule</button></div>
+                        <div style="display:flex; gap:10px;"><a href="tel:${u?u.phone:''}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call Patient</a>${actions}</div>
                     </div>`;
                 }).join('') || '<p style="font-size:14px; font-weight:700;">No appointments.</p>';
             },
@@ -810,37 +900,19 @@
             },
             renderAdminDoctors: () => {
                 document.getElementById('admin-doc-list').innerHTML = App.state.doctors.map(d => `
-                    <div class="card flex-between"><div><h4 style="font-size:16px; font-weight:800;">${d.name}</h4><p style="font-size:13px; color:var(--text-muted); font-weight:700;">${d.spec} | Log: ${d.email}</p></div><button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger-bg);" onclick="App.adminRemoveDoc(${d.id})"><i class="fa-solid fa-trash"></i></button></div>
+                    <div class="card flex-between"><div><img src="${d.image}" style="width:40px;height:40px;border-radius:10px;object-fit:cover;margin-bottom:5px;"><h4 style="font-size:16px; font-weight:800;">${d.name}</h4><p style="font-size:13px; color:var(--text-muted); font-weight:700;">${d.spec} | Log: ${d.email}</p></div><button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger-bg);" onclick="App.adminRemoveDoc(${d.id})"><i class="fa-solid fa-trash"></i></button></div>
                 `).join('');
             },
             adminAddDoctor: () => {
-                const name = document.getElementById('add-doc-name').value.trim();
-                const spec = document.getElementById('add-doc-spec').value.trim();
-                const image = document.getElementById('add-doc-img').value.trim();
-                const email = document.getElementById('add-doc-email').value.trim();
-                const password = document.getElementById('add-doc-pass').value.trim();
-
+                const name = document.getElementById('add-doc-name').value.trim(); const spec = document.getElementById('add-doc-spec').value.trim(); const email = document.getElementById('add-doc-email').value.trim(); const password = document.getElementById('add-doc-pass').value.trim();
                 if(!name || !spec || !email || !password) return App.showToast('Enter required details', 'error');
-                
-                App.state.doctors.push({ id: Date.now(), name, spec, email, password, image: image||'', runningToken: 0, days: "Mon-Sat", times: "10AM - 5PM" });
-                App.saveData();
-                ['add-doc-name', 'add-doc-spec', 'add-doc-img', 'add-doc-email', 'add-doc-pass'].forEach(id => document.getElementById(id).value = '');
+                App.state.doctors.push({ id: Date.now(), name, spec, email, password, image: App.state.tempImg||"https://ui-avatars.com/api/?name="+name, runningToken: 0, days: "Mon-Sat", times: "10AM - 5PM" });
+                App.state.tempImg = ""; document.getElementById('add-doc-preview').style.display = 'none'; App.saveData();
+                ['add-doc-name', 'add-doc-spec', 'add-doc-img', 'add-doc-email', 'add-doc-pass'].forEach(id => {if(document.getElementById(id)) document.getElementById(id).value = '';});
                 App.showToast('Doctor Created! Doctor can now login.'); App.renderAdminDoctors();
             },
             adminRemoveDoc: (id) => {
-                if(!confirm('Delete doctor?')) return;
-                App.state.doctors = App.state.doctors.filter(d => d.id !== id);
-                App.saveData();
-                App.showToast('Doctor removed'); App.renderAdminDoctors();
-            },
-            adminPostContent: () => {
-                const title = document.getElementById('post-title').value.trim();
-                const content = document.getElementById('post-content').value.trim();
-                if(!title || !content) return App.showToast('Enter title and content', 'error');
-                App.state.announcements.push({ title, content, icon: 'fa-bullhorn', color: 'var(--primary)' });
-                App.saveData();
-                document.getElementById('post-title').value = ''; document.getElementById('post-content').value = '';
-                App.showToast('Live on Patient App!');
+                if(!confirm('Delete doctor?')) return; App.state.doctors = App.state.doctors.filter(d => d.id !== id); App.saveData(); App.showToast('Doctor removed'); App.renderAdminDoctors();
             },
 
             // --- Doctor Dashboard System ---
@@ -854,19 +926,11 @@
             },
             doctorUpdateToken: () => {
                 const val = parseInt(document.getElementById('doc-run-tok').value);
-                
-                // Update specific doctor in state array
                 const docInState = App.state.doctors.find(d => d.id === App.state.currentUser.id);
-                docInState.runningToken = val;
-                App.state.currentUser.runningToken = val; // update current session
-                
-                App.state.appointments.forEach(a => {
-                    if(a.doctorId === App.state.currentUser.id && a.status === 'Approved' && a.token === val) a.status = 'In Progress';
-                });
-                
-                App.saveData();
-                App.showToast(`Token synced. Patients notified.`);
-                App.renderDoctorAppts();
+                if(docInState) docInState.runningToken = val;
+                App.state.currentUser.runningToken = val; 
+                App.state.appointments.forEach(a => { if(a.doctorId === App.state.currentUser.id && a.status === 'Approved' && a.token === val) a.status = 'In Progress'; });
+                App.saveData(); App.showToast(`Token synced. Patients notified.`); App.renderDoctorAppts();
             },
             renderDoctorAppts: () => {
                 const docId = App.state.currentUser.id;
@@ -875,26 +939,21 @@
                 document.getElementById('doctor-appt-list').innerHTML = list.map(a => {
                     const u = App.state.users.find(x => x.id === a.userId);
                     let b = a.status.toLowerCase().replace(' ', '-');
-                    
                     let actions = '';
                     if(a.status === 'Pending') {
                         actions = `<button class="btn btn-success btn-sm" onclick="App.changeApptStatus(${a.id}, 'Approved', true)"><i class="fa-solid fa-check"></i> Approve</button>
                                    <button class="btn btn-danger btn-sm" onclick="App.changeApptStatus(${a.id}, 'Rejected', true)"><i class="fa-solid fa-xmark"></i> Reject</button>`;
                     } else if(a.status === 'Approved' || a.status === 'In Progress') {
                         actions = `<button class="btn btn-outline btn-sm" onclick="App.changeApptStatus(${a.id}, 'Completed', true)"><i class="fa-solid fa-check-double"></i> Complete</button>`;
-                    } else {
-                        actions = `<span class="badge ${b}">${a.status}</span>`;
-                    }
+                    } else { actions = `<span class="badge ${b}">${a.status}</span>`; }
 
                     return `
                     <div class="card">
-                        <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;">${u.name}</h4>${a.status==='Pending'?'<span class="badge pending">New Request</span>':''}</div>
+                        <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;">${u ? u.name : 'Unknown'}</h4>${a.status==='Pending'?'<span class="badge pending">New Request</span>':''}</div>
                         <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Token: ${a.token} | ${a.date} ${a.time}</p>
-                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:15px;">Phone: ${u.phone} | Age: ${u.age||'-'} | Blood: ${u.blood||'-'}</p>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;">
-                            <button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Edit Time</button>
-                        </div>
-                        <div style="display:flex; gap:10px;"><a href="tel:${u.phone}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call</a>${actions}</div>
+                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:15px;">Phone: ${u?u.phone:''} | Age: ${u?u.age:''} | Blood: ${u?u.blood:''}</p>
+                        <div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Edit Time</button></div>
+                        <div style="display:flex; gap:10px;"><a href="tel:${u?u.phone:''}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call</a>${actions}</div>
                     </div>`;
                 }).join('') || '<p style="font-size:14px; font-weight:700;">No patients in queue.</p>';
             }
@@ -903,19 +962,12 @@
         // --- Init System ---
         window.onload = () => {
             App.loadData();
-            
-            // Auto Login if session exists
             if(App.state.currentUser) {
-                if(App.state.currentUser.role === 'admin') {
-                    App.initAdmin();
-                } else if(App.state.currentUser.role === 'doctor') {
-                    App.initDoctor();
-                } else {
-                    App.initPatient();
-                }
+                if(App.state.currentUser.role === 'admin') App.initAdmin();
+                else if(App.state.currentUser.role === 'doctor') App.initDoctor();
+                else { document.getElementById('patient-dock').style.display = 'flex'; App.initPatient(); }
             }
         }
-
         App.runClock();
     </script>
 </body>
