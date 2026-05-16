@@ -3,1086 +3,2155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Senthil Multi Speciality Hospital</title>
+    <title>Senthil Healthcare AI - Premium</title>
+    
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-storage-compat.js"></script>
+
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-        
+        /* ==========================================
+           SCIENTIFIC & MEDICAL COLOR PALETTE
+           ========================================== */
         :root {
-            --primary: #2563eb; --primary-light: #60a5fa; --primary-glow: rgba(37, 99, 235, 0.3);
-            --secondary: #10b981; --secondary-glow: rgba(16, 185, 129, 0.3);
-            --danger: #ef4444; --danger-bg: rgba(239, 68, 68, 0.1);
-            --warning: #f59e0b; 
-            --dark: #0f172a; --dark-glass: rgba(15, 23, 42, 0.9);
-            --bg-color: #f8fafc; --text-main: #1e293b; --text-muted: #64748b;
-            --glass-bg: rgba(255, 255, 255, 0.85); --glass-border: rgba(255, 255, 255, 0.6);
+            /* Trust, Tech, and Cleanliness */
+            --primary: #06B6D4; 
+            --primary-dark: #0891B2;
+            
+            /* Authority, Calm, Depth */
+            --secondary: #0F172A; 
+            --secondary-light: #1E293B;
+            
+            /* Vitality, Health, Success */
+            --accent: #10B981; 
+            --accent-dark: #059669;
+            
+            /* Alerts and Warnings */
+            --danger: #F43F5E; 
+            --warning: #F59E0B; 
+            --purple: #8B5CF6; 
+            
+            /* Layout & Backgrounds */
+            --bg-color: #F8FAFC; 
+            --surface: #FFFFFF;
+            
+            /* Typography */
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            
+            /* Premium Soft Shadows (Neumorphism) */
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.04);
+            --shadow-hover: 0 15px 40px rgba(6, 182, 212, 0.15);
+            --inner-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background: var(--bg-color); color: var(--text-main); min-height: 100vh; overflow-x: hidden; }
-
-        /* ================= OPENING ANIMATION (SPLASH SCREEN) ================= */
-        #splash-screen {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-color); z-index: 100000;
-            display: flex; align-items: center; justify-content: center;
-            transition: opacity 0.8s ease-out;
+        * { 
+            margin: 0; 
+            padding: 0; 
+            box-sizing: border-box; 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            -webkit-tap-highlight-color: transparent; 
         }
-        .splash-content { text-align: center; }
-        .splash-icon { font-size: 65px; color: var(--danger); margin-bottom: 20px; animation: heartbeat 1.5s infinite; filter: drop-shadow(0 10px 15px rgba(239,68,68,0.4)); }
-        .splash-title { font-size: 32px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
-        .splash-subtitle { font-size: 13px; font-weight: 700; color: var(--primary); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 8px; }
+
+        body { 
+            background: var(--bg-color); 
+            color: var(--text-main); 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+            scroll-behavior: smooth; 
+        }
+
+        /* ==========================================
+           GLOBAL LOADING SPINNER 
+           ========================================== */
+        #global-loader {
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(255, 255, 255, 0.9); 
+            backdrop-filter: blur(5px);
+            z-index: 200000; 
+            display: none; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 50px; 
+            height: 50px; 
+            border: 5px solid rgba(6, 182, 212, 0.2);
+            border-top-color: var(--primary); 
+            border-radius: 50%;
+            animation: spin 1s linear infinite; 
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
+        }
+
+        /* ==========================================
+           PREMIUM SPLASH SCREEN
+           ========================================== */
+        #splash-screen { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(135deg, var(--surface), #E0F2FE); 
+            z-index: 100000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            transition: opacity 0.8s ease-out; 
+        }
         
-        @keyframes heartbeat {
-            0% { transform: scale(1); } 14% { transform: scale(1.15); } 28% { transform: scale(1); }
-            42% { transform: scale(1.15); } 70% { transform: scale(1); }
+        .splash-icon { 
+            font-size: 60px; 
+            color: var(--primary); 
+            margin-bottom: 20px; 
+            animation: pulse-glow 2s infinite ease-in-out; 
         }
-        /* ===================================================================== */
-
-        /* Background */
-        .bg-shape { position: fixed; border-radius: 50%; filter: blur(100px); z-index: -1; animation: drift 20s infinite alternate ease-in-out; }
-        .shape-1 { width: 500px; height: 500px; background: rgba(37, 99, 235, 0.12); top: -150px; left: -100px; }
-        .shape-2 { width: 400px; height: 400px; background: rgba(16, 185, 129, 0.08); bottom: -100px; right: -50px; animation-delay: -5s; }
-        @keyframes drift { 0% { transform: translate(0,0) scale(1); } 100% { transform: translate(40px, 60px) scale(1.05); } }
-
-        /* Glassmorphism */
-        .glass { background: var(--glass-bg); backdrop-filter: blur(24px); border: 1px solid var(--glass-border); border-radius: 28px; box-shadow: 0 15px 40px rgba(0, 0, 0, 0.04); }
-        .card { background: rgba(255,255,255,0.95); backdrop-filter: blur(16px); border: 1px solid #fff; border-radius: 24px; padding: 22px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); transition: 0.3s; margin-bottom: 15px; }
         
-        /* Layouts & Screens */
-        .screen { display: none; padding: 20px; min-height: 100vh; padding-bottom: 120px; animation: fadeIn 0.4s ease forwards; opacity: 0; }
-        .screen.active { display: block; }
-        .center-wrap { display: flex; flex-direction: column; justify-content: center; min-height: 90vh; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .splash-title { 
+            font-size: 35px; 
+            font-weight: 800; 
+            color: var(--secondary); 
+            letter-spacing: -0.5px; 
+            margin-bottom: 5px; 
+        }
 
-        /* Inputs */
-        .input-group { position: relative; margin-bottom: 20px; text-align: left; }
-        .input-group label { display: block; font-size: 13px; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
-        .input-group i { position: absolute; left: 20px; top: 43px; color: var(--text-muted); font-size: 18px; transition: 0.3s; }
-        .input-group.no-label i { top: 20px; }
-        .input-group input, .input-group select, .input-group textarea { width: 100%; padding: 18px 20px 18px 52px; border: 2px solid #e2e8f0; border-radius: 18px; font-size: 15px; background: #fff; outline: none; transition: 0.3s; color: var(--text-main); font-weight: 600; }
-        .input-group textarea { min-height: 120px; resize: none; padding-left: 20px; }
-        .input-group.no-icon input, .input-group.no-icon select { padding-left: 20px; }
-        .input-group input:focus, .input-group select:focus { border-color: var(--primary); box-shadow: 0 0 0 4px var(--primary-glow); }
-        .input-group input:focus + i { color: var(--primary); }
+        .splash-subtitle { 
+            font-size: 13px; 
+            font-weight: 800; 
+            color: var(--primary-dark); 
+            letter-spacing: 3px; 
+            text-transform: uppercase; 
+        }
+
+        @keyframes pulse-glow { 
+            0% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(6,182,212,0.2)); } 
+            50% { transform: scale(1.05); filter: drop-shadow(0 0 25px rgba(6,182,212,0.6)); } 
+            100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(6,182,212,0.2)); } 
+        }
+
+        /* Ambient Background Nodes */
+        .ambient-bg { 
+            position: fixed; 
+            border-radius: 50%; 
+            filter: blur(100px); 
+            z-index: -1; 
+            animation: float 20s infinite alternate ease-in-out; 
+        }
+        
+        .ambient-1 { 
+            width: 450px; 
+            height: 450px; 
+            background: rgba(6, 182, 212, 0.1); 
+            top: -100px; 
+            left: -100px; 
+        }
+        
+        .ambient-2 { 
+            width: 450px; 
+            height: 450px; 
+            background: rgba(59, 130, 246, 0.08); 
+            bottom: -100px; 
+            right: -100px; 
+            animation-delay: -5s; 
+        }
+        
+        @keyframes float { 
+            0% { transform: translate(0,0); } 
+            100% { transform: translate(40px, 40px); } 
+        }
+
+        /* ==========================================
+           BORDERLESS UI COMPONENTS (CARDS)
+           ========================================== */
+        .card { 
+            background: var(--surface); 
+            border-radius: 24px; 
+            padding: 25px; 
+            box-shadow: var(--shadow-soft); 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease; 
+            border: none; 
+        }
+        
+        .card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-hover); 
+        }
+
+        .screen { 
+            display: none; 
+            padding: 20px; 
+            min-height: 100vh; 
+            padding-bottom: 120px; 
+            animation: slideUp 0.4s ease forwards; 
+            opacity: 0; 
+        }
+        
+        .screen.active { 
+            display: block; 
+        }
+        
+        .center-wrap { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            min-height: 90vh; 
+        }
+        
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+
+        /* Forms & Inputs */
+        .input-group { 
+            position: relative; 
+            margin-bottom: 20px; 
+        }
+        
+        .input-group label { 
+            display: block; 
+            font-size: 13px; 
+            font-weight: 800; 
+            color: var(--text-muted); 
+            margin-bottom: 8px; 
+            padding-left: 5px; 
+        }
+        
+        .input-group i { 
+            position: absolute; 
+            left: 20px; 
+            top: 46px; 
+            color: #94A3B8; 
+            font-size: 18px; 
+            transition: 0.3s; 
+            z-index: 2; 
+        }
+        
+        .input-group.no-label i { 
+            top: 20px; 
+        }
+        
+        .input-group input, 
+        .input-group select, 
+        .input-group textarea { 
+            width: 100%; 
+            padding: 20px 20px 20px 50px; 
+            border: none; 
+            border-radius: 18px; 
+            font-size: 15px; 
+            background: #F1F5F9; 
+            box-shadow: var(--inner-shadow); 
+            color: var(--text-main); 
+            font-weight: 600; 
+            transition: 0.3s;
+        }
+        
+        .input-group.no-icon input, 
+        .input-group.no-icon select { 
+            padding-left: 20px; 
+        }
+        
+        .input-group input:focus, 
+        .input-group select:focus, 
+        .input-group textarea:focus { 
+            background: #FFFFFF; 
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); 
+            outline: none; 
+        }
+        
+        .input-group input:focus + i { 
+            color: var(--primary); 
+        }
+
+        /* Search Bar */
+        .search-bar { 
+            background: #FFFFFF; 
+            border-radius: 20px; 
+            padding: 5px 15px; 
+            display: flex; 
+            align-items: center; 
+            box-shadow: var(--shadow-soft); 
+            margin-bottom: 20px; 
+            border: 1px solid #E2E8F0; 
+            transition: 0.3s;
+        }
+        
+        .search-bar:focus-within {
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); 
+            border-color: var(--primary);
+        }
+        
+        .search-bar i { 
+            color: var(--primary); 
+            font-size: 18px; 
+        }
+        
+        .search-bar input { 
+            flex: 1; 
+            border: none; 
+            padding: 15px 10px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            outline: none; 
+            background: transparent; 
+            color: var(--text-main); 
+        }
 
         /* Buttons */
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 18px; font-size: 15px; font-weight: 800; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 10px 25px var(--primary-glow), inset 0 2px 0 rgba(255,255,255,0.2); }
-        .btn-primary:active { transform: translateY(2px); box-shadow: 0 5px 15px var(--primary-glow); }
-        .btn-success { background: linear-gradient(135deg, var(--secondary), #059669); color: white; box-shadow: 0 10px 25px var(--secondary-glow); }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #dc2626); color: white; box-shadow: 0 10px 25px rgba(239,68,68,0.3); }
-        .btn-outline { background: transparent; border: 2px solid #e2e8f0; color: var(--text-main); }
-        .btn-sm { padding: 10px 16px; font-size: 13px; border-radius: 12px; width: auto; }
+        .btn { 
+            width: 100%; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 18px; 
+            font-size: 15px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+        }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3); 
+        }
+        
+        .btn-primary:active { transform: scale(0.98); }
+        
+        .btn-secondary { 
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light)); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(30, 58, 138, 0.3); 
+        }
+        
+        .btn-success { 
+            background: linear-gradient(135deg, var(--accent), #059669); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); 
+        }
+        
+        .btn-danger { 
+            background: linear-gradient(135deg, var(--danger), #BE123C); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(244, 63, 94, 0.3); 
+        }
+        
+        .btn-outline { 
+            background: white; 
+            color: var(--text-main); 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid #E2E8F0; 
+        }
+        
+        .btn-sm { 
+            padding: 10px 16px; 
+            font-size: 13px; 
+            border-radius: 12px; 
+            width: auto; 
+        }
 
         /* Typography & Badges */
-        .heading { font-size: 28px; font-weight: 800; color: var(--text-main); line-height: 1.2; }
-        .text-gradient { background: linear-gradient(135deg, var(--primary), #8b5cf6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .badge { padding: 6px 14px; border-radius: 20px; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; }
-        .badge.pending { background: rgba(245, 158, 11, 0.15); color: var(--warning); }
-        .badge.approved { background: rgba(37,99,235,0.15); color: var(--primary); }
-        .badge.in-progress { background: rgba(16, 185, 129, 0.2); color: var(--secondary); animation: pulse 1.5s infinite; }
-        .badge.completed { background: rgba(16,185,129,0.1); color: var(--secondary); }
-        .badge.rejected, .badge.cancelled { background: rgba(239,68,68,0.1); color: var(--danger); }
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4); } 70% { box-shadow: 0 0 0 8px rgba(16, 185, 129, 0); } 100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); } }
-
-        /* Modals */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.6); backdrop-filter: blur(5px); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { background: white; width: 90%; max-width: 400px; border-radius: 28px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.2); transform: scale(0.95); transition: 0.3s; max-height: 90vh; overflow-y: auto; }
-        .modal-overlay.active .modal-content { transform: scale(1); }
-
-        /* Floating Nav Dock */
-        .floating-dock { position: fixed; bottom: 25px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; background: rgba(255,255,255,0.95); backdrop-filter: blur(25px); border: 1px solid var(--glass-border); display: flex; justify-content: space-around; padding: 15px 10px; border-radius: 35px; box-shadow: 0 20px 50px rgba(0,0,0,0.1); z-index: 900; }
-        .dock-item { color: var(--text-muted); font-size: 11px; font-weight: 700; text-align: center; width: 65px; cursor: pointer; transition: 0.3s; position: relative; }
-        .dock-item i { font-size: 22px; margin-bottom: 5px; display: block; transition: 0.3s; }
-        .dock-item.active { color: var(--primary); transform: translateY(-8px); }
-        .dock-item.active i { text-shadow: 0 10px 20px var(--primary-glow); }
-        .dock-item.active::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 6px; height: 6px; background: var(--primary); border-radius: 50%; box-shadow: 0 0 10px var(--primary); }
-
-        /* Toast Notifications */
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; pointer-events: none; }
-        .toast { background: var(--dark-glass); backdrop-filter: blur(16px); color: white; padding: 16px 20px; border-radius: 18px; display: flex; align-items: center; gap: 15px; box-shadow: 0 20px 40px rgba(0,0,0,0.25); animation: toastEnter 0.4s ease forwards; border: 1px solid rgba(255,255,255,0.1); }
-        @keyframes toastEnter { from { opacity: 0; transform: translateY(-20px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
-
-        /* Smart Dashboard UI */
-        .hero-section { background: linear-gradient(135deg, var(--dark), #1e3a8a); border-radius: 28px; padding: 25px; color: white; margin-bottom: 25px; box-shadow: 0 15px 30px rgba(15, 23, 42, 0.3); position: relative; overflow: hidden; }
-        .hero-section::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(255,255,255,0.05) 0%, transparent 60%); }
-        .trust-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,0.1); padding: 8px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; border: 1px solid rgba(255,255,255,0.1); margin-top: 15px; }
-        .status-dot { width: 8px; height: 8px; background: var(--secondary); border-radius: 50%; box-shadow: 0 0 10px var(--secondary); }
-        
-        .ai-tip-card { background: linear-gradient(135deg, #f0fdf4, #ecfdf5); border: 1px solid #d1fae5; padding: 18px; border-radius: 20px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        .ai-tip-header { display: flex; align-items: center; gap: 15px; }
-
-        /* Booking Hub */
-        .booking-hub { background: white; border-radius: 24px; padding: 20px; border: 2px solid #e2e8f0; margin-bottom: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
-        .booking-option { display: flex; align-items: center; gap: 15px; padding: 15px; border-radius: 18px; cursor: pointer; transition: 0.3s; border: 1px solid transparent; background: #f8fafc; }
-        .booking-option:hover { border-color: var(--primary-light); background: white; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-        .booking-option i { font-size: 20px; color: var(--primary); background: #eff6ff; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 14px; }
-
-        /* Document Vault */
-        .doc-vault-card { background: linear-gradient(135deg, #fffbeb, #fef3c7); border: 1px solid #fde68a; padding: 15px; border-radius: 20px; display: flex; align-items: center; gap: 15px; margin-bottom: 10px; cursor: pointer; }
-        .doc-vault-card i { font-size: 24px; color: var(--warning); }
-        
-        /* Grid & Scroll Rows */
-        .action-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 25px; }
-        .action-btn { background: white; padding: 15px 5px; border-radius: 20px; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; cursor: pointer; transition: 0.3s; }
-        .action-btn:active { transform: scale(0.95); }
-        .action-btn i { font-size: 24px; color: var(--primary); margin-bottom: 10px; }
-        .action-btn span { display: block; font-size: 11px; font-weight: 800; color: var(--text-main); }
-        
-        .scroll-row { display: flex; overflow-x: auto; gap: 15px; padding-bottom: 10px; scroll-snap-type: x mandatory; }
-        .scroll-row::-webkit-scrollbar { display: none; }
-        .doc-card-mini { min-width: 140px; background: white; padding: 15px; border-radius: 20px; scroll-snap-align: start; text-align: center; box-shadow: 0 8px 20px rgba(0,0,0,0.03); border: 1px solid #f1f5f9; cursor: pointer; }
-        .doc-card-mini img { width: 60px; height: 60px; border-radius: 16px; margin-bottom: 10px; object-fit: cover; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
-
-        /* Token Board */
-        .token-board { background: var(--dark-glass); color: white; border-radius: 28px; padding: 30px; position: relative; overflow: hidden; box-shadow: 0 20px 40px rgba(15, 23, 42, 0.4); margin-bottom: 25px; }
-        .progress-track { background: rgba(255,255,255,0.1); height: 10px; border-radius: 10px; margin: 25px 0; overflow: hidden; }
-        .progress-fill { background: var(--secondary); height: 100%; width: 0%; border-radius: 10px; transition: 1s ease; box-shadow: 0 0 20px var(--secondary); }
-        
-        /* Admin Horizontal Tabs */
-        .admin-tabs { display: flex; gap: 12px; overflow-x: auto; margin-bottom: 20px; padding-bottom: 10px; }
-        .admin-tabs::-webkit-scrollbar { display: none; }
-        .admin-tab { padding: 14px 24px; background: white; border-radius: 16px; font-size: 14px; font-weight: 800; color: var(--text-muted); cursor: pointer; white-space: nowrap; box-shadow: 0 4px 15px rgba(0,0,0,0.02); transition: 0.3s; }
-        .admin-tab.active { background: var(--dark); color: white; }
-
+        .heading { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
         .flex-between { display: flex; justify-content: space-between; align-items: center; }
+        
+        .badge { 
+            padding: 6px 12px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+        }
+        
+        .badge.pending { background: #FEF3C7; color: #D97706; }
+        .badge.approved { background: #D1FAE5; color: #059669; }
+        .badge.completed { background: #E0F2FE; color: #0284C7; }
+        .badge.rejected { background: #FFE4E6; color: #E11D48; }
 
-        #add-doc-preview { width: 100px; height: 100px; border-radius: 20px; object-fit: cover; display: none; margin: 10px auto; border: 2px solid var(--primary-light); }
-        #vault-preview { width: 100%; max-height: 250px; border-radius: 14px; object-fit: contain; display: none; margin: 10px 0; border: 2px dashed #fcd34d; padding: 5px; }
+        /* ==========================================
+           MODERN COMPACT AI COACH & BROADCAST
+           ========================================== */
+        .ai-compact-card {
+            background: linear-gradient(135deg, var(--secondary), #0F172A);
+            border-radius: 24px; 
+            padding: 20px; 
+            color: white; 
+            margin-bottom: 25px;
+            box-shadow: 0 15px 30px rgba(30, 58, 138, 0.2); 
+            position: relative; 
+            overflow: hidden;
+            display: flex; 
+            align-items: center; 
+            gap: 15px;
+        }
+        
+        .ai-compact-card::after {
+            content: ''; 
+            position: absolute; 
+            right: -30px; 
+            top: -30px; 
+            width: 120px; 
+            height: 120px;
+            background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%); 
+            border-radius: 50%;
+        }
+        
+        .ai-icon-pulse {
+            width: 45px; 
+            height: 45px; 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 14px;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 20px; 
+            color: var(--primary);
+            flex-shrink: 0; 
+            box-shadow: inset 0 0 10px rgba(6,182,212,0.3);
+        }
+        
+        .ai-content { flex: 1; z-index: 1; }
+        
+        .ai-title { 
+            font-size: 12px; 
+            font-weight: 800; 
+            color: #94A3B8; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 4px; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        
+        .ai-text { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #E2E8F0; 
+            line-height: 1.5; 
+        }
+
+        .broadcast-card {
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
+            border-left: 4px solid var(--warning);
+            border-radius: 16px; 
+            padding: 15px; 
+            margin-bottom: 20px;
+            display: none; 
+            animation: slideUp 0.5s ease;
+        }
+
+        /* ==========================================
+           SMART BOOKING & ACTION GRID
+           ========================================== */
+        .booking-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        
+        .book-card { 
+            background: var(--surface); 
+            padding: 20px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 18px; 
+            cursor: pointer; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+            border: 1px solid transparent;
+        }
+        
+        .book-card:hover { 
+            transform: translateX(5px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: rgba(6,182,212,0.2); 
+        }
+        
+        .book-icon { 
+            width: 55px; 
+            height: 55px; 
+            border-radius: 16px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 24px; 
+            flex-shrink: 0; 
+        }
+        
+        .bc-general .book-icon { background: #E0F2FE; color: var(--primary); }
+        .bc-specialist .book-icon { background: #EDE9FE; color: var(--purple); }
+
+        .action-grid { 
+            display: grid; 
+            grid-template-columns: repeat(2, 1fr); 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        
+        .action-card { 
+            background: var(--surface); 
+            padding: 25px 15px; 
+            border-radius: 20px; 
+            text-align: center; 
+            cursor: pointer; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+            border: 1px solid transparent; 
+        }
+        
+        .action-card:hover { 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: rgba(6,182,212,0.2); 
+        }
+        
+        .action-card i { 
+            font-size: 30px; 
+            color: var(--primary); 
+            margin-bottom: 10px; 
+        }
+
+        /* ==========================================
+           VAULT & ADMIN COMPONENTS
+           ========================================== */
+        .vault-filter { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
+        }
+        
+        .vault-filter::-webkit-scrollbar { display: none; }
+        
+        .v-tab { 
+            padding: 10px 16px; 
+            border-radius: 14px; 
+            font-size: 13px; 
+            font-weight: 800; 
+            background: white; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            white-space: nowrap; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+        }
+        
+        .v-tab.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(6,182,212,0.3); 
+        }
+
+        .doc-item { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 12px; 
+            box-shadow: var(--shadow-soft); 
+            cursor: pointer; 
+            transition: 0.3s; 
+            border: 1px solid transparent; 
+        }
+        
+        .doc-item:hover { 
+            transform: translateX(5px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: rgba(6,182,212,0.2); 
+        }
+        
+        .doc-icon { 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            flex-shrink: 0; 
+        }
+
+        .admin-tabs { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            margin-bottom: 25px; 
+            padding-bottom: 10px; 
+        }
+        
+        .admin-tabs::-webkit-scrollbar { display: none; }
+        
+        .admin-tab { 
+            padding: 14px 20px; 
+            background: white; 
+            border-radius: 16px; 
+            font-size: 13px; 
+            font-weight: 800; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            white-space: nowrap; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+        }
+        
+        .admin-tab.active { 
+            background: var(--secondary); 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(15,23,42,0.2); 
+        }
+
+        .patient-list-item { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid transparent; 
+            transition: 0.3s; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .patient-list-item:hover { 
+            border-color: rgba(6,182,212,0.3); 
+            box-shadow: var(--shadow-hover); 
+        }
+
+        /* Modals & Toasts & Dock */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(5px); 
+            z-index: 9999; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: 0.3s; 
+        }
+        
+        .modal-overlay.active { 
+            display: flex; 
+            opacity: 1; 
+        }
+        
+        .modal-content { 
+            background: var(--surface); 
+            width: 92%; 
+            max-width: 400px; 
+            border-radius: 28px; 
+            padding: 25px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.2); 
+            transform: translateY(20px); 
+            transition: 0.3s; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+        }
+        
+        .modal-overlay.active .modal-content { 
+            transform: translateY(0); 
+        }
+
+        .floating-dock { 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 92%; 
+            max-width: 450px; 
+            background: var(--glass-bg); 
+            backdrop-filter: blur(20px); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 15px 10px; 
+            border-radius: 35px; 
+            box-shadow: var(--shadow-hover); 
+            z-index: 900; 
+            border: 1px solid rgba(255,255,255,0.5); 
+        }
+        
+        .dock-item { 
+            color: #94A3B8; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-align: center; 
+            width: 65px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
+        
+        .dock-item i { 
+            font-size: 22px; 
+            margin-bottom: 5px; 
+            display: block; 
+            transition: 0.3s; 
+        }
+        
+        .dock-item.active { 
+            color: var(--primary); 
+            transform: translateY(-5px); 
+        }
+        
+        .dock-item.active i { 
+            filter: drop-shadow(0 5px 10px rgba(6,182,212,0.4)); 
+        }
+
+        #toast-container { 
+            position: fixed; 
+            top: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 10000; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            width: 90%; 
+            max-width: 400px; 
+        }
+        
+        .toast { 
+            background: var(--text-main); 
+            color: white; 
+            padding: 15px 20px; 
+            border-radius: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2); 
+            animation: toastEnter 0.4s ease forwards; 
+        }
+        
+        @keyframes toastEnter { 
+            from { opacity: 0; transform: translateY(-20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .notification-dot { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            width: 10px; 
+            height: 10px; 
+            background: var(--danger); 
+            border-radius: 50%; 
+            box-shadow: 0 0 10px var(--danger); 
+            display: none; 
+            animation: pulse-glow 1.5s infinite; 
+        }
+        
+        .image-preview { 
+            width: 100%; 
+            max-height: 200px; 
+            border-radius: 16px; 
+            object-fit: contain; 
+            display: none; 
+            margin: 15px 0; 
+            background: #F1F5F9; 
+            padding: 10px; 
+        }
+
+        .contact-pill { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            background: #F1F5F9; 
+            padding: 12px 15px; 
+            border-radius: 14px; 
+            margin-bottom: 10px; 
+            font-weight: 700; 
+            font-size: 14px; 
+            color: var(--text-main); 
+            text-decoration: none; 
+        }
+        
+        .contact-pill i { 
+            color: var(--primary); 
+            font-size: 18px; 
+        }
     </style>
 </head>
 <body>
 
-    <!-- ==================== SPLASH SCREEN ==================== -->
-    <div id="splash-screen">
-        <div class="splash-content">
-            <i class="fa-solid fa-heart-pulse splash-icon"></i>
-            <h1 class="splash-title">Senthil</h1>
-            <p class="splash-subtitle">Multi Speciality Hospital</p>
-        </div>
+    <div id="global-loader">
+        <div class="spinner"></div>
+        <p style="font-size: 14px; font-weight: 800; color: var(--secondary);">Syncing with Cloud...</p>
     </div>
 
-    <!-- Background Elements -->
-    <div class="bg-shape shape-1"></div>
-    <div class="bg-shape shape-2"></div>
+    <div class="ambient-bg ambient-1"></div>
+    <div class="ambient-bg ambient-2"></div>
+    
     <div id="toast-container"></div>
 
-    <!-- ==================== PREMIUM FORGOT PASSWORD MODAL ==================== -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <i class="fa-solid fa-staff-snake splash-icon"></i>
+            <h1 class="splash-title">SENTHIL</h1>
+            <h2 class="splash-subtitle">Healthcare</h2>
+        </div>
+    </div>
+
     <div class="modal-overlay" id="modal-forgot">
         <div class="modal-content">
-            <div style="text-align: right;"><i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-forgot')"></i></div>
-            <h3 class="heading" style="font-size: 22px; margin-bottom: 10px;">Recover Access</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">Enter your registered Email ID to securely view your password.</p>
+            <div style="text-align: right; margin-bottom: 10px;">
+                <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-forgot')"></i>
+            </div>
+            <h3 class="heading" style="font-size: 22px; margin-bottom: 10px;">Reset Password</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Enter your registered email address. We will send a secure link to reset your password.</p>
             
-            <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="forgot-email" placeholder="Registered Gmail"></div>
-            <div id="forgot-result" style="display:none; padding:15px; border-radius:14px; background:rgba(16,185,129,0.1); color:var(--secondary); font-weight:800; font-size:14px; text-align:center; margin-bottom:15px; border: 1px solid rgba(16,185,129,0.3);"></div>
-            <button class="btn btn-primary" onclick="App.recoverPassword()">Get Password</button>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="forgot-email" placeholder="Enter Gmail Address">
+            </div>
+            
+            <div id="forgot-success-msg" style="display:none; background:#D1FAE5; color:#059669; padding:15px; border-radius:16px; font-size:13px; font-weight:800; text-align:center; margin-bottom:20px;">
+                <i class="fa-solid fa-paper-plane"></i> Reset link sent successfully!
+            </div>
+            
+            <button class="btn btn-primary" id="forgot-btn" onclick="App.sendResetLink()">Send Reset Link</button>
         </div>
     </div>
 
-    <!-- ==================== HEALTH VAULT VIEW MODAL (FOR PATIENTS) ==================== -->
-    <div class="modal-overlay" id="modal-vault-view">
-        <div class="modal-content" style="max-height: 85vh; overflow-y: auto;">
+    <div class="modal-overlay" id="modal-general-token">
+        <div class="modal-content" style="text-align: center;">
+            <div style="width: 70px; height: 70px; background: #E0F2FE; color: var(--primary); border-radius: 20px; display: inline-flex; justify-content: center; align-items: center; font-size: 30px; margin-bottom: 15px; box-shadow: 0 10px 20px rgba(6,182,212,0.2);">
+                <i class="fa-solid fa-bolt"></i>
+            </div>
+            <h3 class="heading" style="font-size: 22px; margin-bottom: 10px;">General Consultation</h3>
+            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">Get an instant walk-in token. The next available duty doctor will attend to you shortly.</p>
+            
+            <button class="btn btn-primary" onclick="App.confirmGeneralToken()">Generate Token Now</button>
+            <button class="btn btn-outline" style="margin-top: 10px; border:none; box-shadow:none;" onclick="App.closeModal('modal-general-token')">Cancel</button>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-admin-patient">
+        <div class="modal-content">
             <div class="flex-between" style="margin-bottom: 15px;">
-                <h3 class="heading" style="font-size: 20px;" id="vault-view-title">My Records</h3>
-                <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-vault-view')"></i>
+                <h3 class="heading" style="font-size: 20px;">Patient Details</h3>
+                <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-admin-patient')"></i>
             </div>
-            <div id="vault-view-content" style="display: flex; flex-direction: column; gap: 15px;">
-                <!-- Images load here dynamically -->
+            
+            <input type="hidden" id="edit-p-id">
+            
+            <div style="background: #F8FAFC; padding: 15px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E2E8F0;">
+                <div class="input-group no-label" style="margin-bottom: 10px;"><i class="fa-solid fa-user"></i><input type="text" id="edit-p-name" placeholder="Name"></div>
+                <div class="input-group no-label" style="margin-bottom: 10px;"><i class="fa-solid fa-phone"></i><input type="tel" id="edit-p-phone" placeholder="Phone"></div>
+                <div class="input-group no-label" style="margin-bottom: 0;"><i class="fa-solid fa-calendar-days"></i><input type="number" id="edit-p-age" placeholder="Age"></div>
+                <button class="btn btn-secondary btn-sm" style="margin-top: 10px; width: 100%;" onclick="App.saveAdminPatientEdit()">Update Details</button>
             </div>
+
+            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px; color: var(--primary);"><i class="fa-solid fa-cloud-arrow-up"></i> Quick Upload to Vault</h4>
+            
+            <div class="input-group no-label no-icon" style="margin-bottom: 10px;">
+                <select id="quick-v-category">
+                    <option value="prescription">Prescription</option>
+                    <option value="lab">Lab Report</option>
+                    <option value="scan">Scan / X-Ray</option>
+                    <option value="discharge">Discharge Summary</option>
+                    <option value="bill">Medical Bill</option>
+                </select>
+            </div>
+            
+            <div class="input-group no-label no-icon" style="margin-bottom: 10px;">
+                <input type="text" id="quick-v-title" placeholder="Document Title (e.g. Blood Test)">
+            </div>
+            
+            <div class="input-group no-label" style="margin-bottom: 10px;">
+                <label style="background: #E0F2FE; color: var(--primary-dark); padding: 15px; border-radius: 16px; display: block; cursor: pointer; text-align: center; font-weight: 800; border: 2px dashed #BAE6FD;">
+                    <i class="fa-solid fa-image"></i> Select File
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleQuickVaultFile(event)">
+                </label>
+            </div>
+            
+            <img id="quick-v-preview" class="image-preview">
+            
+            <button class="btn btn-primary" onclick="App.quickUploadToVault()"><i class="fa-solid fa-paper-plane"></i> Upload & Notify Patient</button>
         </div>
     </div>
 
-    <!-- ==================== MODALS ==================== -->
-    <div class="modal-overlay" id="modal-doctor">
+    <div class="modal-overlay" id="modal-edit-doctor">
         <div class="modal-content">
-            <div style="text-align: right;"><i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-doctor')"></i></div>
-            <div style="text-align: center; margin-bottom: 20px;">
-                <img id="mod-doc-img" src="" style="width: 80px; height: 80px; border-radius: 20px; margin-bottom: 10px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); object-fit: cover;">
-                <h2 class="heading" id="mod-doc-name" style="font-size: 22px;">Dr. Name</h2>
-                <p style="font-size: 13px; font-weight: 700; color: var(--primary);" id="mod-doc-spec">Specialization</p>
+            <div class="flex-between" style="margin-bottom: 20px;">
+                <h3 class="heading" style="font-size: 20px;">Edit Doctor</h3>
+                <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-edit-doctor')"></i>
             </div>
-            <div style="background: #f8fafc; padding: 15px; border-radius: 16px; margin-bottom: 20px;">
-                <h4 style="font-size: 13px; font-weight: 800; margin-bottom: 10px; color: var(--text-muted);"><i class="fa-regular fa-clock"></i> Availability</h4>
-                <p style="font-size: 14px; font-weight: 800;" id="mod-doc-days">Mon - Sat</p>
-                <p style="font-size: 13px; font-weight: 600; color: var(--text-main);" id="mod-doc-times">10:00 AM - 02:00 PM</p>
-            </div>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="btn btn-primary" onclick="App.bookGeneralToken()">Get Token for Doctor</button>
-                <button class="btn btn-outline" onclick="App.goToSlotBooking()">Book Specific Time Slot</button>
-            </div>
-            <input type="hidden" id="mod-doc-id">
+            <input type="hidden" id="edit-d-id">
+            <div class="input-group"><label>Doctor Name</label><div class="input-group no-label no-icon"><input type="text" id="edit-d-name"></div></div>
+            <div class="input-group"><label>Specialization</label><div class="input-group no-label no-icon"><input type="text" id="edit-d-spec"></div></div>
+            <div class="input-group"><label>Availability/Timing</label><div class="input-group no-label no-icon"><input type="text" id="edit-d-time"></div></div>
+            <button class="btn btn-primary" onclick="App.saveAdminDoctorEdit()">Save Changes</button>
         </div>
     </div>
 
-    <div class="modal-overlay" id="modal-general">
-        <div class="modal-content">
-            <h3 class="heading" style="font-size: 20px; margin-bottom: 15px;">General Token</h3>
-            <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px;">பொது பரிசோதனைக்கு இதைத் தேர்ந்தெடுக்கவும். உள்ளே சென்றதும் டியூட்டி டாக்டர் உங்களை கவனிப்பார்.</p>
-            <button class="btn btn-primary" onclick="App.confirmGeneralToken()">இப்போதே டோக்கன் எடு</button>
-            <button class="btn btn-outline" style="margin-top: 10px;" onclick="App.closeModal('modal-general')">Cancel</button>
-        </div>
-    </div>
-
-    <div class="modal-overlay" id="modal-reschedule">
-        <div class="modal-content">
-            <h3 class="heading" style="font-size: 20px; margin-bottom: 15px;">Update Appointment</h3>
-            <input type="hidden" id="resch-appt-id">
-            <div class="input-group"><label>New Date</label><div class="input-group no-label no-icon"><input type="date" id="resch-date"></div></div>
-            <div class="input-group"><label>New Time</label><div class="input-group no-label no-icon"><input type="time" id="resch-time"></div></div>
-            <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button class="btn btn-outline" onclick="App.closeModal('modal-reschedule')">Cancel</button>
-                <button class="btn btn-primary" onclick="App.confirmReschedule()">Update & Notify</button>
+    <div class="modal-overlay" id="modal-image-view">
+        <div class="modal-content" style="background: transparent; box-shadow: none; padding: 10px;">
+            <div style="text-align: right; margin-bottom: 15px;"><i class="fa-solid fa-circle-xmark" style="font-size: 35px; color: white; cursor: pointer;" onclick="App.closeModal('modal-image-view')"></i></div>
+            <img id="full-screen-img" src="" style="width: 100%; border-radius: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);">
+            <div style="background: var(--surface); padding: 20px; border-radius: 20px; margin-top: 15px; text-align: center;">
+                <h4 id="fs-title" style="font-size: 16px; font-weight: 800;">Document</h4>
+                <p id="fs-date" style="font-size: 13px; color: var(--text-muted); font-weight: 700; margin-top: 5px;"></p>
             </div>
         </div>
     </div>
 
-    <!-- ==================== 1. PATIENT & DOCTOR LOGIN SCREEN ==================== -->
     <div id="screen-login" class="screen active">
-        <div class="center-wrap glass" style="padding: 35px; position: relative;">
+        <div class="center-wrap">
             <div style="text-align: center; margin-bottom: 40px;">
-                <div style="width: 80px; height: 80px; background: white; border-radius: 24px; display: inline-flex; justify-content: center; align-items: center; box-shadow: 0 15px 35px rgba(0,0,0,0.06); margin-bottom: 20px; transform: rotate(10deg);">
-                    <i class="fa-solid fa-heart-pulse text-gradient" style="font-size: 40px; transform: rotate(-10deg);"></i>
+                <div style="width: 80px; height: 80px; background: white; border-radius: 24px; display: inline-flex; justify-content: center; align-items: center; box-shadow: var(--shadow-hover); margin-bottom: 20px;">
+                    <i class="fa-solid fa-hospital-user" style="font-size: 35px; color: var(--primary);"></i>
                 </div>
-                <h1 class="heading" style="font-size: 28px;">Senthil <span class="text-gradient">Hospital</span></h1>
-                <p style="font-weight: 600; color: var(--text-muted); margin-top: 5px;">World-Class Ecosystem</p>
+                <h1 class="heading">Welcome</h1>
+                <p style="font-weight: 700; color: var(--text-muted); margin-top: 8px;">Log in to Senthil Hospital</p>
             </div>
             
-            <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="login-email" placeholder="Gmail Address (User / Doctor)"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="login-password" placeholder="Password"></div>
-            
-            <button class="btn btn-primary" onclick="App.login()">Secure Login</button>
-            
-            <div class="flex-between" style="margin-top: 30px; font-size: 14px; font-weight: 800;">
-                <span style="color: var(--primary); cursor: pointer;" onclick="App.navigate('screen-signup')">Create Account</span>
-                <span style="color: var(--text-muted); cursor: pointer;" onclick="App.openForgotModal()">Forgot Password?</span>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="login-email" placeholder="Email Address">
             </div>
-
-            <div style="text-align: center; margin-top: 50px;">
-                <span style="font-size: 12px; font-weight: 800; color: #94a3b8; cursor: pointer; letter-spacing: 0.5px;" onclick="App.navigate('screen-admin-login')"><i class="fa-solid fa-shield-halved"></i> Admin Portal</span>
+            
+            <div class="input-group no-label" style="margin-bottom: 15px;">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="login-password" placeholder="Password">
+            </div>
+            
+            <div style="text-align: right; margin-bottom: 25px;">
+                <span style="font-size: 13px; font-weight: 800; color: var(--primary); cursor: pointer;" onclick="App.openModal('modal-forgot')">Forgot Password?</span>
+            </div>
+            
+            <button class="btn btn-primary" onclick="App.login()">Secure Login <i class="fa-solid fa-arrow-right"></i></button>
+            
+            <div class="flex-between" style="margin-top: 35px; padding: 0 10px;">
+                <span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-signup')">New User? <span style="color:var(--primary);">Sign Up</span></span>
+                <span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-admin-login')"><i class="fa-solid fa-shield-halved"></i> Staff Login</span>
             </div>
         </div>
     </div>
 
-    <!-- ==================== 2. SIGNUP ==================== -->
     <div id="screen-signup" class="screen">
-        <div class="center-wrap glass" style="padding: 30px;">
-            <div style="text-align: center; margin-bottom: 30px;"><h1 class="heading">Join Us</h1><p style="font-weight: 600; color: var(--text-muted);">Setup your health profile</p></div>
-            <div class="input-group no-label"><i class="fa-solid fa-user"></i><input type="text" id="reg-name" placeholder="Full Name"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-phone"></i><input type="tel" id="reg-phone" placeholder="Mobile Number" maxlength="10"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="reg-email" placeholder="Gmail Address"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="reg-pass" placeholder="Password"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-check-double"></i><input type="password" id="reg-pass2" placeholder="Confirm Password"></div>
-            
-            <button class="btn btn-primary" onclick="App.signup()">Register Securely</button>
-            
-            <div style="text-align: center; margin-top: 25px;"><span style="color: var(--primary); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Back to Login</span></div>
-        </div>
-    </div>
-
-    <!-- ==================== 3. ADMIN LOGIN ==================== -->
-    <div id="screen-admin-login" class="screen">
-        <div class="center-wrap glass" style="padding: 35px; background: var(--dark-glass); color: white;">
-            <div style="text-align: center; margin-bottom: 35px;">
-                <i class="fa-solid fa-user-shield" style="font-size: 55px; color: var(--primary-light); margin-bottom: 20px;"></i>
-                <h1 class="heading" style="color: white;">Admin HQ</h1>
-                <p style="color: #94a3b8; font-weight: 600; font-size: 14px; margin-top: 5px;">Master Control Access</p>
+        <div class="center-wrap">
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 class="heading">Create Profile</h1>
             </div>
-            <div class="input-group no-label"><i class="fa-solid fa-user"></i><input type="text" id="admin-user" placeholder="Admin ID (admin)" style="background: rgba(255,255,255,0.1); color: white; border:none;"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="admin-pass" placeholder="Password (admin)" style="background: rgba(255,255,255,0.1); color: white; border:none;"></div>
-            <button class="btn btn-primary" onclick="App.adminLogin()">Access System</button>
-            <div style="text-align: center; margin-top: 30px;"><span style="color: #cbd5e1; font-size: 14px; font-weight: 800; cursor: pointer;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Patient Login</span></div>
+            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="reg-name" placeholder="Full Name">
+            </div>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group no-label">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="reg-phone" placeholder="Mobile No.">
+                </div>
+                <div class="input-group no-label">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <input type="number" id="reg-age" placeholder="Age">
+                </div>
+            </div>
+            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="reg-email" placeholder="Email Address">
+            </div>
+            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="reg-pass" placeholder="Create Password">
+            </div>
+            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-check-double"></i>
+                <input type="password" id="reg-pass2" placeholder="Confirm Password">
+            </div>
+            
+            <button class="btn btn-primary" onclick="App.signup()">Setup Account</button>
+            
+            <div style="text-align: center; margin-top: 25px;">
+                <span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Back to Login</span>
+            </div>
         </div>
     </div>
 
-    <!-- ==================== 4. SMART PATIENT DASHBOARD ==================== -->
+    <div id="screen-admin-login" class="screen">
+        <div class="center-wrap">
+            <div style="text-align: center; margin-bottom: 40px;">
+                <i class="fa-solid fa-user-shield" style="font-size: 60px; color: var(--secondary); margin-bottom: 20px;"></i>
+                <h1 class="heading">Admin Panel</h1>
+            </div>
+            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-id-badge"></i>
+                <input type="text" id="admin-user" placeholder="Admin ID">
+            </div>
+            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="admin-pass" placeholder="Password">
+            </div>
+            
+            <button class="btn btn-secondary" onclick="App.adminLogin()">Access Dashboard</button>
+            <p style="text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-top: 15px;">Demo Credentials -> ID: admin | Pass: admin</p>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <span style="color: var(--primary); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Patient Login</span>
+            </div>
+        </div>
+    </div>
+
     <div id="screen-patient-home" class="screen">
         <div class="flex-between" style="margin-bottom: 25px;">
-            <div style="display: flex; gap: 15px; align-items: center;">
-                <div style="width: 55px; height: 55px; border-radius: 18px; background: white; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; box-shadow: 0 10px 25px rgba(0,0,0,0.05);" id="ui-avatar">A</div>
-                <div><p id="ui-greeting" style="font-size: 13px; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;">Good Morning,</p><h2 class="heading" id="ui-name" style="font-size: 24px;">User</h2></div>
+            <div>
+                <p style="font-size: 13px; font-weight: 800; color: var(--text-muted);">Good Health,</p>
+                <h2 class="heading" id="ui-name" style="font-size: 24px;">User</h2>
             </div>
-            <div style="text-align: right;">
-                <h3 style="font-size: 16px; font-weight: 800;" id="ui-clock">00:00 AM</h3>
-                <p style="font-size: 11px; font-weight: 700; color: var(--text-muted);" id="ui-date">May 13, 2026</p>
-            </div>
-        </div>
-
-        <!-- 1st PRIORITY: Booking Hub -->
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 10px;">சிகிச்சை முன்பதிவு</h3>
-        <div class="booking-hub">
-            <div class="booking-option" onclick="App.openModal('modal-general')">
-                <i class="fa-solid fa-bolt"></i>
-                <div><h4 style="font-size: 15px; font-weight: 800;">General Token (பொது)</h4><p style="font-size: 11px; color: var(--text-muted);">யாரேனும் ஒரு மருத்துவரிடம் டோக்கன் எடுக்க.</p></div>
-            </div>
-            <div style="height: 1px; background: #e2e8f0; margin: 15px 0;"></div>
-            <div class="booking-option" onclick="window.scrollTo({top: 800, behavior: 'smooth'})">
-                <i class="fa-solid fa-user-doctor"></i>
-                <div><h4 style="font-size: 15px; font-weight: 800;">Choose Specific Doctor</h4><p style="font-size: 11px; color: var(--text-muted);">குறிப்பிட்ட மருத்துவரைத் தேர்ந்தெடுக்க கீழே பார்க்கவும்.</p></div>
+            <div style="position: relative; width: 50px; height: 50px; background: var(--surface); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-soft); cursor: pointer;" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
+                <i class="fa-solid fa-bell" style="color: var(--primary); font-size: 20px;"></i>
+                <div class="notification-dot" id="ui-notif-dot"></div>
             </div>
         </div>
 
-        <div class="hero-section" id="ui-hero-banner"></div>
-
-        <!-- 2nd PRIORITY: AI Tip Card (Rotating) -->
-        <div class="ai-tip-card">
-            <div class="ai-tip-header">
-                <div style="font-size: 28px; color: var(--secondary);"><i class="fa-solid fa-robot"></i></div>
-                <div>
-                    <h4 style="font-size: 15px; font-weight: 800; color: #064e3b;">Senthil AI ஹெல்த் கோச்</h4>
-                    <p style="font-size: 12px; color: #047857; font-weight: 700;">உங்களுக்கான குறிப்பு:</p>
-                </div>
+        <div id="patient-broadcast-area" class="broadcast-card">
+            <i class="fa-solid fa-bullhorn" style="font-size: 24px; color: var(--warning); margin-top:2px;"></i>
+            <div>
+                <h4 style="font-size: 14px; font-weight: 800; color: #92400E; margin-bottom: 4px;" id="pb-title">Notice</h4>
+                <p style="font-size: 12px; color: #B45309; font-weight: 600; line-height: 1.5;" id="pb-msg">Message</p>
             </div>
-            <div style="background: rgba(255,255,255,0.6); padding: 15px; border-radius: 14px;">
-                <p style="font-size: 13px; font-weight: 800; color: #064e3b; line-height: 1.5;" id="ai-dynamic-tip">உயரம் மற்றும் எடையை Vitals பக்கத்தில் அப்டேட் செய்யவும்.</p>
+        </div>
+
+        <div class="ai-compact-card">
+            <div class="ai-icon-pulse"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div class="ai-content">
+                <div class="ai-title">AI Insight <span id="ai-health-status" style="font-size:9px; padding:3px 8px; border-radius:8px; background:rgba(255,255,255,0.2); margin-left:5px;">Pending</span></div>
+                <div class="ai-text" id="ai-smart-tip">Update your profile vitals to receive personalized medical insights.</div>
             </div>
-            <!-- Dynamic PDF/Text Download Button -->
-            <button id="diet-plan-btn" class="btn btn-success btn-sm" style="display: none; margin-top: 5px; width: 100%;" onclick="App.downloadDietChart()"><i class="fa-solid fa-download"></i> எனக்கான டயட் சார்ட்</button>
         </div>
 
-        <!-- 3rd PRIORITY: Health Vault -->
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">எனது மருத்துவ ஆவணங்கள்</h3>
-        <div class="doc-vault-card" onclick="App.openVault('prescription')">
-            <i class="fa-solid fa-file-prescription"></i>
-            <div><h4 style="font-size: 14px; font-weight: 800; color: #92400e;">பழைய மருந்துச் சீட்டுகள்</h4><p style="font-size: 11px; color: #b45309; font-weight: 600;">(View Prescriptions)</p></div>
-        </div>
-        <div class="doc-vault-card" style="background: linear-gradient(135deg, #eff6ff, #dbeafe); border-color: #bfdbfe; margin-bottom: 25px;" onclick="App.openVault('lab')">
-            <i class="fa-solid fa-vial-circle-check" style="color: var(--primary);"></i>
-            <div><h4 style="font-size: 14px; font-weight: 800; color: #1e40af;">லேப் ரிப்போர்ட்கள்</h4><p style="font-size: 11px; color: #1e3a8a; font-weight: 600;">(View Lab Reports)</p></div>
-        </div>
-
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Available Doctors</h3>
-        <div class="scroll-row" id="home-doctors-list"></div>
-
-        <h3 style="font-size: 18px; font-weight: 800; margin: 25px 0 15px 0;">Quick Actions</h3>
-        <div class="action-grid">
-            <div class="action-btn" onclick="App.switchTab('screen-patient-book', 'nav-book')"><i class="fa-solid fa-calendar-plus"></i><span>Slot</span></div>
-            <div class="action-btn" onclick="App.rebookLast()"><i class="fa-solid fa-rotate-right"></i><span>Rebook</span></div>
-            <div class="action-btn" onclick="App.switchTab('screen-patient-queue', 'nav-queue')"><i class="fa-solid fa-ticket"></i><span>Token</span></div>
-            <div class="action-btn" style="color:var(--danger);" onclick="App.showToast('Calling Ambulance...', 'error')"><i class="fa-solid fa-truck-medical" style="color:var(--danger);"></i><span>SOS</span></div>
-        </div>
-    </div>
-
-    <!-- ==================== 5. BOOK APPOINTMENT ==================== -->
-    <div id="screen-patient-book" class="screen">
-        <h2 class="heading" style="margin-bottom: 20px;">Book Specific Slot</h2>
-        <div class="card">
-            <div class="input-group"><label>Select Specialist</label><div class="input-group no-label no-icon"><select id="book-doctor"></select></div></div>
-            <div class="input-group"><label>Preferred Date</label><div class="input-group no-label no-icon"><input type="date" id="book-date"></div></div>
-            <div class="input-group"><label>Preferred Time</label><div class="input-group no-label no-icon"><input type="time" id="book-time"></div></div>
-            <button class="btn btn-primary" onclick="App.createBooking('Slot')">Confirm Booking</button>
-        </div>
-    </div>
-
-    <!-- ==================== 6. LIVE QUEUE & HISTORY ==================== -->
-    <div id="screen-patient-queue" class="screen">
-        <h2 class="heading" style="margin-bottom: 20px;">Queue & History</h2>
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px; color: var(--text-main);">Quick Booking</h3>
         
-        <div id="live-token-widget" style="display: none;">
-            <div class="token-board">
-                <div class="flex-between" style="align-items: flex-start;">
-                    <div><p style="font-size: 12px; font-weight: 800; color: #cbd5e1; text-transform: uppercase; letter-spacing: 1px;">Your Token</p><h1 id="tok-my" style="font-size: 55px; line-height: 1; margin: 5px 0;">0</h1><p id="tok-doc" style="font-size: 14px; font-weight: 700; color: #94a3b8;"></p></div>
-                    <div style="text-align: right;"><p style="font-size: 12px; font-weight: 800; color: #cbd5e1; text-transform: uppercase;"><i class="fa-solid fa-circle-dot" style="color: var(--secondary);"></i> Running</p><h1 id="tok-run" style="font-size: 40px; line-height: 1; color: var(--secondary); margin-top: 5px;">0</h1></div>
+        <div class="booking-grid">
+            <div class="book-card bc-general" onclick="App.openModal('modal-general-token')">
+                <div class="book-icon"><i class="fa-solid fa-bolt"></i></div>
+                <div>
+                    <h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">General Consultation</h4>
+                    <p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px;">Walk-in token for duty doctor</p>
                 </div>
-                <div class="progress-track"><div id="tok-progress" class="progress-fill"></div></div>
-                <div class="flex-between">
-                    <div id="tok-status" style="font-size: 14px; font-weight: 800; background: rgba(255,255,255,0.1); padding: 10px 15px; border-radius: 14px;">Wait: ~0 mins</div>
-                    <button class="btn btn-outline btn-sm" style="color:white; border-color:rgba(255,255,255,0.3);" onclick="App.cancelBookingFromWidget()"><i class="fa-solid fa-xmark"></i> Cancel</button>
+            </div>
+            <div class="book-card bc-specialist" onclick="App.switchTab('screen-patient-book', 'nav-book')">
+                <div class="book-icon"><i class="fa-solid fa-user-doctor"></i></div>
+                <div>
+                    <h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">Specialist Appointment</h4>
+                    <p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px;">Book specific doctor & time</p>
                 </div>
             </div>
         </div>
 
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">Appointment History</h3>
+        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px; color: var(--text-main);">My Records</h3>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="card" style="padding: 20px; text-align: center; margin:0; cursor: pointer;" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
+                <i class="fa-solid fa-file-prescription" style="font-size: 30px; color: #0EA5E9; margin-bottom: 10px;"></i>
+                <h4 style="font-size: 13px; font-weight: 800;">Prescriptions</h4>
+            </div>
+            <div class="card" style="padding: 20px; text-align: center; margin:0; cursor: pointer;" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
+                <i class="fa-solid fa-vial-circle-check" style="font-size: 30px; color: #10B981; margin-bottom: 10px;"></i>
+                <h4 style="font-size: 13px; font-weight: 800;">Lab Reports</h4>
+            </div>
+        </div>
+    </div>
+
+    <div id="screen-patient-book" class="screen">
+        <h2 class="heading" style="margin-bottom: 25px;">Book Specialist</h2>
+        <div class="card">
+            <div class="input-group">
+                <label>Select Department / Doctor</label>
+                <div class="input-group no-label no-icon">
+                    <select id="book-doctor"></select>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Preferred Date</label>
+                <div class="input-group no-label no-icon">
+                    <input type="date" id="book-date">
+                </div>
+            </div>
+            <button class="btn btn-primary" onclick="App.confirmSpecialistBooking()">Confirm Appointment</button>
+        </div>
+    </div>
+
+    <div id="screen-patient-queue" class="screen">
+        <h2 class="heading" style="margin-bottom: 20px;">Appointments</h2>
         <div id="patient-history-container"></div>
     </div>
 
-    <!-- ==================== 7. AI SMART PROFILE SYSTEM (ORIGINAL) ==================== -->
-    <div id="screen-patient-profile" class="screen">
-        <div class="flex-between" style="margin-bottom: 25px;">
-            <h2 class="heading">My Profile</h2>
-            <button class="btn btn-primary btn-sm" onclick="App.saveProfile()"><i class="fa-solid fa-floppy-disk"></i> Save Profile</button>
+    <div id="screen-patient-vault" class="screen">
+        <h2 class="heading" style="margin-bottom: 20px;">Medical Vault</h2>
+        <div class="vault-filter">
+            <div class="v-tab active" onclick="App.filterVault('all', this)">All</div>
+            <div class="v-tab" onclick="App.filterVault('prescription', this)">Prescription</div>
+            <div class="v-tab" onclick="App.filterVault('lab', this)">Lab</div>
+            <div class="v-tab" onclick="App.filterVault('scan', this)">Scans</div>
+            <div class="v-tab" onclick="App.filterVault('bill', this)">Bills</div>
+            <div class="v-tab" onclick="App.filterVault('discharge', this)">Discharge</div>
         </div>
-        
-        <div class="card" style="background: linear-gradient(135deg, var(--primary), var(--dark)); color: white; border: none; display: flex; align-items: center; justify-content: space-between; padding: 25px;">
-            <div>
-                <h4 style="font-size: 13px; font-weight: 700; color: #cbd5e1;"><i class="fa-solid fa-robot"></i> AI Health Status</h4>
-                <h2 id="ai-bmi-status" style="font-size: 18px; font-weight: 800; margin-top: 5px;">Update BMI to know</h2>
-            </div>
-            <div style="text-align: right;">
-                <h1 id="ai-bmi-value" style="font-size: 35px; line-height: 1;">--</h1>
-                <p style="font-size: 11px; font-weight: 600; color: #94a3b8;">BMI Score</p>
-            </div>
-        </div>
-
-        <div class="card" style="padding: 25px;">
-            <div class="input-group"><label>Full Name</label><div class="input-group no-label"><i class="fa-solid fa-user"></i><input type="text" id="prof-name"></div></div>
-            <div class="input-group"><label>Phone Number</label><div class="input-group no-label"><i class="fa-solid fa-phone"></i><input type="tel" id="prof-phone"></div></div>
-            <div class="input-group"><label>Email Address</label><div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="prof-email" readonly style="background: #f1f5f9; color: #94a3b8; cursor: not-allowed;"></div></div>
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 5px;">
-                <div class="input-group"><label>Age</label><div class="input-group no-label no-icon"><input type="number" id="prof-age"></div></div>
-                <div class="input-group"><label>Blood Group</label><div class="input-group no-label no-icon">
-                    <select id="prof-blood"><option value="">Select</option><option value="A+">A+</option><option value="O+">O+</option><option value="B+">B+</option><option value="AB+">AB+</option></select>
-                </div></div>
-            </div>
-
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 5px;">
-                <div class="input-group"><label>Height (cm)</label><div class="input-group no-label no-icon"><input type="number" id="prof-height" placeholder="e.g. 170" onkeyup="App.calculateBMI()"></div></div>
-                <div class="input-group"><label>Weight (kg)</label><div class="input-group no-label no-icon"><input type="number" id="prof-weight" placeholder="e.g. 65" onkeyup="App.calculateBMI()"></div></div>
-            </div>
-            
-            <div class="input-group"><label>Emergency Contact</label><div class="input-group no-label"><i class="fa-solid fa-truck-medical"></i><input type="tel" id="prof-emergency"></div></div>
-            <div class="input-group"><label>Medical History / Allergies</label><div class="input-group no-label no-icon"><textarea id="prof-history" placeholder="E.g. Diabetes, Asthma..."></textarea></div></div>
-            
-            <button class="btn btn-outline" style="margin-top: 20px; color: var(--danger); border-color: var(--danger-bg);" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Secure Logout</button>
-        </div>
+        <div id="patient-vault-list"></div>
     </div>
 
-    <!-- ==================== 8. ADMIN DASHBOARD ==================== -->
-    <div id="screen-admin-dashboard" class="screen">
-        <div class="flex-between" style="margin-bottom: 20px;">
-            <div><h2 class="heading" style="font-size: 28px;">Admin HQ</h2><p style="font-size: 13px; font-weight: 800; color: var(--primary);">Master Control</p></div>
-            <button class="btn btn-danger btn-sm" style="border-radius: 14px;" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
+    <div id="screen-patient-profile" class="screen">
+        <div class="flex-between" style="margin-bottom: 25px;">
+            <h2 class="heading">Profile</h2>
+            <button class="btn btn-success btn-sm" onclick="App.saveProfile()"><i class="fa-solid fa-check"></i> Save</button>
         </div>
 
-        <!-- NEW: AI ADMIN ANALYTICS -->
-        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 25px;" id="admin-stats"></div>
+        <div class="card" style="padding: 20px;">
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>Full Name</label>
+                <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                    <input type="text" id="prof-name">
+                </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Age</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="number" id="prof-age">
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Phone</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="tel" id="prof-phone">
+                    </div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Email</label>
+                <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                    <input type="email" id="prof-email" readonly style="opacity: 0.6;">
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="padding: 20px; background: linear-gradient(135deg, #F0F9FF, #FFFFFF);">
+            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 15px; color: var(--primary);"><i class="fa-solid fa-child-reaching"></i> Body Vitals (AI Analysis)</h4>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Height (cm)</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="number" id="prof-height" placeholder="170" style="background: white;" onkeyup="App.calculateBMI()">
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Weight (kg)</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="number" id="prof-weight" placeholder="65" style="background: white;" onkeyup="App.calculateBMI()">
+                    </div>
+                </div>
+            </div>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Current BMI Score</p>
+                <h3 style="font-size: 32px; font-weight: 800; color: var(--secondary);" id="bmi-display">--</h3>
+                <span class="badge" id="bmi-status-badge" style="background: #E2E8F0; color: #64748B;">Pending</span>
+            </div>
+        </div>
+
+        <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px; color: var(--text-main);">Hospital Contact Info</h3>
+        <div class="card" style="padding: 20px;">
+            <a href="#" id="c-phone-link" class="contact-pill"><i class="fa-solid fa-phone"></i> <span id="c-phone-text">Loading...</span></a>
+            <a href="#" id="c-wa-link" class="contact-pill" style="color: #10B981;"><i class="fa-brands fa-whatsapp"></i> <span id="c-wa-text">Loading...</span></a>
+            <a href="#" id="c-email-link" class="contact-pill" style="color: #F43F5E; margin-bottom: 0;"><i class="fa-solid fa-envelope"></i> <span id="c-email-text">Loading...</span></a>
+        </div>
+        
+        <button class="btn btn-outline" style="color: var(--danger); border-color: #FEE2E2;" onclick="App.logout()">Log Out</button>
+    </div>
+
+    <div id="screen-admin-dashboard" class="screen">
+        <div class="flex-between" style="margin-bottom: 20px;">
+            <h2 class="heading">Admin Panel</h2>
+            <button class="btn btn-danger btn-sm" onclick="App.logout()"><i class="fa-solid fa-power-off"></i></button>
+        </div>
+
+        <div class="search-bar">
+            <i class="fa-solid fa-search"></i>
+            <input type="text" id="admin-search" placeholder="Search Patients, Phone, Tokens..." onkeyup="App.handleAdminSearch()">
+        </div>
 
         <div class="admin-tabs">
             <div class="admin-tab active" onclick="App.switchAdminTab('admin-queue', this)">Queue</div>
-            <div class="admin-tab" onclick="App.switchAdminTab('admin-patients', this)">Patients</div>
-            <div class="admin-tab" onclick="App.switchAdminTab('admin-vault', this)">Vault</div>
-            <div class="admin-tab" onclick="App.switchAdminTab('admin-docs', this)">Doctors Setup</div>
+            <div class="admin-tab" onclick="App.switchAdminTab('admin-patients', this)">Patients Manage</div>
+            <div class="admin-tab" onclick="App.switchAdminTab('admin-doctors', this)">Doctors Setup</div>
+            <div class="admin-tab" onclick="App.switchAdminTab('admin-settings', this)">Settings & Broadcast</div>
         </div>
 
         <div id="admin-queue" class="admin-tab-content">
-            <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">System Appointments</h3>
             <div id="admin-appt-list"></div>
         </div>
 
         <div id="admin-patients" class="admin-tab-content" style="display: none;">
-            <div id="admin-patient-list"></div>
+            <div id="admin-patients-list"></div>
         </div>
 
-        <!-- NEW: ADMIN HEALTH VAULT UPLOAD -->
-        <div id="admin-vault" class="admin-tab-content" style="display: none;">
+        <div id="admin-doctors" class="admin-tab-content" style="display: none;">
             <div class="card">
-                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Upload Health Records</h4>
-                <div class="input-group"><label>Select Patient</label><div class="input-group no-label no-icon"><select id="vault-patient"></select></div></div>
-                <div class="input-group"><label>Record Type</label><div class="input-group no-label no-icon"><select id="vault-type"><option value="prescription">Prescription / மருந்துச் சீட்டு</option><option value="lab">Lab Report / லேப் ரிப்போர்ட்</option></select></div></div>
-                
-                <div class="input-group no-label">
-                    <label style="background: var(--warning); color: white; padding: 15px; border-radius: 14px; display: block; cursor: pointer; text-align: center; font-weight: 800; margin-bottom: 5px;">
-                        <i class="fa-solid fa-camera"></i> Capture or Select Document
-                        <input type="file" accept="image/*" style="display: none;" onchange="App.handleVaultFile(event)">
-                    </label>
-                </div>
-                <img id="vault-preview">
-                
-                <button class="btn btn-primary" onclick="App.uploadVaultDoc()">Secure Upload to Vault</button>
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 20px;"><i class="fa-solid fa-user-doctor" style="color: var(--primary);"></i> Assign New Doctor</h4>
+                <div class="input-group"><label>Doctor Full Name</label><div class="input-group no-label no-icon"><input type="text" id="add-doc-name" placeholder="E.g., Dr. Ramesh"></div></div>
+                <div class="input-group"><label>Specialization / Department</label><div class="input-group no-label no-icon"><input type="text" id="add-doc-spec" placeholder="E.g., Orthopedics"></div></div>
+                <div class="input-group"><label>Consultation Timing / Days</label><div class="input-group no-label no-icon"><input type="text" id="add-doc-time" placeholder="E.g., Mon-Sat (10AM to 1PM)"></div></div>
+                <button class="btn btn-secondary" onclick="App.adminAddDoctor()">Add Doctor to System</button>
             </div>
-            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Recently Uploaded</h3>
-            <div id="admin-vault-list"></div>
-        </div>
-
-        <div id="admin-docs" class="admin-tab-content" style="display: none;">
-            <div class="card">
-                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Create Doctor Portal Access</h4>
-                <div class="input-group no-label"><i class="fa-solid fa-user-doctor"></i><input type="text" id="add-doc-name" placeholder="Dr. Name"></div>
-                <div class="input-group no-label"><i class="fa-solid fa-stethoscope"></i><input type="text" id="add-doc-spec" placeholder="Specialization"></div>
-                
-                <div class="input-group no-label">
-                    <label style="background: var(--primary); color: white; padding: 15px; border-radius: 14px; display: block; cursor: pointer; text-align: center; font-weight: 800;">
-                        <i class="fa-solid fa-image"></i> Upload Doctor Photo
-                        <input type="file" accept="image/*" style="display: none;" onchange="App.handleFile(event)">
-                    </label>
-                </div>
-                <img id="add-doc-preview">
-                
-                <h4 style="font-size: 13px; font-weight: 800; margin: 15px 0 10px 0; color: var(--text-muted);">Doctor Login Credentials</h4>
-                <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="add-doc-email" placeholder="Doctor's Gmail"></div>
-                <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="add-doc-pass" placeholder="Create Password"></div>
-                
-                <button class="btn btn-primary" onclick="App.adminAddDoctor()">Create Doctor Account</button>
-            </div>
-            <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">Manage Doctors</h3>
+            <h3 style="font-size: 16px; font-weight: 800; margin: 25px 0 15px 0;">Active Doctors</h3>
             <div id="admin-doc-list"></div>
         </div>
-        
-        <!-- ONE CLICK DEMO RESET -->
-        <button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger-bg); margin-top: 30px; width: 100%; padding: 15px;" onclick="App.resetDemo()"><i class="fa-solid fa-rotate-right"></i> Reset All Demo Data</button>
-    </div>
 
-    <!-- ==================== 9. DOCTOR DASHBOARD ==================== -->
-    <div id="screen-doctor-dashboard" class="screen">
-        <div class="flex-between" style="margin-bottom: 25px;">
-            <div>
-                <p style="font-size: 13px; font-weight: 800; color: var(--primary); text-transform: uppercase;">Doctor Portal</p>
-                <h2 class="heading" id="doc-portal-name" style="font-size: 24px;">Welcome</h2>
+        <div id="admin-settings" class="admin-tab-content" style="display: none;">
+            <div class="card" style="background: linear-gradient(135deg, var(--secondary), #1E293B); color: white; border: none;">
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;"><i class="fa-solid fa-bullhorn" style="color: var(--warning);"></i> Broadcast Notification</h4>
+                <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">Send a message to all patients' home screen.</p>
+                <div class="input-group no-label no-icon"><input type="text" id="bc-title" placeholder="Notice Title" style="background: rgba(255,255,255,0.1); color: white;"></div>
+                <div class="input-group no-label no-icon"><textarea id="bc-msg" placeholder="Message details..." style="background: rgba(255,255,255,0.1); color: white; min-height: 80px;"></textarea></div>
+                <button class="btn btn-warning" style="background: var(--warning); color: white;" onclick="App.sendBroadcast()">Publish Notice</button>
+                <button class="btn btn-outline btn-sm" style="margin-top: 10px; width: 100%; border-color: rgba(255,255,255,0.2); color: white; background: transparent;" onclick="App.clearBroadcast()">Remove Notice</button>
             </div>
-            <button class="btn btn-danger btn-sm" style="border-radius: 14px;" onclick="App.logout()"><i class="fa-solid fa-power-off"></i> Logout</button>
-        </div>
 
-        <div class="card" style="background: var(--dark-glass); color: white;">
-            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 15px;">Update My Running Token</h4>
-            <div style="display:flex; gap:10px;">
-                <input type="number" id="doc-run-tok" style="flex: 1; padding: 15px; border-radius: 14px; font-weight: 800; font-size: 18px; text-align: center; border:none; outline:none;">
-                <button class="btn btn-primary" style="width: auto; padding: 0 25px;" onclick="App.doctorUpdateToken()">Sync Live</button>
+            <div class="card">
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;"><i class="fa-solid fa-address-book" style="color: var(--primary);"></i> Edit Hospital Contact Info</h4>
+                <div class="input-group"><label>Phone Number</label><div class="input-group no-label no-icon"><input type="tel" id="set-phone"></div></div>
+                <div class="input-group"><label>WhatsApp Number</label><div class="input-group no-label no-icon"><input type="tel" id="set-wa"></div></div>
+                <div class="input-group"><label>Email Address</label><div class="input-group no-label no-icon"><input type="email" id="set-email"></div></div>
+                <button class="btn btn-primary" onclick="App.updateContactInfo()">Update Contact Info</button>
             </div>
         </div>
-
-        <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px;">My Appointments / Requests</h3>
-        <div id="doctor-appt-list"></div>
     </div>
 
-    <!-- ==================== FLOATING DOCK ==================== -->
     <div class="floating-dock" id="patient-dock" style="display: none;">
-        <div class="dock-item active" id="nav-home" onclick="App.switchTab('screen-patient-home', 'nav-home')"><i class="fa-solid fa-house-chimney"></i>Home</div>
-        <div class="dock-item" id="nav-book" onclick="App.switchTab('screen-patient-book', 'nav-book')"><i class="fa-solid fa-calendar-plus"></i>Book</div>
-        <div class="dock-item" id="nav-queue" onclick="App.switchTab('screen-patient-queue', 'nav-queue')"><i class="fa-solid fa-ticket"></i>Queue</div>
-        <div class="dock-item" id="nav-profile" onclick="App.switchTab('screen-patient-profile', 'nav-profile')"><i class="fa-solid fa-user"></i>Profile</div>
+        <div class="dock-item active" id="nav-home" onclick="App.switchTab('screen-patient-home', 'nav-home')"><i class="fa-solid fa-house"></i></div>
+        <div class="dock-item" id="nav-queue" onclick="App.switchTab('screen-patient-queue', 'nav-queue')"><i class="fa-solid fa-calendar-check"></i></div>
+        <div class="dock-item" id="nav-vault" onclick="App.switchTab('screen-patient-vault', 'nav-vault')"><i class="fa-solid fa-folder-open"></i></div>
+        <div class="dock-item" id="nav-profile" onclick="App.switchTab('screen-patient-profile', 'nav-profile')"><i class="fa-solid fa-user"></i></div>
     </div>
 
-    <!-- ==================== CORE ARCHITECTURE & LOGIC ==================== -->
     <script>
-        // --- SPLASH SCREEN LOGIC ---
-        window.addEventListener('load', () => {
-            setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                if(splash) { splash.style.opacity = '0'; setTimeout(() => splash.style.display = 'none', 800); }
-            }, 2000); 
+        // --- 1. Handle Splash Screen ---
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const splashScreen = document.getElementById('splash-screen');
+                if (splashScreen) {
+                    splashScreen.style.opacity = '0';
+                    setTimeout(function() { splashScreen.style.display = 'none'; }, 800);
+                }
+            }, 2500); 
         });
 
-        // --- AI TIPS DATA (Vast Array for Rotation) ---
-        const AITipsDB = {
-            underweight: ["எடை குறைவாக உள்ளது. எடப்பாடி தட்டு வடை செட்டுடன், சத்தான சுண்டல் சேர்த்து உண்ணவும்.", "தினமும் பேரீச்சம்பழம் மற்றும் வாழைப்பழம் சாப்பிடுவது உடல் எடையை சீராக அதிகரிக்க உதவும்.", "காலை உணவை தவிர்க்க வேண்டாம். சத்தான சிறுதானிய கஞ்சிகளை உணவில் சேர்க்கவும்."],
-            normal: ["நீங்கள் மிகவும் ஆரோக்கியமாக உள்ளீர்கள்! இதே உணவுப் பழக்கத்தைத் தொடரவும்.", "தினமும் 3 லிட்டர் தண்ணீர் குடிப்பது உங்கள் சருமத்தையும் உடலையும் புத்துணர்ச்சியாக வைக்கும்.", "நஞ்சப்பா பைபாஸ் சாலையில் தினமும் 30 நிமிடம் நடைபயிற்சி செய்வது இதயத்திற்கு நல்லது."],
-            overweight: ["எடை சற்று அதிகமாக உள்ளது. எண்ணெயில் பொரித்த உணவுகளைக் குறைத்து, காய்கறிகளை அதிகம் சேர்க்கவும்.", "தினமும் குறைந்தது 45 நிமிடம் நடைபயிற்சி அவசியம். பேக்கரி இனிப்புகளைத் தவிர்க்கவும்.", "இரவு உணவை 8 மணிக்குள் முடித்துக்கொள்வது உடல் எடையை குறைக்க பெரிதும் உதவும்."],
-            obese: ["உடல் பருமன் அதிகமாக உள்ளது. மருத்துவரைச் சந்தித்து முறையான டயட் சார்ட் பெறுவது அவசியம்.", "துரித உணவுகள் (Fast food) மற்றும் மைதா பண்டங்களை முற்றிலும் தவிர்க்கவும்.", "தினமும் வெதுவெதுப்பான சீரகத் தண்ணீர் குடிப்பது செரிமானத்தை சீராக்கி கொழுப்பைக் குறைக்கும்."]
+        // --- 2. AI Health Database (Dynamic Tips) ---
+        const AI_Coach_Tips = {
+            underweight: [
+                "Your BMI indicates you are underweight. Focus on nutrient-dense foods like nuts, seeds, lean proteins, and complex carbs.",
+                "Add an extra healthy meal or protein shake to your daily routine to reach optimal weight.",
+                "Ensure you're eating enough healthy fats like avocados and olive oil. Strength training can help build muscle mass."
+            ],
+            normal: [
+                "Great job! Your BMI is perfectly healthy. Maintain your balanced diet and active lifestyle.",
+                "Continue your 30-minute daily activity. Consistency is the key to long-term health.",
+                "Your vitals look excellent. Remember to stay hydrated and ensure 7-8 hours of restful sleep."
+            ],
+            overweight: [
+                "Your BMI is slightly above normal. Consider substituting refined carbs with whole grains and vegetables.",
+                "A daily brisk walk for 45 minutes can significantly improve cardiovascular health and assist in weight management.",
+                "Focus on portion control. Drinking a glass of water before meals can help reduce calorie intake naturally."
+            ],
+            obese: [
+                "Your BMI falls in the obese category. We highly recommend scheduling a consultation with our general physician.",
+                "Start with light, low-impact exercises like swimming or walking to avoid joint stress, combined with a guided diet.",
+                "Limit added sugars and processed foods entirely. Small, consistent daily changes will yield significant results."
+            ]
         };
 
+        const VaultCategoryMeta = {
+            'prescription': { icon: 'fa-file-prescription', color: '#0EA5E9', bg: '#E0F2FE', label: 'Prescription' },
+            'lab': { icon: 'fa-vial', color: '#10B981', bg: '#D1FAE5', label: 'Lab Report' },
+            'scan': { icon: 'fa-x-ray', color: '#8B5CF6', bg: '#EDE9FE', label: 'Scan / MRI' },
+            'discharge': { icon: 'fa-hospital-user', color: '#0891B2', bg: '#CFFAFE', label: 'Discharge' },
+            'bill': { icon: 'fa-file-invoice-dollar', color: '#F43F5E', bg: '#FFE4E6', label: 'Medical Bill' }
+        };
+
+        // --- 3. Main Application Controller ---
         const App = {
             state: {
                 currentUser: null,
-                users: [{ id: 1, name: "Anantharaj", email: "ananth@gmail.com", phone: "9876543210", password: "123", age: "32", blood: "B+", height: "", weight: "", emergency: "", history: "" }],
-                doctors: [
-                    { id: 101, email: "siva@gmail.com", password: "123", name: "Dr. Sivasankar", spec: "Cardiology", runningToken: 2, image: "https://ui-avatars.com/api/?name=Dr+S&background=ebf8ff&color=2563eb&size=150", days: "Mon - Sat", times: "10:00 AM - 02:00 PM" },
-                    { id: 102, email: "priya@gmail.com", password: "123", name: "Dr. Priya", spec: "Pediatrics", runningToken: 0, image: "https://ui-avatars.com/api/?name=Dr+P&background=f0fdf4&color=10b981&size=150", days: "Mon - Fri", times: "04:00 PM - 08:00 PM" }
+                users: [
+                    { id: 1, name: "Anantharaj", email: "ananth@gmail.com", phone: "9876543210", password: "123", age: "32", height: "175", weight: "70", role: "patient", pendingNotification: "" }
                 ],
-                appointments: [{ id: 1001, userId: 1, doctorId: 101, date: new Date().toISOString().split('T')[0], time: "10:30 AM", token: 5, status: "Approved" }],
-                documents: [], // NEW: Health Vault Data
-                tempImg: "",
-                tempVaultImg: ""
+                doctors: [
+                    { id: 101, name: "Dr. Sivasankar", spec: "Cardiology", time: "Mon-Sat (10AM-2PM)" },
+                    { id: 102, name: "Dr. Priya", spec: "Pediatrics", time: "Mon-Fri (4PM-8PM)" },
+                    { id: 103, name: "Dr. Ramesh", spec: "Orthopedics", time: "Wed, Fri (11AM-3PM)" }
+                ],
+                appointments: [],
+                documents: [], 
+                broadcast: { active: false, title: "", message: "" },
+                hospitalInfo: { phone: "+91 9876543210", email: "care@senthil.com", whatsapp: "9876543210" },
+                tempImageBase64: ""
             },
 
-            // --- Database Loader for Demo Persistence ---
-            loadData: () => {
-                const data = localStorage.getItem('senthil_final_v3');
-                if (data) App.state = JSON.parse(data);
+            // State Management & Cloud Sync
+            loadData: function() { 
+                const savedData = localStorage.getItem('senthil_final_premium_v5'); 
+                if (savedData !== null) { 
+                    const parsed = JSON.parse(savedData);
+                    App.state = { ...App.state, ...parsed }; 
+                }
+                const sessionUser = localStorage.getItem('senthil_session_v5');
+                if (sessionUser !== null) { App.state.currentUser = JSON.parse(sessionUser); }
             },
-            saveData: () => {
-                localStorage.setItem('senthil_final_v3', JSON.stringify(App.state));
-            },
-
-            // --- Utilities ---
-            showToast: (msg, type='success') => {
-                const c = document.getElementById('toast-container');
-                const t = document.createElement('div'); t.className = `toast`;
-                t.innerHTML = `<i class="fa-solid ${type==='success'?'fa-circle-check':'fa-circle-exclamation'}" style="font-size: 24px; color: ${type==='success'?'var(--secondary)':'var(--danger)'};"></i><div style="font-size: 13px; font-weight: 800; line-height: 1.4;">${msg}</div>`;
-                c.appendChild(t);
-                setTimeout(() => { t.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(()=>t.remove(), 400); }, 3000);
-            },
-            navigate: (id) => {
-                document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-                document.getElementById(id).classList.add('active'); window.scrollTo(0,0);
-            },
-            switchTab: (screenId, navId) => {
-                App.navigate(screenId);
-                document.querySelectorAll('.dock-item').forEach(n => n.classList.remove('active'));
-                if(navId) document.getElementById(navId)?.classList.add('active');
-                if(screenId === 'screen-patient-book') App.renderBookingForm();
-                if(screenId === 'screen-patient-queue') App.renderQueueHistory();
-                if(screenId === 'screen-patient-profile') App.loadProfileData();
-                if(screenId === 'screen-patient-home') App.renderHome();
-            },
-            openModal: (id) => document.getElementById(id).classList.add('active'),
-            closeModal: (id) => document.getElementById(id).classList.remove('active'),
-
-            handleFile: (e) => {
-                const f = e.target.files[0]; const r = new FileReader();
-                r.onloadend = () => { App.state.tempImg = r.result; const p = document.getElementById('add-doc-preview'); p.src = r.result; p.style.display = 'block'; };
-                if(f) r.readAsDataURL(f);
-            },
-
-            // --- Authentication ---
-            signup: () => {
-                const name = document.getElementById('reg-name').value.trim(); const phone = document.getElementById('reg-phone').value.trim();
-                const email = document.getElementById('reg-email').value.trim(); const pass = document.getElementById('reg-pass').value; const pass2 = document.getElementById('reg-pass2').value;
-                if (!name || !phone || !email || !pass || !pass2) return App.showToast('All fields are required', 'error');
-                if (pass !== pass2) return App.showToast('Passwords do not match', 'error');
-                
-                const newUser = { id: Date.now(), name, phone, email, password: pass, age: '', blood: '', height: '', weight: '', emergency: '', history: '' };
-                App.state.users.push(newUser); App.saveData();
-                ['reg-name', 'reg-phone', 'reg-email', 'reg-pass', 'reg-pass2'].forEach(id => document.getElementById(id).value = '');
-                App.state.currentUser = newUser; App.saveData(); App.initPatient();
-            },
-            login: () => {
-                const email = document.getElementById('login-email').value.trim(); const pass = document.getElementById('login-password').value;
-                const user = App.state.users.find(u => u.email === email && u.password === pass);
-                if(user) { App.state.currentUser = { ...user, role: 'patient' }; App.saveData(); return App.initPatient(); }
-                const doctor = App.state.doctors.find(d => d.email === email && d.password === pass);
-                if(doctor) { App.state.currentUser = { role: 'doctor', ...doctor }; App.saveData(); return App.initDoctor(); }
-                App.showToast('Invalid credentials', 'error');
-            },
-            adminLogin: () => {
-                const u = document.getElementById('admin-user').value.trim().toLowerCase();
-                const p = document.getElementById('admin-pass').value.trim();
-                if ((u === 'admin' && p === 'admin') || (u === 'anantharajmech' && p === '0987654321')) {
-                    document.getElementById('patient-dock').style.display = 'none';
-                    document.getElementById('admin-user').value = ''; document.getElementById('admin-pass').value = '';
-                    App.state.currentUser = { id: 'admin1', name: 'Admin', role: 'admin' }; 
-                    App.saveData(); App.initAdmin();
-                } else { App.showToast("Use 'admin' as ID & Password", 'error'); }
-            },
-            logout: () => {
-                App.state.currentUser = null; document.getElementById('patient-dock').style.display = 'none';
-                App.saveData(); App.navigate('screen-login'); App.showToast('Logged out securely');
-            },
-
-            // --- Premium Forgot Password Logic ---
-            openForgotModal: () => {
-                document.getElementById('forgot-email').value = '';
-                document.getElementById('forgot-result').style.display = 'none';
-                App.openModal('modal-forgot');
-            },
-            recoverPassword: () => {
-                const email = document.getElementById('forgot-email').value.trim();
-                const res = document.getElementById('forgot-result');
-                if(!email) return App.showToast("Enter your email", "error");
-                
-                const user = App.state.users.find(u => u.email === email);
-                const doc = App.state.doctors.find(d => d.email === email);
-                
-                if(user) {
-                    res.style.display = 'block'; res.style.color = "var(--secondary)"; res.style.borderColor = "rgba(16,185,129,0.3)"; res.style.background = "rgba(16,185,129,0.1)";
-                    res.innerHTML = `Patient Password: <span style="color:var(--dark); font-size:16px;">${user.password}</span>`;
-                } else if(doc) {
-                    res.style.display = 'block'; res.style.color = "var(--primary)"; res.style.borderColor = "rgba(37,99,235,0.3)"; res.style.background = "rgba(37,99,235,0.1)";
-                    res.innerHTML = `Doctor Password: <span style="color:var(--dark); font-size:16px;">${doc.password}</span>`;
+            
+            saveData: async function() { 
+                localStorage.setItem('senthil_final_premium_v5', JSON.stringify(App.state)); 
+                if (App.state.currentUser !== null) {
+                    localStorage.setItem('senthil_session_v5', JSON.stringify(App.state.currentUser));
                 } else {
-                    res.style.display = 'block'; res.style.color = "var(--danger)"; res.style.borderColor = "rgba(239,68,68,0.3)"; res.style.background = "rgba(239,68,68,0.1)";
-                    res.innerHTML = `Email not found in our system.`;
+                    localStorage.removeItem('senthil_session_v5');
                 }
             },
 
-            // --- Reset Demo ---
-            resetDemo: () => {
-                if(confirm("Are you sure? This will wipe all current demo data.")) { localStorage.removeItem('senthil_final_v3'); location.reload(); }
-            },
+            syncData: async function() {
+                if(typeof db !== 'undefined' && db !== null) {
+                    try {
+                        const usersSnap = await db.collection("users").get();
+                        if(!usersSnap.empty) { App.state.users = usersSnap.docs.map(doc => doc.data()); }
+                        
+                        const apptsSnap = await db.collection("appointments").get();
+                        if(!apptsSnap.empty) { App.state.appointments = apptsSnap.docs.map(doc => doc.data()); }
 
-            runClock: () => { setInterval(() => { const now = new Date(); const clockEl = document.getElementById('ui-clock'); const dateEl = document.getElementById('ui-date'); if(clockEl) clockEl.innerText = now.toLocaleTimeString('en-US', {hour:'2-digit', minute:'2-digit'}); if(dateEl) dateEl.innerText = now.toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); }, 1000); },
+                        const docsSnap = await db.collection("documents").get();
+                        if(!docsSnap.empty) { App.state.documents = docsSnap.docs.map(doc => doc.data()); }
 
-            // --- Patient Dashboard ---
-            initPatient: () => {
-                const u = App.state.currentUser;
-                document.getElementById('ui-name').innerText = u.name; document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
-                const hr = new Date().getHours(); document.getElementById('ui-greeting').innerText = hr < 12 ? 'Good Morning,' : hr < 17 ? 'Good Afternoon,' : 'Good Evening,';
-                document.getElementById('patient-dock').style.display = 'flex';
-                App.renderHome(); App.switchTab('screen-patient-home', 'nav-home');
-                App.showToast(`Welcome back, ${u.name}!`);
-            },
-            renderHome: () => {
-                const myAppts = App.state.appointments.filter(a => a.userId === App.state.currentUser.id && (a.status==='Pending' || a.status==='Approved'));
-                let heroHtml = '';
-                if(myAppts.length > 0) {
-                    const doc = App.state.doctors.find(d => d.id === myAppts[0].doctorId);
-                    heroHtml = `<div class="trust-badge" style="margin-bottom:15px; margin-top:0;"><div class="status-dot"></div> Live Token Linked</div>
-                        <div class="flex-between"><div><p style="font-size:12px; color:#cbd5e1; font-weight:700;">Active Appointment</p><h2 style="font-size:22px; font-weight:800; margin-top:2px;">${doc ? doc.name : 'General Duty Doctor'}</h2><p style="font-size:13px; font-weight:600; margin-top:5px;">Token #${myAppts[0].token} | ${myAppts[0].date}</p></div>
-                        <div style="background:rgba(255,255,255,0.2); padding:12px 18px; border-radius:18px; font-weight:800; font-size:14px; text-align:center;">${myAppts[0].time}</div></div>`;
-                } else {
-                    heroHtml = `<div class="trust-badge" style="margin-bottom:15px; margin-top:0;"><div class="status-dot"></div> System Online</div>
-                        <h2 style="font-size:22px; font-weight:800; margin-bottom:5px;">Your Health, First.</h2><p style="font-size:13px; color:#cbd5e1; font-weight:600;">Book a world-class specialist today.</p><button class="btn btn-outline" style="margin-top:15px; border-color:rgba(255,255,255,0.3); color:white; width:auto; padding:12px 20px;" onclick="App.switchTab('screen-patient-book', 'nav-book')">Book Appointment</button>`;
+                        const systemSnap = await db.collection("system").doc("settings").get();
+                        if(systemSnap.exists) {
+                            const data = systemSnap.data();
+                            if(data.doctors) App.state.doctors = data.doctors;
+                            if(data.broadcast) App.state.broadcast = data.broadcast;
+                            if(data.hospitalInfo) App.state.hospitalInfo = data.hospitalInfo;
+                        }
+                    } catch(e) { console.error("Firebase Sync Error (using local)", e); }
                 }
-                document.getElementById('ui-hero-banner').innerHTML = heroHtml;
-
-                document.getElementById('home-doctors-list').innerHTML = App.state.doctors.map(d => `
-                    <div class="doc-card-mini" onclick="App.openDoctorModal(${d.id})">
-                        <img src="${d.image || 'https://ui-avatars.com/api/?name='+d.name+'&background=random'}">
-                        <h4 style="font-size: 13px; font-weight: 800; color: var(--text-main);">${d.name}</h4>
-                        <p style="font-size: 10px; font-weight: 700; color: var(--primary);">${d.spec}</p>
-                    </div>
-                `).join('');
-                App.updateHomeAITip();
-            },
-            
-            // --- NEW: AI Diet Chart Downloader ---
-            downloadDietChart: () => {
-                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
-                const h = document.getElementById('prof-height')?.value || u.height; const w = document.getElementById('prof-weight')?.value || u.weight;
-                if(!h || !w || h == 0) return App.showToast("உயரம் மற்றும் எடையை Vitals-ல் அப்டேட் செய்யவும்.", "warning");
-                
-                const bmi = (w / ((h/100)**2)).toFixed(1);
-                let cat = '', diet = '';
-                if(bmi < 18.5) { cat = 'UNDERWEIGHT'; diet = "காலை: இட்லி/தோசை உளுந்து சுண்டலுடன்.\nமதியம்: சாதம், பருப்பு, நெய், முட்டை.\nஇரவு: சத்தான கஞ்சி அல்லது சப்பாத்தி.\nடிப்ஸ்: தினமும் பேரீச்சம்பழம், வாழைப்பழம் சாப்பிடவும்."; }
-                else if(bmi < 25) { cat = 'NORMAL'; diet = "காலை: இட்லி/தோசை சட்னியுடன்.\nமதியம்: சரிவிகித உணவு (காய்கறிகள் அதிகம்).\nஇரவு: எளிதில் செரிக்கும் உணவு.\nடிப்ஸ்: இதே ஆரோக்கியமான பழக்கத்தை தொடரவும்."; }
-                else if(bmi < 30) { cat = 'OVERWEIGHT'; diet = "காலை: ஓட்ஸ் அல்லது கோதுமை உப்புமா.\nமதியம்: சாதம் குறைத்து, காய்கறிகள் அதிகம்.\nஇரவு: சப்பாத்தி அல்லது சூப்.\nடிப்ஸ்: தினமும் 45 நிமிடம் நடைபயிற்சி அவசியம்."; }
-                else { cat = 'OBESE'; diet = "காலை: பழங்கள் மற்றும் முளைகட்டிய தானியங்கள்.\nமதியம்: காய்கறி சாலட், சிறுதானிய உணவு.\nஇரவு: காய்கறி சூப் மட்டும்.\nடிப்ஸ்: துரித உணவுகளை முற்றிலும் தவிர்க்கவும். வெதுவெதுப்பான நீர் குடிக்கவும்."; }
-
-                const text = `Senthil Multi Speciality Hospital\n==================================\n\nநோயாளி பெயர் (Patient): ${u.name}\nஉடல் நிறை குறியீடு (BMI Score): ${bmi} (${cat})\n\nஉங்களுக்கான பிரத்யேக டயட் சார்ட்:\n----------------------------------\n${diet}\n\nDisclaimer: This is an AI generated diet chart. Please consult your doctor for severe conditions.\nThank you for choosing Senthil Hospital!`;
-                
-                const blob = new Blob([text], { type: 'text/plain' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url; a.download = `Senthil_Diet_Chart_${u.name.replace(/\s+/g, '_')}.txt`;
-                document.body.appendChild(a); a.click(); document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                App.showToast('Diet Chart Downloaded Successfully!', 'success');
             },
 
-            updateHomeAITip: () => {
-                const tip = document.getElementById('ai-dynamic-tip'); const dietBtn = document.getElementById('diet-plan-btn');
-                if(!tip || !App.state.currentUser) return;
-                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
-                if(!u) return;
-
-                const h = document.getElementById('prof-height')?.value || u.height; const w = document.getElementById('prof-weight')?.value || u.weight;
-                if(!h || !w || h == 0) {
-                    tip.innerText = "உயரம் மற்றும் எடையை Vitals பக்கத்தில் அப்டேட் செய்யவும்.";
-                    if(dietBtn) dietBtn.style.display = 'none'; return;
-                }
-                
-                const bmi = (w / ((h/100)**2)).toFixed(1);
-                let cat = '';
-                if(bmi < 18.5) cat = 'underweight'; else if(bmi < 25) cat = 'normal'; else if(bmi < 30) cat = 'overweight'; else cat = 'obese';
-
-                const tipsArr = AITipsDB[cat]; const randTip = tipsArr[Math.floor(Math.random() * tipsArr.length)];
-                tip.innerHTML = `<span style="font-size:11px; background:rgba(16,185,129,0.2); padding:4px 8px; border-radius:8px; display:inline-block; margin-bottom:8px;">BMI Score: ${bmi}</span><br/>${randTip}`;
-                if(dietBtn) { dietBtn.style.display = 'block'; dietBtn.innerHTML = `<i class="fa-solid fa-download"></i> டயட் சார்ட் டவுன்லோட் (${cat.toUpperCase()})`; }
-            },
-
-            // --- Modals & Booking Actions ---
-            openDoctorModal: (id) => {
-                const doc = App.state.doctors.find(d => d.id === id);
-                document.getElementById('mod-doc-img').src = doc.image || 'https://ui-avatars.com/api/?name='+doc.name+'&background=random';
-                document.getElementById('mod-doc-name').innerText = doc.name; document.getElementById('mod-doc-spec').innerText = doc.spec;
-                document.getElementById('mod-doc-days').innerText = doc.days || 'Mon - Sat'; document.getElementById('mod-doc-times').innerText = doc.times || '10:00 AM - 05:00 PM';
-                document.getElementById('mod-doc-id').value = doc.id; App.openModal('modal-doctor');
-            },
-            
-            // --- FIX: General Token Logic ---
-            confirmGeneralToken: () => {
-                const today = new Date().toISOString().split('T')[0];
-                App.createBookingLogic(0, today, "Walk-in (General)");
-                App.closeModal('modal-general');
-            },
-            
-            goToSlotBooking: () => {
-                const docId = parseInt(document.getElementById('mod-doc-id').value);
-                App.closeModal('modal-doctor'); App.switchTab('screen-patient-book', 'nav-book');
-                document.getElementById('book-doctor').value = docId;
-            },
-            renderBookingForm: () => {
-                document.getElementById('book-doctor').innerHTML = `<option value="">Choose Specialist...</option>` + App.state.doctors.map(d => `<option value="${d.id}">${d.name} (${d.spec})</option>`).join('');
-            },
-            createBooking: () => {
-                const docId = parseInt(document.getElementById('book-doctor').value); const date = document.getElementById('book-date').value; const time = document.getElementById('book-time').value;
-                if(!docId || !date || !time) return App.showToast('Select all details', 'error');
-                App.createBookingLogic(docId, date, time);
-            },
-            createBookingLogic: (docId, date, time) => {
-                const exists = App.state.appointments.filter(a => a.doctorId === docId && a.date === date);
-                const token = exists.length > 0 ? Math.max(...exists.map(e => e.token)) + 1 : 1;
-                App.state.appointments.push({ id: Date.now(), userId: App.state.currentUser.id, doctorId: docId, date, time, token, status: "Pending" });
-                App.saveData(); App.showToast('Token Generated! Waiting for Approval.'); App.switchTab('screen-patient-queue', 'nav-queue');
-            },
-            rebookLast: () => {
-                const history = App.state.appointments.filter(a => a.userId === App.state.currentUser.id && a.doctorId !== 0);
-                if(history.length === 0) return App.showToast('No specific past appointments found', 'error');
-                App.openDoctorModal(history[history.length-1].doctorId);
-            },
-
-            // --- Smart Wait Time Estimator ---
-            renderQueueHistory: () => {
-                const myAppts = App.state.appointments.filter(a => a.userId === App.state.currentUser.id).reverse();
-                const active = myAppts.find(a => a.status === 'Approved' || a.status === 'Pending' || a.status === 'In Progress');
-                
-                const liveSec = document.getElementById('live-token-widget');
-                if(active) {
-                    liveSec.style.display = 'block';
-                    const doc = App.state.doctors.find(d => d.id === active.doctorId);
-                    document.getElementById('tok-my').innerText = active.token;
-                    document.getElementById('tok-doc').innerText = doc ? `${doc.name} | ${active.time}` : `General Duty | ${active.time}`;
-                    
-                    let runT = doc ? doc.runningToken : Math.floor(active.token * 0.6); // mock for general
-                    document.getElementById('tok-run').innerText = runT;
-                    
-                    let diff = active.token - runT;
-                    let prog = active.token > 0 ? (runT / active.token) * 100 : 0;
-                    prog = Math.min(Math.max(prog, 0), 100);
-
-                    const progressFill = document.getElementById('tok-progress');
-                    const statusBox = document.getElementById('tok-status');
-                    progressFill.style.width = `${prog}%`;
-                    
-                    if (active.status === 'Pending') {
-                        statusBox.innerHTML = 'Waiting for Doctor Approval...'; progressFill.style.background = 'var(--warning)';
-                    } else if (diff <= 0) {
-                        statusBox.innerHTML = `<span style="color: var(--danger);"><i class="fa-solid fa-door-open"></i> Proceed to Doctor Room</span>`; progressFill.style.background = 'var(--danger)';
-                    } else {
-                        // Dynamic wait time calculation (10 mins per token)
-                        statusBox.innerHTML = `<i class="fa-regular fa-clock"></i> Est. Wait Time: ~${diff * 10} mins`; progressFill.style.background = 'var(--secondary)';
+            initApp: async function() {
+                try {
+                    if (typeof firebase !== 'undefined') {
+                        firebase.initializeApp({
+                            apiKey: "AIzaSyCD3Ec4EDyZCpgP_cEMsNgq0yl0mSktKLw",
+                            authDomain: "senthil-hospital.firebaseapp.com",
+                            projectId: "senthil-hospital",
+                            storageBucket: "senthil-hospital.firebasestorage.app",
+                            messagingSenderId: "982153290551",
+                            appId: "1:982153290551:web:5b9fa11ffe7b9f6f5f30b2"
+                        });
+                        window.db = firebase.firestore();
+                        window.cloudStorage = firebase.storage();
                     }
-                    document.getElementById('live-token-widget').setAttribute('data-active-id', active.id);
-                } else { liveSec.style.display = 'none'; }
+                } catch(e) { console.log(e); }
 
-                document.getElementById('patient-history-container').innerHTML = myAppts.map(a => {
-                    const d = App.state.doctors.find(doc => doc.id === a.doctorId);
-                    let badgeClass = a.status.toLowerCase().replace(' ', '-');
-                    let actions = '';
-                    if(a.status === 'Pending' || a.status === 'Approved') {
-                        actions = `<button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})">Reschedule</button><button class="btn btn-danger btn-sm" onclick="App.cancelBooking(${a.id})">Cancel</button>`;
-                    } else { if(d) actions = `<button class="btn btn-primary btn-sm" onclick="App.openDoctorModal(${d.id})">Book Again</button>`; }
-
-                    return `<div class="card"><div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;">${d ? d.name : 'General Token'}</h4><span class="badge ${badgeClass}">${a.status}</span></div><p style="font-size:13px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">Token #${a.token} | ${a.date} | ${a.time}</p><div style="display:flex; gap:10px;">${actions}</div></div>`;
-                }).join('') || '<p style="font-size:13px; font-weight:700; color:var(--text-muted);">No history available.</p>';
-            },
-            cancelBooking: (id) => {
-                if(!confirm('Cancel this appointment?')) return;
-                const a = App.state.appointments.find(x => x.id === id);
-                if(a) a.status = 'Cancelled'; App.saveData(); App.showToast('Appointment Cancelled.'); App.renderQueueHistory(); App.renderHome();
-            },
-            cancelBookingFromWidget: () => {
-                const id = document.getElementById('live-token-widget').getAttribute('data-active-id');
-                if(id) App.cancelBooking(parseInt(id));
+                App.loadData();
+                await App.syncData();
+                
+                if (App.state.currentUser !== null) {
+                    if (App.state.currentUser.role === 'admin') { App.initAdmin(); } 
+                    else { App.initPatient(); }
+                }
             },
 
-            // --- AI Profile System ---
-            loadProfileData: () => {
-                if(!App.state.currentUser) return;
-                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
-                if(u) {
-                    ['name', 'phone', 'email', 'age', 'blood', 'height', 'weight', 'emergency', 'history'].forEach(k => { 
-                        const el = document.getElementById('prof-'+k); if(el) el.value = u[k] || ''; 
-                    });
+            showLoader: function() { document.getElementById('global-loader').style.display = 'flex'; },
+            hideLoader: function() { document.getElementById('global-loader').style.display = 'none'; },
+
+            // Core UI Utilities
+            showToast: function(messageText, messageType = 'success') {
+                const toastContainer = document.getElementById('toast-container'); 
+                const toastElement = document.createElement('div'); 
+                toastElement.className = `toast`;
+                
+                let iconClass = messageType === 'success' ? 'fa-circle-check' : 'fa-circle-exclamation';
+                let iconColor = messageType === 'success' ? '#10B981' : '#F43F5E';
+                
+                toastElement.innerHTML = `
+                    <i class="fa-solid ${iconClass}" style="font-size: 22px; color: ${iconColor};"></i>
+                    <div style="font-size: 14px; font-weight: 700;">${messageText}</div>
+                `;
+                toastContainer.appendChild(toastElement); 
+                setTimeout(function() { toastElement.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(function() { toastElement.remove(); }, 400); }, 3000);
+            },
+
+            navigate: function(screenId) { 
+                const allScreens = document.querySelectorAll('.screen');
+                for (let i = 0; i < allScreens.length; i++) { allScreens[i].classList.remove('active'); }
+                document.getElementById(screenId).classList.add('active'); window.scrollTo(0,0); 
+            },
+
+            switchTab: function(screenId, navElementId) { 
+                App.navigate(screenId); 
+                const dockItemsList = document.querySelectorAll('.dock-item');
+                for (let i = 0; i < dockItemsList.length; i++) { dockItemsList[i].classList.remove('active'); }
+                if (navElementId !== null) { document.getElementById(navElementId).classList.add('active'); }
+                
+                if (screenId === 'screen-patient-book') { 
+                    let doctorOptionsHTML = `<option value="">Select Specialist...</option>`;
+                    for (let i = 0; i < App.state.doctors.length; i++) {
+                        doctorOptionsHTML += `<option value="${App.state.doctors[i].id}">${App.state.doctors[i].name} (${App.state.doctors[i].spec})</option>`;
+                    }
+                    document.getElementById('book-doctor').innerHTML = doctorOptionsHTML;
+                }
+                
+                if (screenId === 'screen-patient-queue') { App.renderQueueHistory(); }
+                if (screenId === 'screen-patient-vault') { App.renderPatientVault('all'); }
+                if (screenId === 'screen-patient-profile') { App.loadProfileData(); App.renderContactInfo(); }
+                if (screenId === 'screen-patient-home') { App.updateAICoach(); App.renderPatientBroadcast(); }
+            },
+
+            openModal: function(id) { document.getElementById(id).classList.add('active'); },
+            closeModal: function(id) { document.getElementById(id).classList.remove('active'); },
+
+            // Authentication & Account Recovery
+            signup: async function() {
+                const nameIn = document.getElementById('reg-name').value.trim();
+                const phoneIn = document.getElementById('reg-phone').value.trim();
+                const ageIn = document.getElementById('reg-age').value.trim();
+                const emailIn = document.getElementById('reg-email').value.trim();
+                const pass1 = document.getElementById('reg-pass').value;
+                const pass2 = document.getElementById('reg-pass2').value;
+
+                if (nameIn === '' || phoneIn === '' || ageIn === '' || emailIn === '' || pass1 === '' || pass2 === '') { 
+                    return App.showToast('All fields are mandatory', 'error'); 
+                }
+                if (pass1 !== pass2) { 
+                    return App.showToast('Passwords do not match!', 'error'); 
+                }
+
+                App.showLoader();
+                const newUser = { id: Date.now(), name: nameIn, phone: phoneIn, age: ageIn, email: emailIn, password: pass1, height: "", weight: "", role: 'patient', pendingNotification: "" }; 
+                
+                if(typeof db !== 'undefined' && db !== null) {
+                    try { await db.collection("users").doc(newUser.id.toString()).set(newUser); } catch(e) { console.log(e); }
+                }
+
+                App.state.users.push(newUser); App.state.currentUser = newUser; 
+                App.saveData(); App.hideLoader(); App.initPatient();
+            },
+
+            login: async function() {
+                const emailIn = document.getElementById('login-email').value.trim();
+                const passIn = document.getElementById('login-password').value;
+                
+                App.showLoader();
+                await App.syncData(); 
+                
+                let matchedUser = null;
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].email === emailIn && App.state.users[i].password === passIn) { 
+                        matchedUser = App.state.users[i]; break; 
+                    }
+                }
+                
+                App.hideLoader();
+                if (matchedUser !== null) { 
+                    App.state.currentUser = { ...matchedUser, role: 'patient' }; 
+                    App.saveData(); return App.initPatient(); 
+                }
+                App.showToast('Invalid Email or Password', 'error');
+            },
+
+            sendResetLink: function() {
+                const emailIn = document.getElementById('forgot-email').value.trim();
+                if(emailIn === '') return App.showToast('Enter your email address', 'error');
+                
+                const btn = document.getElementById('forgot-btn');
+                btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
+                
+                setTimeout(function() {
+                    btn.innerHTML = 'Send Reset Link';
+                    document.getElementById('forgot-success-msg').style.display = 'block';
+                    document.getElementById('forgot-email').value = '';
+                }, 1500);
+            },
+
+            adminLogin: function() {
+                const adminUser = document.getElementById('admin-user').value.trim();
+                const adminPass = document.getElementById('admin-pass').value.trim();
+                
+                if (adminUser === 'admin' && adminPass === 'admin') { 
+                    document.getElementById('patient-dock').style.display = 'none'; 
+                    App.state.currentUser = { id: 'admin1', name: 'Admin', role: 'admin' }; 
+                    App.saveData(); App.initAdmin(); 
+                } else {
+                    App.showToast("Wrong Admin ID or Password", 'error');
+                }
+            },
+
+            logout: function() { 
+                App.state.currentUser = null; document.getElementById('patient-dock').style.display = 'none'; 
+                App.saveData(); App.navigate('screen-login'); App.showToast('Logged out securely'); 
+            },
+
+            // --- PATIENT MODULES (DASHBOARD & AI) ---
+            initPatient: function() { 
+                document.getElementById('ui-name').innerText = App.state.currentUser.name; 
+                document.getElementById('patient-dock').style.display = 'flex'; 
+                App.switchTab('screen-patient-home', 'nav-home'); 
+                App.checkNotifications();
+            },
+
+            checkNotifications: async function() {
+                let userRef = null;
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].id === App.state.currentUser.id) { userRef = App.state.users[i]; break; }
+                }
+                if (userRef && userRef.pendingNotification && userRef.pendingNotification !== "") {
+                    App.showToast(userRef.pendingNotification, 'success');
+                    document.getElementById('ui-notif-dot').style.display = 'block'; 
+                    userRef.pendingNotification = ""; 
+                    
+                    if(typeof db !== 'undefined' && db !== null) {
+                        try { await db.collection("users").doc(userRef.id.toString()).update({ pendingNotification: "" }); } catch(e){}
+                    }
+                    App.saveData();
+                } else {
+                    document.getElementById('ui-notif-dot').style.display = 'none';
+                }
+            },
+
+            renderPatientBroadcast: function() {
+                const area = document.getElementById('patient-broadcast-area');
+                if(App.state.broadcast && App.state.broadcast.active) {
+                    document.getElementById('pb-title').innerText = App.state.broadcast.title;
+                    document.getElementById('pb-msg').innerText = App.state.broadcast.message;
+                    area.style.display = 'flex';
+                } else {
+                    area.style.display = 'none';
+                }
+            },
+
+            updateAICoach: function() {
+                const terminalElement = document.getElementById('ai-smart-tip');
+                const badgeElement = document.getElementById('ai-health-status');
+                
+                let activeUser = null;
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].id === App.state.currentUser.id) { activeUser = App.state.users[i]; break; }
+                }
+
+                let textToType = "Scanning health profile... Update your BMI to receive personalized medical insights.";
+
+                if (activeUser && activeUser.height && activeUser.weight && activeUser.height > 0) {
+                    const heightMeters = parseFloat(activeUser.height) / 100;
+                    const weightKg = parseFloat(activeUser.weight);
+                    const bmi = (weightKg / (heightMeters * heightMeters)).toFixed(1);
+
+                    let healthCat = '';
+                    if (bmi < 18.5) { healthCat = 'underweight'; badgeElement.innerText = "Underweight"; badgeElement.style.background = "#F59E0B"; badgeElement.style.color = "white"; }
+                    else if (bmi < 25) { healthCat = 'normal'; badgeElement.innerText = "HEALTHY"; badgeElement.style.background = "#10B981"; badgeElement.style.color = "white"; }
+                    else if (bmi < 30) { healthCat = 'overweight'; badgeElement.innerText = "Overweight"; badgeElement.style.background = "#F43F5E"; badgeElement.style.color = "white"; }
+                    else { healthCat = 'obese'; badgeElement.innerText = "UNHEALTHY"; badgeElement.style.background = "#BE123C"; badgeElement.style.color = "white"; }
+
+                    const randomTip = AI_Coach_Tips[healthCat][Math.floor(Math.random() * AI_Coach_Tips[healthCat].length)];
+                    textToType = `Analysis: BMI is ${bmi}. ${randomTip}`;
+                } else {
+                    badgeElement.innerText = "Pending"; badgeElement.style.background = "rgba(255,255,255,0.2)"; badgeElement.style.color = "white";
+                }
+
+                terminalElement.innerHTML = '';
+                let index = 0;
+                function typeWriter() {
+                    if (index < textToType.length && document.getElementById('screen-patient-home').classList.contains('active')) {
+                        terminalElement.innerHTML += textToType.charAt(index);
+                        index++;
+                        setTimeout(typeWriter, 35); 
+                    }
+                }
+                typeWriter();
+            },
+
+            loadProfileData: function() {
+                let user = null;
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].id === App.state.currentUser.id) { user = App.state.users[i]; break; }
+                }
+                
+                if (user !== null) {
+                    document.getElementById('prof-name').value = user.name || '';
+                    document.getElementById('prof-age').value = user.age || '';
+                    document.getElementById('prof-phone').value = user.phone || '';
+                    document.getElementById('prof-email').value = user.email || '';
+                    document.getElementById('prof-height').value = user.height || '';
+                    document.getElementById('prof-weight').value = user.weight || '';
                 }
                 App.calculateBMI();
             },
-            calculateBMI: () => {
-                const h = parseFloat(document.getElementById('prof-height').value) / 100;
-                const w = parseFloat(document.getElementById('prof-weight').value);
-                const valEl = document.getElementById('ai-bmi-value'); const statEl = document.getElementById('ai-bmi-status');
-                
-                if(h > 0 && w > 0) {
-                    const bmi = (w / (h * h)).toFixed(1); valEl.innerText = bmi;
-                    if(bmi < 18.5) { statEl.innerText = "Underweight - Focus on Diet"; statEl.style.color = "#fef08a"; }
-                    else if(bmi <= 24.9) { statEl.innerText = "Healthy - Great Job!"; statEl.style.color = "#6ee7b7"; }
-                    else if(bmi <= 29.9) { statEl.innerText = "Overweight - Daily Walk needed"; statEl.style.color = "#fca5a5"; }
-                    else { statEl.innerText = "Obese - Consult Doctor"; statEl.style.color = "#ef4444"; }
-                    App.updateHomeAITip();
-                } else { valEl.innerText = "--"; statEl.innerText = "Update BMI to know"; statEl.style.color = "white"; }
-            },
-            saveProfile: () => {
-                const u = App.state.users.find(x => x.id == App.state.currentUser.id);
-                if(!u) return;
-                ['name', 'phone', 'age', 'blood', 'height', 'weight', 'emergency', 'history'].forEach(k => { const el = document.getElementById('prof-'+k); if(el) u[k] = el.value; });
-                App.state.currentUser = { ...u, role: 'patient' }; App.saveData(); App.showToast('Profile & AI Data updated securely!'); 
-                document.getElementById('ui-name').innerText = u.name; document.getElementById('ui-avatar').innerText = u.name.charAt(0).toUpperCase();
-                App.updateHomeAITip();
-            },
 
-            // --- Status Notification System ---
-            changeApptStatus: (id, status, isDoctorDashboard = false) => {
-                const a = App.state.appointments.find(x => x.id === id);
-                a.status = status; App.saveData();
-                const u = App.state.users.find(x => x.id === a.userId);
-                let msg = `Status updated to ${status}.`;
-                if(status === 'Approved') msg = `Confirmed! ${u ? u.name : 'Patient'} notified.`;
-                if(status === 'Rejected') msg = `${u ? u.name : 'Patient'} has been notified of rejection.`;
-                App.showToast(msg, status==='Rejected'?'error':'success'); 
-                if(isDoctorDashboard) App.renderDoctorAppts(); else App.renderAdminAppts();
-            },
-            openRescheduleModal: (id) => { document.getElementById('resch-appt-id').value = id; App.openModal('modal-reschedule'); },
-            confirmReschedule: () => {
-                const id = parseInt(document.getElementById('resch-appt-id').value);
-                const date = document.getElementById('resch-date').value; const time = document.getElementById('resch-time').value;
-                if(!date || !time) return App.showToast('Select Date & Time', 'error');
-                const a = App.state.appointments.find(x => x.id === id);
-                a.date = date; a.time = time; a.status = 'Pending'; App.saveData(); App.closeModal('modal-reschedule'); App.showToast('Updated! Waiting for Doctor Approval.');
-                if(App.state.currentUser.role === 'admin') App.renderAdminAppts(); else if(App.state.currentUser.role === 'doctor') App.renderDoctorAppts(); else { App.renderQueueHistory(); App.renderHome(); }
-            },
+            calculateBMI: function() {
+                const hVal = document.getElementById('prof-height').value;
+                const wVal = document.getElementById('prof-weight').value;
+                const display = document.getElementById('bmi-display');
+                const textDisplay = document.getElementById('bmi-text-display');
+                const badge = document.getElementById('bmi-status-badge');
+                const marker = document.getElementById('bmi-marker-pointer');
 
-            // --- NEW: HEALTH VAULT SYSTEM (PATIENT + ADMIN) ---
-            openVault: (type) => {
-                const myDocs = App.state.documents.filter(d => d.userId === App.state.currentUser.id && d.type === type).reverse();
-                document.getElementById('vault-view-title').innerText = type === 'prescription' ? 'My Prescriptions' : 'My Lab Reports';
-                
-                if(myDocs.length === 0) {
-                    document.getElementById('vault-view-content').innerHTML = `<div style="text-align:center; padding:20px;"><i class="fa-solid fa-folder-open" style="font-size:40px; color:#cbd5e1; margin-bottom:10px;"></i><p style="font-size:13px; font-weight:700; color:var(--text-muted);">No records found. Admin will upload them here.</p></div>`;
-                } else {
-                    document.getElementById('vault-view-content').innerHTML = myDocs.map(d => `
-                        <div style="border: 1px solid #e2e8f0; border-radius: 16px; padding: 10px; text-align: center;">
-                            <img src="${d.file}" style="width:100%; max-height: 250px; object-fit:contain; border-radius:10px;">
-                            <p style="font-size:11px; font-weight:800; color:var(--primary); margin-top:8px;">Uploaded: ${d.date}</p>
-                        </div>
-                    `).join('');
-                }
-                App.openModal('modal-vault-view');
-            },
-
-            handleVaultFile: (e) => {
-                const f = e.target.files[0]; const r = new FileReader();
-                r.onloadend = () => { App.state.tempVaultImg = r.result; const p = document.getElementById('vault-preview'); p.src = r.result; p.style.display = 'block'; };
-                if(f) r.readAsDataURL(f);
-            },
-
-            uploadVaultDoc: () => {
-                const uId = parseInt(document.getElementById('vault-patient').value);
-                const type = document.getElementById('vault-type').value;
-                if(!uId || !App.state.tempVaultImg) return App.showToast("Select patient and image", "error");
-                
-                const date = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-                App.state.documents.push({ id: Date.now(), userId: uId, type, file: App.state.tempVaultImg, date });
-                
-                App.state.tempVaultImg = ""; document.getElementById('vault-preview').style.display = 'none';
-                App.saveData(); App.showToast("Document Uploaded to Vault!"); App.renderAdminVault();
-            },
-
-            renderAdminVault: () => {
-                document.getElementById('vault-patient').innerHTML = `<option value="">Choose Patient...</option>` + App.state.users.map(u => `<option value="${u.id}">${u.name} (${u.phone})</option>`).join('');
-                const recent = App.state.documents.slice().reverse().slice(0, 5); // show last 5
-                
-                document.getElementById('admin-vault-list').innerHTML = recent.map(d => {
-                    const u = App.state.users.find(x => x.id === d.userId);
-                    return `<div class="card flex-between"><div><h4 style="font-size:14px; font-weight:800;">${u?.name}</h4><p style="font-size:11px; color:var(--text-muted); font-weight:700; text-transform:capitalize;">${d.type} | ${d.date}</p></div><img src="${d.file}" style="width:40px; height:40px; border-radius:8px; object-fit:cover;"></div>`;
-                }).join('') || '<p style="font-size:13px; color:var(--text-muted);">No documents uploaded yet.</p>';
-            },
-
-            // --- Admin System ---
-            initAdmin: () => {
-                document.getElementById('patient-dock').style.display = 'none';
-                App.navigate('screen-admin-dashboard');
-                App.renderAdminStats(); App.renderAdminAppts(); App.renderAdminPatients(); App.renderAdminDoctors(); App.renderAdminVault();
-                App.showToast('Welcome Admin!');
-            },
-            renderAdminStats: () => {
-                const today = new Date().toISOString().split('T')[0];
-                const todayAppts = App.state.appointments.filter(a => a.date === today);
-                const pending = todayAppts.filter(a => a.status === 'Pending').length;
-                document.getElementById('admin-stats').innerHTML = `
-                    <div style="background:var(--dark); color:white; padding:15px; border-radius:20px; text-align:center;"><h2 style="font-size:24px;">${App.state.users.length}</h2><p style="font-size:10px; font-weight:800; color:var(--primary-light); text-transform:uppercase;">Patients</p></div>
-                    <div style="background:var(--secondary); color:white; padding:15px; border-radius:20px; text-align:center;"><h2 style="font-size:24px;">${todayAppts.length}</h2><p style="font-size:10px; font-weight:800; color:#d1fae5; text-transform:uppercase;">Tokens</p></div>
-                    <div style="background:var(--warning); color:white; padding:15px; border-radius:20px; text-align:center;"><h2 style="font-size:24px;">${pending}</h2><p style="font-size:10px; font-weight:800; color:#fef3c7; text-transform:uppercase;">Pending</p></div>
-                `;
-            },
-            switchAdminTab: (tabId, el) => {
-                document.querySelectorAll('.admin-tab-content').forEach(t => t.style.display = 'none');
-                document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
-                document.getElementById(tabId).style.display = 'block'; el.classList.add('active');
-                if(tabId === 'admin-vault') App.renderAdminVault();
-            },
-            renderAdminAppts: () => {
-                const list = App.state.appointments.slice().reverse();
-                document.getElementById('admin-appt-list').innerHTML = list.map(a => {
-                    const u = App.state.users.find(x => x.id === a.userId);
-                    const d = App.state.doctors.find(x => x.id === a.doctorId);
-                    let b = a.status.toLowerCase().replace(' ', '-');
+                if (hVal > 0 && wVal > 0) {
+                    const bmi = (parseFloat(wVal) / ((parseFloat(hVal)/100) * (parseFloat(hVal)/100))).toFixed(1);
+                    display.innerText = bmi;
+                    textDisplay.innerText = "YOUR CURRENT BMI";
                     
-                    let actions = '';
-                    if(a.status === 'Pending') {
-                        actions = `<button class="btn btn-success btn-sm" onclick="App.changeApptStatus(${a.id}, 'Approved', false)"><i class="fa-solid fa-check"></i> Approve</button>
-                                   <button class="btn btn-danger btn-sm" onclick="App.changeApptStatus(${a.id}, 'Rejected', false)"><i class="fa-solid fa-xmark"></i> Reject</button>`;
-                    } else if(a.status === 'Approved' || a.status === 'In Progress') {
-                        actions = `<button class="btn btn-outline btn-sm" onclick="App.changeApptStatus(${a.id}, 'Completed', false)"><i class="fa-solid fa-check-double"></i> Complete</button>`;
+                    let position = 0;
+                    if (bmi < 18.5) { 
+                        badge.innerText = "Underweight"; badge.style.background = "#FEF3C7"; badge.style.color = "#D97706"; 
+                        position = (bmi / 18.5) * 25; 
+                    }
+                    else if (bmi <= 24.9) { 
+                        badge.innerText = "Healthy Normal"; badge.style.background = "#D1FAE5"; badge.style.color = "#059669"; 
+                        position = 25 + (((bmi - 18.5) / 6.4) * 25); 
+                    }
+                    else if (bmi <= 29.9) { 
+                        badge.innerText = "Overweight"; badge.style.background = "#FFEDD5"; badge.style.color = "#EA580C"; 
+                        position = 50 + (((bmi - 25) / 4.9) * 25); 
+                    }
+                    else { 
+                        badge.innerText = "Obese"; badge.style.background = "#FFE4E6"; badge.style.color = "#E11D48"; 
+                        position = 75 + (((bmi - 30) / 10) * 25); 
+                    }
+                    
+                    if(position > 98) position = 98;
+                    marker.style.left = `${position}%`;
+
+                } else {
+                    display.innerText = "--";
+                    textDisplay.innerText = "ENTER VITALS";
+                    badge.innerText = "Pending"; badge.style.background = "#E2E8F0"; badge.style.color = "#64748B";
+                    marker.style.left = "0%";
+                }
+            },
+
+            saveProfile: async function() {
+                let userIndex = -1;
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].id === App.state.currentUser.id) { userIndex = i; break; }
+                }
+                
+                if (userIndex !== -1) {
+                    App.state.users[userIndex].name = document.getElementById('prof-name').value;
+                    App.state.users[userIndex].age = document.getElementById('prof-age').value;
+                    App.state.users[userIndex].phone = document.getElementById('prof-phone').value;
+                    App.state.users[userIndex].height = document.getElementById('prof-height').value;
+                    App.state.users[userIndex].weight = document.getElementById('prof-weight').value;
+                    
+                    App.state.currentUser = { ...App.state.users[userIndex], role: 'patient' }; 
+                    
+                    if(typeof db !== 'undefined' && db !== null) {
+                        try { await db.collection("users").doc(App.state.currentUser.id.toString()).update(App.state.currentUser); } catch(e) {}
                     }
 
-                    return `
-                    <div class="card">
-                        <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;"><i class="fa-solid fa-user-injured" style="color:var(--primary);"></i> ${u ? u.name : 'Unknown'}</h4><span class="badge ${b}">${a.status}</span></div>
-                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Doc: ${d ? d.name : 'General Token'} | Token: ${a.token} | ${a.date} ${a.time}</p>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Reschedule</button></div>
-                        <div style="display:flex; gap:10px;"><a href="tel:${u?u.phone:''}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call Patient</a>${actions}</div>
-                    </div>`;
-                }).join('') || '<p style="font-size:14px; font-weight:700;">No appointments.</p>';
-            },
-            renderAdminPatients: () => {
-                document.getElementById('admin-patient-list').innerHTML = App.state.users.map(u => `
-                    <div class="card"><h4 style="font-size:16px; font-weight:800; margin-bottom:5px;">${u.name}</h4><p style="font-size:13px; font-weight:600; color:var(--text-muted); margin-bottom:10px;">${u.email} | ${u.phone}</p><a href="tel:${u.phone}" class="btn btn-outline btn-sm"><i class="fa-solid fa-phone"></i> Call Patient</a></div>
-                `).join('');
-            },
-            renderAdminDoctors: () => {
-                document.getElementById('admin-doc-list').innerHTML = App.state.doctors.map(d => `
-                    <div class="card flex-between"><div><img src="${d.image}" style="width:40px;height:40px;border-radius:10px;object-fit:cover;margin-bottom:5px;"><h4 style="font-size:16px; font-weight:800;">${d.name}</h4><p style="font-size:13px; color:var(--text-muted); font-weight:700;">${d.spec} | Log: ${d.email}</p></div><button class="btn btn-outline btn-sm" style="color:var(--danger); border-color:var(--danger-bg);" onclick="App.adminRemoveDoc(${d.id})"><i class="fa-solid fa-trash"></i></button></div>
-                `).join('');
-            },
-            adminAddDoctor: () => {
-                const name = document.getElementById('add-doc-name').value.trim(); const spec = document.getElementById('add-doc-spec').value.trim(); const email = document.getElementById('add-doc-email').value.trim(); const password = document.getElementById('add-doc-pass').value.trim();
-                if(!name || !spec || !email || !password) return App.showToast('Enter required details', 'error');
-                App.state.doctors.push({ id: Date.now(), name, spec, email, password, image: App.state.tempImg||"https://ui-avatars.com/api/?name="+name, runningToken: 0, days: "Mon-Sat", times: "10AM - 5PM" });
-                App.state.tempImg = ""; document.getElementById('add-doc-preview').style.display = 'none'; App.saveData();
-                ['add-doc-name', 'add-doc-spec', 'add-doc-img', 'add-doc-email', 'add-doc-pass'].forEach(id => {if(document.getElementById(id)) document.getElementById(id).value = '';});
-                App.showToast('Doctor Created! Doctor can now login.'); App.renderAdminDoctors();
-            },
-            adminRemoveDoc: (id) => {
-                if(!confirm('Delete doctor?')) return; App.state.doctors = App.state.doctors.filter(d => d.id !== id); App.saveData(); App.showToast('Doctor removed'); App.renderAdminDoctors();
+                    App.saveData(); 
+                    document.getElementById('ui-name').innerText = App.state.users[userIndex].name;
+                    App.showToast('Profile Saved Successfully!'); 
+                    App.updateAICoach();
+                }
             },
 
-            // --- Doctor Dashboard System ---
-            initDoctor: () => {
-                App.navigate('screen-doctor-dashboard');
-                document.getElementById('patient-dock').style.display = 'none';
-                document.getElementById('doc-portal-name').innerText = App.state.currentUser.name;
-                document.getElementById('doc-run-tok').value = App.state.currentUser.runningToken;
-                App.renderDoctorAppts();
-                App.showToast('Welcome Doctor!');
-            },
-            doctorUpdateToken: () => {
-                const val = parseInt(document.getElementById('doc-run-tok').value);
-                const docInState = App.state.doctors.find(d => d.id === App.state.currentUser.id);
-                if(docInState) docInState.runningToken = val;
-                App.state.currentUser.runningToken = val; 
-                App.state.appointments.forEach(a => { if(a.doctorId === App.state.currentUser.id && a.status === 'Approved' && a.token === val) a.status = 'In Progress'; });
-                App.saveData(); App.showToast(`Token synced. Patients notified.`); App.renderDoctorAppts();
-            },
-            renderDoctorAppts: () => {
-                const docId = App.state.currentUser.id;
-                const list = App.state.appointments.filter(a => a.doctorId === docId).reverse();
+            renderContactInfo: function() {
+                const info = App.state.hospitalInfo;
+                document.getElementById('c-phone-link').href = "tel:" + info.phone;
+                document.getElementById('c-phone-text').innerText = info.phone;
                 
-                document.getElementById('doctor-appt-list').innerHTML = list.map(a => {
-                    const u = App.state.users.find(x => x.id === a.userId);
-                    let b = a.status.toLowerCase().replace(' ', '-');
-                    let actions = '';
-                    if(a.status === 'Pending') {
-                        actions = `<button class="btn btn-success btn-sm" onclick="App.changeApptStatus(${a.id}, 'Approved', true)"><i class="fa-solid fa-check"></i> Approve</button>
-                                   <button class="btn btn-danger btn-sm" onclick="App.changeApptStatus(${a.id}, 'Rejected', true)"><i class="fa-solid fa-xmark"></i> Reject</button>`;
-                    } else if(a.status === 'Approved' || a.status === 'In Progress') {
-                        actions = `<button class="btn btn-outline btn-sm" onclick="App.changeApptStatus(${a.id}, 'Completed', true)"><i class="fa-solid fa-check-double"></i> Complete</button>`;
-                    } else { actions = `<span class="badge ${b}">${a.status}</span>`; }
+                document.getElementById('c-wa-link').href = "https://wa.me/" + info.whatsapp;
+                document.getElementById('c-wa-text').innerText = "WhatsApp Us";
+                
+                document.getElementById('c-email-link').href = "mailto:" + info.email;
+                document.getElementById('c-email-text').innerText = info.email;
+            },
 
-                    return `
-                    <div class="card">
-                        <div class="flex-between" style="margin-bottom:10px;"><h4 style="font-size:16px; font-weight:800;">${u ? u.name : 'Unknown'}</h4>${a.status==='Pending'?'<span class="badge pending">New Request</span>':''}</div>
-                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:5px;">Token: ${a.token} | ${a.date} ${a.time}</p>
-                        <p style="font-size:13px; font-weight:700; color:var(--text-muted); margin-bottom:15px;">Phone: ${u?u.phone:''} | Age: ${u?u.age:''} | Blood: ${u?u.blood:''}</p>
-                        <div style="display:flex; gap:10px; margin-bottom:15px;"><button class="btn btn-outline btn-sm" onclick="App.openRescheduleModal(${a.id})"><i class="fa-regular fa-clock"></i> Edit Time</button></div>
-                        <div style="display:flex; gap:10px;"><a href="tel:${u?u.phone:''}" class="btn btn-primary btn-sm" style="background:var(--dark);"><i class="fa-solid fa-phone"></i> Call</a>${actions}</div>
+            // Booking System
+            confirmGeneralToken: async function() {
+                const todayDate = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+                
+                let tokenNum = 1;
+                for (let i = 0; i < App.state.appointments.length; i++) {
+                    if (App.state.appointments[i].type === "Walk-in" && App.state.appointments[i].date === todayDate) { tokenNum++; }
+                }
+
+                const newAppt = { 
+                    id: Date.now(), userId: App.state.currentUser.id, doctorId: 0, 
+                    doctorName: 'General Consultation', date: todayDate, status: "Pending", type: "Walk-in", token: tokenNum
+                };
+
+                if(typeof db !== 'undefined' && db !== null) { try { await db.collection("appointments").doc(newAppt.id.toString()).set(newAppt); } catch(e) {} }
+
+                App.state.appointments.push(newAppt); 
+                App.saveData(); App.closeModal('modal-general-token'); 
+                App.showToast('Walk-in Token Generated!'); App.switchTab('screen-patient-queue', 'nav-queue');
+            },
+
+            confirmSpecialistBooking: async function() {
+                const docId = document.getElementById('book-doctor').value;
+                const bookDate = document.getElementById('book-date').value;
+
+                if (docId === '' || bookDate === '') { return App.showToast('Select doctor & date', 'error'); }
+
+                let docName = '';
+                for(let i=0; i<App.state.doctors.length; i++) { if(App.state.doctors[i].id == docId) { docName = App.state.doctors[i].name; break; } }
+
+                const newAppt = { 
+                    id: Date.now(), userId: App.state.currentUser.id, doctorId: parseInt(docId), 
+                    doctorName: docName, date: bookDate, status: "Pending", type: "Specialist", token: "-"
+                };
+
+                if(typeof db !== 'undefined' && db !== null) { try { await db.collection("appointments").doc(newAppt.id.toString()).set(newAppt); } catch(e) {} }
+
+                App.state.appointments.push(newAppt); 
+                App.saveData(); App.showToast('Appointment Request Sent!'); 
+                App.switchTab('screen-patient-queue', 'nav-queue');
+            },
+
+            renderQueueHistory: async function() {
+                await App.syncData(); // Get fresh data
+                let myAppts = [];
+                for (let i = 0; i < App.state.appointments.length; i++) {
+                    if (App.state.appointments[i].userId === App.state.currentUser.id) { myAppts.push(App.state.appointments[i]); }
+                }
+                myAppts.reverse(); 
+
+                if (myAppts.length === 0) { 
+                    document.getElementById('patient-history-container').innerHTML = `<p style="font-size:13px; font-weight:700; color:var(--text-muted); text-align:center; padding:20px;">No appointments found.</p>`; return; 
+                }
+                
+                let htmlOut = '';
+                for (let i = 0; i < myAppts.length; i++) {
+                    let a = myAppts[i]; 
+                    
+                    let tokenDisplay = a.type === "Walk-in" ? `<span style="background:#E0F2FE; color:#0EA5E9; padding:4px 10px; border-radius:10px; font-weight:800; font-size:11px;">Token #${a.token}</span>` : `<span style="background:#EDE9FE; color:#8B5CF6; padding:4px 10px; border-radius:10px; font-weight:800; font-size:11px;">Specialist</span>`;
+
+                    htmlOut += `
+                    <div class="card" style="padding: 20px;">
+                        <div class="flex-between" style="margin-bottom:10px;">
+                            <h4 style="font-size:15px; font-weight:800; color:var(--text-main);">${a.doctorName}</h4>
+                            <span class="badge ${a.status.toLowerCase()}">${a.status}</span>
+                        </div>
+                        <div class="flex-between">
+                            <p style="font-size:12px; font-weight:700; color:var(--text-muted);">Date: ${a.date}</p>
+                            ${tokenDisplay}
+                        </div>
                     </div>`;
-                }).join('') || '<p style="font-size:14px; font-weight:700;">No patients in queue.</p>';
+                }
+                document.getElementById('patient-history-container').innerHTML = htmlOut;
+            },
+
+            // Patient Vault System
+            filterVault: function(categoryName, element) {
+                const tabs = document.querySelectorAll('.v-tab');
+                for (let i = 0; i < tabs.length; i++) { tabs[i].classList.remove('active'); }
+                element.classList.add('active'); App.renderPatientVault(categoryName);
+            },
+
+            renderPatientVault: async function(filterCategory) {
+                await App.syncData();
+                let myDocs = [];
+                for (let i = 0; i < App.state.documents.length; i++) {
+                    if (App.state.documents[i].userId === App.state.currentUser.id) {
+                        if (filterCategory === 'all' || App.state.documents[i].type === filterCategory) { myDocs.push(App.state.documents[i]); }
+                    }
+                }
+                myDocs.reverse(); 
+
+                document.getElementById('ui-notif-dot').style.display = 'none';
+
+                if (myDocs.length === 0) { 
+                    document.getElementById('patient-vault-list').innerHTML = `
+                        <div style="text-align:center; padding:40px;">
+                            <i class="fa-solid fa-folder-open" style="font-size:60px; color:#cbd5e1; margin-bottom:20px;"></i>
+                            <p style="font-size:14px; font-weight:700; color:var(--text-muted);">No records found here.</p>
+                        </div>
+                    `; return; 
+                }
+                
+                let htmlOutput = '';
+                for (let i = 0; i < myDocs.length; i++) {
+                    let doc = myDocs[i]; let catMeta = VaultCategoryMeta[doc.type] || VaultCategoryMeta['prescription'];
+                    
+                    htmlOutput += `
+                    <div class="doc-item" onclick="App.viewImage('${doc.fileUrl}', '${doc.title}')">
+                        <div class="doc-icon" style="background:${catMeta.bg}; color:${catMeta.color};">
+                            <i class="fa-solid ${catMeta.icon}"></i>
+                        </div>
+                        <div style="flex:1;">
+                            <h4 style="font-size:14px; font-weight:800; color:var(--text-main);">${doc.title}</h4>
+                            <p style="font-size:11px; font-weight:700; color:var(--text-muted); margin-top:4px;">${catMeta.label} • ${doc.date}</p>
+                        </div>
+                        <i class="fa-solid fa-chevron-right" style="color:#cbd5e1; font-size:14px;"></i>
+                    </div>`;
+                }
+                document.getElementById('patient-vault-list').innerHTML = htmlOutput;
+            },
+
+            viewImage: function(imageSourceUrl, documentTitle) {
+                document.getElementById('full-screen-img').src = imageSourceUrl; 
+                document.getElementById('fs-title').innerText = documentTitle; 
+                document.getElementById('modal-image-view').classList.add('active');
+            },
+
+            // ==========================================
+            // ADMIN DASHBOARD (FULLY OPERATIONAL)
+            // ==========================================
+            initAdmin: function() { 
+                App.navigate('screen-admin-dashboard'); 
+                document.getElementById('admin-search').value = ''; 
+                App.renderAdminAppts(); 
+                App.renderAdminPatients();
+                App.renderAdminVault(); 
+                App.renderAdminDoctors();
+                App.loadSettingsData();
+                App.showToast('Admin Connected'); 
+            },
+
+            switchAdminTab: function(tabId, element) { 
+                const contents = document.querySelectorAll('.admin-tab-content');
+                for (let i = 0; i < contents.length; i++) { contents[i].style.display = 'none'; }
+                const tabs = document.querySelectorAll('.admin-tab');
+                for (let i = 0; i < tabs.length; i++) { tabs[i].classList.remove('active'); }
+                document.getElementById(tabId).style.display = 'block'; element.classList.add('active'); 
+                
+                document.getElementById('admin-search').value = '';
+                App.handleAdminSearch();
+            },
+
+            handleAdminSearch: function() {
+                const query = document.getElementById('admin-search').value.toLowerCase();
+                App.renderAdminAppts(query);
+                App.renderAdminPatients(query);
+            },
+            
+            // Tab 1: Queue (Appointments)
+            renderAdminAppts: async function(searchQuery = "") {
+                await App.syncData();
+                let apptsCopy = [...App.state.appointments].reverse();
+                let htmlOutput = '';
+
+                // Filter by search query
+                if (searchQuery !== "") {
+                    apptsCopy = apptsCopy.filter(a => {
+                        let pName = ''; let pPhone = '';
+                        for (let j = 0; j < App.state.users.length; j++) { if (App.state.users[j].id === a.userId) { pName = App.state.users[j].name.toLowerCase(); pPhone = App.state.users[j].phone; break; } }
+                        return pName.includes(searchQuery) || pPhone.includes(searchQuery) || a.doctorName.toLowerCase().includes(searchQuery) || (a.token && a.token.toString() === searchQuery);
+                    });
+                }
+
+                if (apptsCopy.length === 0) { 
+                    document.getElementById('admin-appt-list').innerHTML = '<p style="font-size:13px; font-weight:700; text-align:center; padding:20px; color:var(--text-muted);">No appointments found.</p>'; return; 
+                }
+
+                for (let i = 0; i < apptsCopy.length; i++) {
+                    let a = apptsCopy[i]; let patientName = 'Unknown Patient'; let pPhone = '';
+                    for (let j = 0; j < App.state.users.length; j++) { if (App.state.users[j].id === a.userId) { patientName = App.state.users[j].name; pPhone = App.state.users[j].phone; break; } }
+                    
+                    let actBtn = '';
+                    if (a.status === 'Pending') {
+                        actBtn = `<button class="btn btn-success btn-sm" onclick="App.changeApptStatus(${a.id}, 'Approved')">Approve</button>`;
+                    } else if (a.status === 'Approved') {
+                        actBtn = `<button class="btn btn-primary btn-sm" onclick="App.changeApptStatus(${a.id}, 'Completed')">Mark Completed</button>`;
+                    }
+
+                    let tokenDisplay = a.type === "Walk-in" ? `| Token #${a.token}` : `| Specialist`;
+
+                    htmlOutput += `
+                    <div class="card" style="padding:20px;">
+                        <div class="flex-between" style="margin-bottom:10px;">
+                            <h4 style="font-size:15px; font-weight:800; color:var(--text-main);">${patientName}</h4>
+                            <span class="badge ${a.status.toLowerCase()}">${a.status}</span>
+                        </div>
+                        <p style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">Phone: ${pPhone} <br> ${a.doctorName} | Date: ${a.date} ${tokenDisplay}</p>
+                        <div style="display:flex; gap:10px;">${actBtn}</div>
+                    </div>`;
+                }
+                document.getElementById('admin-appt-list').innerHTML = htmlOutput;
+            },
+
+            changeApptStatus: async function(appointmentId, newStatus) { 
+                for (let i = 0; i < App.state.appointments.length; i++) { 
+                    if (App.state.appointments[i].id === appointmentId) { 
+                        App.state.appointments[i].status = newStatus; 
+                        if(typeof db !== 'undefined' && db !== null) { try { await db.collection("appointments").doc(appointmentId.toString()).update({status: newStatus}); } catch(e){} }
+                        break; 
+                    } 
+                }
+                App.saveData(); App.handleAdminSearch(); 
+            },
+
+            // Tab 2: Patient Management
+            renderAdminPatients: async function(searchQuery = "") {
+                await App.syncData();
+                let usersCopy = [];
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].role === 'patient') { usersCopy.push(App.state.users[i]); }
+                }
+
+                if (searchQuery !== "") {
+                    usersCopy = usersCopy.filter(u => u.name.toLowerCase().includes(searchQuery) || u.phone.includes(searchQuery) || u.id.toString().includes(searchQuery));
+                }
+
+                let htmlOutput = '';
+                if (usersCopy.length === 0) { 
+                    document.getElementById('admin-patients-list').innerHTML = '<p style="font-size:13px; font-weight:700; text-align:center; padding:20px; color:var(--text-muted);">No patients match search.</p>'; return; 
+                }
+
+                for (let i = 0; i < usersCopy.length; i++) {
+                    let u = usersCopy[i];
+                    htmlOutput += `
+                    <div class="patient-list-item">
+                        <div>
+                            <h4 style="font-size:15px; font-weight:800; color:var(--text-main);">${u.name}</h4>
+                            <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-top:4px;">ID: ${u.id} | Ph: ${u.phone}</p>
+                        </div>
+                        <button class="btn btn-primary btn-sm" style="box-shadow:none;" onclick="App.openPatientAdminView(${u.id})">Manage</button>
+                    </div>`;
+                }
+                document.getElementById('admin-patients-list').innerHTML = htmlOutput;
+            },
+
+            openPatientAdminView: function(userId) {
+                let p = null;
+                for (let i = 0; i < App.state.users.length; i++) { if (App.state.users[i].id === userId) { p = App.state.users[i]; break; } }
+                if(p) {
+                    document.getElementById('edit-p-id').value = p.id;
+                    document.getElementById('edit-p-name').value = p.name || '';
+                    document.getElementById('edit-p-phone').value = p.phone || '';
+                    document.getElementById('edit-p-age').value = p.age || '';
+                    
+                    document.getElementById('quick-v-title').value = '';
+                    document.getElementById('quick-v-preview').style.display = 'none';
+                    App.state.tempImageBase64 = '';
+                    
+                    App.openModal('modal-admin-patient');
+                }
+            },
+
+            saveAdminPatientEdit: async function() {
+                const pId = parseInt(document.getElementById('edit-p-id').value);
+                const n = document.getElementById('edit-p-name').value.trim();
+                const ph = document.getElementById('edit-p-phone').value.trim();
+                const a = document.getElementById('edit-p-age').value.trim();
+
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].id === pId) {
+                        App.state.users[i].name = n; App.state.users[i].phone = ph; App.state.users[i].age = a;
+                        if(typeof db !== 'undefined' && db !== null) { try { await db.collection("users").doc(pId.toString()).update({name: n, phone: ph, age: a}); } catch(e){} }
+                        break;
+                    }
+                }
+                App.saveData(); App.closeModal('modal-admin-patient');
+                App.showToast('Patient Details Updated!'); App.handleAdminSearch();
+            },
+
+            handleQuickVaultFile: function(event) {
+                const file = event.target.files[0]; const reader = new FileReader(); 
+                reader.onloadend = function() { 
+                    App.state.tempImageBase64 = reader.result; 
+                    document.getElementById('quick-v-preview').src = reader.result; 
+                    document.getElementById('quick-v-preview').style.display = 'block'; 
+                }; 
+                if (file) { reader.readAsDataURL(file); }
+            },
+
+            // REAL FIREBASE UPLOAD
+            quickUploadToVault: async function() {
+                const patientId = parseInt(document.getElementById('edit-p-id').value);
+                const category = document.getElementById('quick-v-category').value;
+                const title = document.getElementById('quick-v-title').value.trim();
+
+                if (!patientId || App.state.tempImageBase64 === "" || title === "") {
+                    return App.showToast("Select Image and Enter Title", "error");
+                }
+
+                App.showLoader();
+                const dateStr = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+                let catMeta = VaultCategoryMeta[category];
+
+                if(typeof cloudStorage !== 'undefined' && cloudStorage !== null && db !== null) {
+                    try {
+                        const uniqueName = `vault_${patientId}_${Date.now()}.jpg`;
+                        const storageRef = cloudStorage.ref(`medical_vault/${uniqueName}`);
+                        
+                        await storageRef.putString(App.state.tempImageBase64, 'data_url');
+                        const downloadUrl = await storageRef.getDownloadURL();
+                        
+                        const newDoc = { id: Date.now(), userId: patientId, type: category, title: title, fileUrl: downloadUrl, date: dateStr };
+                        await db.collection("documents").doc(newDoc.id.toString()).set(newDoc);
+                        await db.collection("users").doc(patientId.toString()).update({ pendingNotification: `New ${catMeta.label} uploaded!` });
+
+                        App.finalizeQuickUpload(newDoc, patientId, catMeta, "Uploaded to Firebase Securely!");
+                    } catch(e) {
+                        console.error("Firebase Upload error", e);
+                        App.fallbackLocalUpload(patientId, category, title, dateStr, catMeta);
+                    }
+                } else {
+                    App.fallbackLocalUpload(patientId, category, title, dateStr, catMeta);
+                }
+            },
+
+            fallbackLocalUpload: function(patientId, category, title, dateStr, catMeta) {
+                const newDoc = { id: Date.now(), userId: patientId, type: category, title: title, fileUrl: App.state.tempImageBase64, date: dateStr };
+                App.finalizeQuickUpload(newDoc, patientId, catMeta, "Saved Locally (Firebase Offline)");
+            },
+
+            finalizeQuickUpload: function(newDoc, patientId, catMeta, msg) {
+                App.state.documents.push(newDoc);
+                for (let i = 0; i < App.state.users.length; i++) {
+                    if (App.state.users[i].id === patientId) { App.state.users[i].pendingNotification = `New ${catMeta.label} uploaded!`; break; }
+                }
+
+                App.state.tempImageBase64 = ""; document.getElementById('quick-v-preview').style.display = 'none'; document.getElementById('quick-v-title').value = '';
+                App.saveData(); App.hideLoader(); App.closeModal('modal-admin-patient'); App.showToast(msg);
+            },
+
+            // Tab 3: Doctors Setup
+            adminAddDoctor: async function() {
+                const dName = document.getElementById('add-doc-name').value.trim();
+                const dSpec = document.getElementById('add-doc-spec').value.trim();
+                const dTime = document.getElementById('add-doc-time').value.trim();
+                
+                if(dName === '' || dSpec === '' || dTime === '') return App.showToast("Enter all details", "error");
+
+                const newDoc = { id: Date.now(), name: dName, spec: dSpec, time: dTime };
+                
+                if(typeof db !== 'undefined' && db !== null) {
+                    try {
+                        let docArray = [...App.state.doctors, newDoc];
+                        await db.collection("system").doc("settings").set({ doctors: docArray }, {merge: true});
+                    } catch(e){}
+                }
+
+                App.state.doctors.push(newDoc);
+                App.saveData(); App.showToast("Doctor Assigned successfully!");
+                document.getElementById('add-doc-name').value = ''; document.getElementById('add-doc-spec').value = ''; document.getElementById('add-doc-time').value = '';
+                App.renderAdminDoctors();
+            },
+
+            openEditDoc: function(id) {
+                let d = null;
+                for(let i=0; i<App.state.doctors.length; i++) { if(App.state.doctors[i].id === id) { d = App.state.doctors[i]; break; } }
+                if(d) {
+                    document.getElementById('edit-d-id').value = d.id;
+                    document.getElementById('edit-d-name').value = d.name;
+                    document.getElementById('edit-d-spec').value = d.spec;
+                    document.getElementById('edit-d-time').value = d.time || '';
+                    App.openModal('modal-edit-doctor');
+                }
+            },
+
+            saveAdminDoctorEdit: async function() {
+                const id = parseInt(document.getElementById('edit-d-id').value);
+                const n = document.getElementById('edit-d-name').value.trim();
+                const s = document.getElementById('edit-d-spec').value.trim();
+                const t = document.getElementById('edit-d-time').value.trim();
+
+                for(let i=0; i<App.state.doctors.length; i++) {
+                    if(App.state.doctors[i].id === id) { App.state.doctors[i].name = n; App.state.doctors[i].spec = s; App.state.doctors[i].time = t; break; }
+                }
+
+                if(typeof db !== 'undefined' && db !== null) {
+                    try { await db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}); } catch(e){}
+                }
+
+                App.saveData(); App.closeModal('modal-edit-doctor'); App.showToast('Doctor Info Updated!'); App.renderAdminDoctors();
+            },
+
+            renderAdminDoctors: function() {
+                let html = '';
+                for(let i=0; i<App.state.doctors.length; i++) {
+                    let d = App.state.doctors[i];
+                    html += `
+                    <div class="card" style="padding: 20px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center;">
+                        <div>
+                            <h4 style="font-size:16px; font-weight:800; color:var(--text-main);">${d.name}</h4>
+                            <p style="font-size:13px; color:var(--primary); font-weight:800; margin-top:5px;">${d.spec}</p>
+                            <p style="font-size:11px; color:var(--text-muted); font-weight:700; margin-top:5px;"><i class="fa-regular fa-clock"></i> ${d.time || 'General Timings'}</p>
+                        </div>
+                        <button class="btn btn-outline btn-sm" style="border:none; box-shadow:none; color:var(--primary);" onclick="App.openEditDoc(${d.id})"><i class="fa-solid fa-pen"></i></button>
+                    </div>`;
+                }
+                document.getElementById('admin-doc-list').innerHTML = html;
+            },
+
+            // Tab 4: Settings & Broadcast
+            loadSettingsData: function() {
+                document.getElementById('set-phone').value = App.state.hospitalInfo.phone;
+                document.getElementById('set-wa').value = App.state.hospitalInfo.whatsapp;
+                document.getElementById('set-email').value = App.state.hospitalInfo.email;
+            },
+
+            updateContactInfo: async function() {
+                App.state.hospitalInfo.phone = document.getElementById('set-phone').value.trim();
+                App.state.hospitalInfo.whatsapp = document.getElementById('set-wa').value.trim();
+                App.state.hospitalInfo.email = document.getElementById('set-email').value.trim();
+                
+                if(typeof db !== 'undefined' && db !== null) {
+                    try { await db.collection("system").doc("settings").set({ hospitalInfo: App.state.hospitalInfo }, {merge: true}); } catch(e){}
+                }
+
+                App.saveData(); App.showToast("Hospital Contact Updated! Reflects globally.");
+            },
+
+            sendBroadcast: async function() {
+                const title = document.getElementById('bc-title').value.trim();
+                const msg = document.getElementById('bc-msg').value.trim();
+                if(title === '' || msg === '') return App.showToast("Enter Notice details", "error");
+
+                App.state.broadcast = { active: true, title: title, message: msg };
+                
+                if(typeof db !== 'undefined' && db !== null) {
+                    try { await db.collection("system").doc("settings").set({ broadcast: App.state.broadcast }, {merge: true}); } catch(e){}
+                }
+
+                App.saveData(); document.getElementById('bc-title').value = ''; document.getElementById('bc-msg').value = '';
+                App.showToast("Broadcast Sent to all Patients!");
+            },
+
+            clearBroadcast: async function() {
+                App.state.broadcast = { active: false, title: "", message: "" };
+                
+                if(typeof db !== 'undefined' && db !== null) {
+                    try { await db.collection("system").doc("settings").set({ broadcast: App.state.broadcast }, {merge: true}); } catch(e){}
+                }
+
+                App.saveData(); App.showToast("Broadcast Removed");
             }
         };
 
-        // --- Init System ---
-        window.onload = () => {
-            App.loadData();
-            if(App.state.currentUser) {
-                if(App.state.currentUser.role === 'admin') App.initAdmin();
-                else if(App.state.currentUser.role === 'doctor') App.initDoctor();
-                else { document.getElementById('patient-dock').style.display = 'flex'; App.initPatient(); }
-            }
-        }
-        App.runClock();
+        window.App = App;
+        window.addEventListener('DOMContentLoaded', function() { App.initApp(); });
+
     </script>
 </body>
 </html>
