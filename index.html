@@ -1,13 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ta">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Senthil Healthcare AI - Ultra Premium</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Mukta+Malar:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
     
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
@@ -39,11 +38,12 @@
             --inner-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.04);
         }
 
+        /* அடிப்படை அமைப்புகள் */
         * { 
             margin: 0; 
             padding: 0; 
             box-sizing: border-box; 
-            font-family: 'Plus Jakarta Sans', sans-serif; 
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', sans-serif; 
             -webkit-tap-highlight-color: transparent; 
         }
 
@@ -59,73 +59,119 @@
            GLOBAL SPINNER & SUCCESS ANIMATION
            ========================================== */
         #global-loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(5px);
-            z-index: 200000; display: none; flex-direction: column;
-            align-items: center; justify-content: center;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(255, 255, 255, 0.95); 
+            backdrop-filter: blur(5px);
+            z-index: 200000; 
+            display: none; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center;
         }
         
         .spinner {
-            width: 50px; height: 50px; border: 5px solid rgba(6, 182, 212, 0.2);
-            border-top-color: var(--primary); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 15px;
+            width: 50px; 
+            height: 50px; 
+            border: 5px solid rgba(6, 182, 212, 0.2);
+            border-top-color: var(--primary); 
+            border-radius: 50%;
+            animation: spin 1s linear infinite; 
+            margin-bottom: 15px;
         }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin { 
+            100% { transform: rotate(360deg); } 
+        }
 
-        /* Premium Success Overlay */
         #success-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(10px);
-            z-index: 200001; display: none; flex-direction: column;
-            align-items: center; justify-content: center; opacity: 0;
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8); 
+            backdrop-filter: blur(10px);
+            z-index: 200001; 
+            display: none; 
+            flex-direction: column;
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0;
             transition: opacity 0.3s ease;
         }
 
         .success-box {
-            background: var(--surface); padding: 40px; border-radius: 30px;
-            text-align: center; box-shadow: 0 30px 60px rgba(0,0,0,0.3);
-            transform: scale(0.8); transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            background: var(--surface); 
+            padding: 40px; 
+            border-radius: 30px;
+            text-align: center; 
+            box-shadow: 0 30px 60px rgba(0,0,0,0.3);
+            transform: scale(0.8); 
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
-        .success-box i {
-            font-size: 70px; color: var(--accent); margin-bottom: 20px;
-            animation: popIn 0.5s ease forwards;
+        .success-box i { 
+            font-size: 70px; 
+            color: var(--accent); 
+            margin-bottom: 20px; 
+            animation: popIn 0.5s ease forwards; 
+        }
+        
+        .success-box h2 { 
+            font-size: 22px; 
+            font-weight: 800; 
+            color: var(--secondary); 
         }
 
-        .success-box h2 {
-            font-size: 22px; font-weight: 800; color: var(--secondary);
-        }
-
-        @keyframes popIn {
-            0% { transform: scale(0); opacity: 0; }
-            80% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 1; }
+        @keyframes popIn { 
+            0% { transform: scale(0); opacity: 0; } 
+            80% { transform: scale(1.2); opacity: 1; } 
+            100% { transform: scale(1); opacity: 1; } 
         }
 
         /* ==========================================
            PREMIUM SPLASH SCREEN
            ========================================== */
         #splash-screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
             background: linear-gradient(135deg, var(--surface), #E0F2FE); 
-            z-index: 100000; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center; transition: opacity 0.8s ease-out; 
+            z-index: 100000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            transition: opacity 0.8s ease-out; 
         }
         
         .splash-icon { 
-            font-size: 65px; color: var(--primary); margin-bottom: 20px; 
+            font-size: 65px; 
+            color: var(--primary); 
+            margin-bottom: 20px; 
             animation: pulse-glow 2s infinite ease-in-out; 
         }
         
         .splash-title { 
-            font-size: 38px; font-weight: 800; color: var(--secondary); 
-            letter-spacing: -1px; margin-bottom: 5px; 
+            font-size: 38px; 
+            font-weight: 800; 
+            color: var(--secondary); 
+            letter-spacing: -1px; 
+            margin-bottom: 5px; 
         }
-
+        
         .splash-subtitle { 
-            font-size: 14px; font-weight: 800; color: var(--primary-dark); 
-            letter-spacing: 4px; text-transform: uppercase; 
+            font-size: 14px; 
+            font-weight: 800; 
+            color: var(--primary-dark); 
+            letter-spacing: 4px; 
+            text-transform: uppercase; 
         }
 
         @keyframes pulse-glow { 
@@ -134,92 +180,259 @@
             100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(6,182,212,0.2)); } 
         }
 
-        /* Ambient Background Nodes */
         .ambient-bg { 
-            position: fixed; border-radius: 50%; filter: blur(100px); 
-            z-index: -1; animation: float 20s infinite alternate ease-in-out; 
+            position: fixed; 
+            border-radius: 50%; 
+            filter: blur(100px); 
+            z-index: -1; 
+            animation: float 20s infinite alternate ease-in-out; 
         }
-        .ambient-1 { width: 450px; height: 450px; background: rgba(6, 182, 212, 0.1); top: -100px; left: -100px; }
-        .ambient-2 { width: 450px; height: 450px; background: rgba(59, 130, 246, 0.08); bottom: -100px; right: -100px; animation-delay: -5s; }
-        @keyframes float { 0% { transform: translate(0,0); } 100% { transform: translate(40px, 40px); } }
+        
+        .ambient-1 { 
+            width: 450px; 
+            height: 450px; 
+            background: rgba(6, 182, 212, 0.1); 
+            top: -100px; 
+            left: -100px; 
+        }
+        
+        .ambient-2 { 
+            width: 450px; 
+            height: 450px; 
+            background: rgba(59, 130, 246, 0.08); 
+            bottom: -100px; 
+            right: -100px; 
+            animation-delay: -5s; 
+        }
+        
+        @keyframes float { 
+            0% { transform: translate(0,0); } 
+            100% { transform: translate(40px, 40px); } 
+        }
 
         /* ==========================================
            UI COMPONENTS & CARDS
            ========================================== */
         .card { 
-            background: var(--surface); border-radius: 24px; padding: 25px; 
-            box-shadow: var(--shadow-soft); margin-bottom: 20px; 
-            transition: all 0.3s ease; border: none; 
+            background: var(--surface); 
+            border-radius: 24px; 
+            padding: 25px; 
+            box-shadow: var(--shadow-soft); 
+            margin-bottom: 20px; 
+            transition: all 0.3s ease; 
+            border: none; 
         }
         
         .card:hover { 
-            transform: translateY(-3px); box-shadow: var(--shadow-hover); 
+            transform: translateY(-3px); 
+            box-shadow: var(--shadow-hover); 
         }
 
         .screen { 
-            display: none; padding: 20px; min-height: 100vh; padding-bottom: 120px; 
-            animation: slideUp 0.4s ease forwards; opacity: 0; 
+            display: none; 
+            padding: 20px; 
+            min-height: 100vh; 
+            padding-bottom: 120px; 
+            animation: slideUp 0.4s ease forwards; 
+            opacity: 0; 
         }
-        .screen.active { display: block; }
-        .center-wrap { display: flex; flex-direction: column; justify-content: center; min-height: 90vh; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .screen.active { 
+            display: block; 
+        }
+        
+        .center-wrap { 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            min-height: 90vh; 
+        }
+        
+        @keyframes slideUp { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
-        /* Forms & Inputs */
-        .input-group { position: relative; margin-bottom: 20px; }
+        /* இன்புட் டிசைன்கள் (Input Designs) */
+        .input-group { 
+            position: relative; 
+            margin-bottom: 20px; 
+        }
+        
         .input-group label { 
-            display: block; font-size: 13px; font-weight: 800; color: var(--text-muted); 
-            margin-bottom: 8px; padding-left: 5px; 
+            display: block; 
+            font-size: 13px; 
+            font-weight: 800; 
+            color: var(--text-muted); 
+            margin-bottom: 8px; 
+            padding-left: 5px; 
         }
+        
         .input-group i { 
-            position: absolute; left: 20px; top: 46px; color: #94A3B8; 
-            font-size: 18px; transition: 0.3s; z-index: 2; 
+            position: absolute; 
+            left: 20px; 
+            top: 46px; 
+            color: #94A3B8; 
+            font-size: 18px; 
+            transition: 0.3s; 
+            z-index: 2; 
         }
-        .input-group.no-label i { top: 20px; }
         
-        .input-group input, .input-group select, .input-group textarea { 
-            width: 100%; padding: 20px 20px 20px 50px; border: none; border-radius: 18px; 
-            font-size: 15px; background: #F1F5F9; box-shadow: var(--inner-shadow); 
-            color: var(--text-main); font-weight: 600; transition: 0.3s;
+        .input-group.no-label i { 
+            top: 20px; 
         }
-        .input-group.no-icon input, .input-group.no-icon select { padding-left: 20px; }
-        .input-group input:focus, .input-group select:focus, .input-group textarea:focus { 
-            background: #FFFFFF; box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); outline: none; 
+        
+        .input-group input, 
+        .input-group select, 
+        .input-group textarea { 
+            width: 100%; 
+            padding: 20px 20px 20px 50px; 
+            border: none; 
+            border-radius: 18px; 
+            font-size: 15px; 
+            background: #F1F5F9; 
+            box-shadow: var(--inner-shadow); 
+            color: var(--text-main); 
+            font-weight: 600; 
+            transition: 0.3s; 
         }
-        .input-group input:focus + i { color: var(--primary); }
+        
+        .input-group.no-icon input, 
+        .input-group.no-icon select { 
+            padding-left: 20px; 
+        }
+        
+        .input-group input:focus, 
+        .input-group select:focus, 
+        .input-group textarea:focus { 
+            background: #FFFFFF; 
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); 
+            outline: none; 
+        }
+        
+        .input-group input:focus + i { 
+            color: var(--primary); 
+        }
 
-        /* Search Bar */
+        /* தேடல் பட்டி (Search Bar) */
         .search-bar { 
-            background: #FFFFFF; border-radius: 20px; padding: 5px 15px; 
-            display: flex; align-items: center; box-shadow: var(--shadow-soft); 
-            margin-bottom: 20px; border: 1px solid #E2E8F0; transition: 0.3s;
+            background: #FFFFFF; 
+            border-radius: 20px; 
+            padding: 5px 15px; 
+            display: flex; 
+            align-items: center; 
+            box-shadow: var(--shadow-soft); 
+            margin-bottom: 20px; 
+            border: 1px solid #E2E8F0; 
+            transition: 0.3s; 
         }
-        .search-bar:focus-within { box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); border-color: var(--primary); }
-        .search-bar i { color: var(--primary); font-size: 18px; }
-        .search-bar input { 
-            flex: 1; border: none; padding: 15px 10px; font-size: 15px; 
-            font-weight: 600; outline: none; background: transparent; color: var(--text-main); 
-        }
-
-        /* Buttons */
-        .btn { 
-            width: 100%; padding: 18px; border: none; border-radius: 18px; 
-            font-size: 15px; font-weight: 800; cursor: pointer; transition: 0.3s; 
-            display: flex; align-items: center; justify-content: center; gap: 10px; 
-        }
-        .btn-primary { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3); }
-        .btn-primary:active { transform: scale(0.98); }
-        .btn-secondary { background: linear-gradient(135deg, var(--secondary), var(--secondary-light)); color: white; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3); }
-        .btn-success { background: linear-gradient(135deg, var(--accent), #059669); color: white; box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); }
-        .btn-warning { background: linear-gradient(135deg, var(--warning), #D97706); color: white; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); }
-        .btn-danger { background: linear-gradient(135deg, var(--danger), #BE123C); color: white; box-shadow: 0 8px 20px rgba(244, 63, 94, 0.3); }
-        .btn-outline { background: white; color: var(--text-main); box-shadow: var(--shadow-soft); border: 1px solid #E2E8F0; }
-        .btn-sm { padding: 10px 16px; font-size: 13px; border-radius: 12px; width: auto; }
-
-        /* Typography & Badges */
-        .heading { font-size: 28px; font-weight: 800; color: var(--text-main); letter-spacing: -0.5px; }
-        .flex-between { display: flex; justify-content: space-between; align-items: center; }
         
-        .badge { padding: 6px 12px; border-radius: 12px; font-size: 11px; font-weight: 800; text-transform: uppercase; }
+        .search-bar:focus-within { 
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2); 
+            border-color: var(--primary); 
+        }
+        
+        .search-bar i { 
+            color: var(--primary); 
+            font-size: 18px; 
+        }
+        
+        .search-bar input { 
+            flex: 1; 
+            border: none; 
+            padding: 15px 10px; 
+            font-size: 15px; 
+            font-weight: 600; 
+            outline: none; 
+            background: transparent; 
+            color: var(--text-main); 
+        }
+
+        /* பட்டன்கள் (Buttons) */
+        .btn { 
+            width: 100%; 
+            padding: 18px; 
+            border: none; 
+            border-radius: 18px; 
+            font-size: 15px; 
+            font-weight: 800; 
+            cursor: pointer; 
+            transition: 0.3s; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+        }
+        
+        .btn-primary { 
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3); 
+        }
+        
+        .btn-primary:active { 
+            transform: scale(0.98); 
+        }
+        
+        .btn-secondary { 
+            background: linear-gradient(135deg, var(--secondary), var(--secondary-light)); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.3); 
+        }
+        
+        .btn-success { 
+            background: linear-gradient(135deg, var(--accent), #059669); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3); 
+        }
+        
+        .btn-warning { 
+            background: linear-gradient(135deg, var(--warning), #D97706); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3); 
+        }
+        
+        .btn-danger { 
+            background: linear-gradient(135deg, var(--danger), #BE123C); 
+            color: white; 
+            box-shadow: 0 8px 20px rgba(244, 63, 94, 0.3); 
+        }
+        
+        .btn-outline { 
+            background: white; 
+            color: var(--text-main); 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid #E2E8F0; 
+        }
+        
+        .btn-sm { 
+            padding: 10px 16px; 
+            font-size: 13px; 
+            border-radius: 12px; 
+            width: auto; 
+        }
+
+        .heading { 
+            font-size: 28px; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            letter-spacing: -0.5px; 
+        }
+        
+        .flex-between { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+        }
+        
+        .badge { 
+            padding: 6px 12px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+        }
+        
         .badge.pending { background: #FEF3C7; color: #D97706; }
         .badge.approved { background: #D1FAE5; color: #059669; }
         .badge.completed { background: #E0F2FE; color: #0284C7; }
@@ -228,133 +441,619 @@
         /* ==========================================
            MODERN COMPACT AI COACH & BROADCAST
            ========================================== */
-        .ai-compact-card {
-            background: linear-gradient(135deg, var(--secondary), #0F172A);
-            border-radius: 24px; padding: 20px; color: white; margin-bottom: 25px;
-            box-shadow: 0 15px 30px rgba(30, 58, 138, 0.2); position: relative; overflow: hidden;
-            display: flex; align-items: center; gap: 15px;
+        .ai-compact-card { 
+            background: linear-gradient(135deg, var(--secondary), #0F172A); 
+            border-radius: 24px; 
+            padding: 20px; 
+            color: white; 
+            margin-bottom: 25px; 
+            box-shadow: 0 15px 30px rgba(30, 58, 138, 0.2); 
+            position: relative; 
+            overflow: hidden; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
         }
-        .ai-compact-card::after {
-            content: ''; position: absolute; right: -30px; top: -30px; width: 120px; height: 120px;
-            background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%); border-radius: 50%;
+        
+        .ai-compact-card::after { 
+            content: ''; 
+            position: absolute; 
+            right: -30px; 
+            top: -30px; 
+            width: 120px; 
+            height: 120px; 
+            background: radial-gradient(circle, rgba(6,182,212,0.2) 0%, transparent 70%); 
+            border-radius: 50%; 
         }
-        .ai-icon-pulse {
-            width: 45px; height: 45px; background: rgba(255,255,255,0.1); border-radius: 14px;
-            display: flex; justify-content: center; align-items: center; font-size: 20px; color: var(--primary);
-            flex-shrink: 0; box-shadow: inset 0 0 10px rgba(6,182,212,0.3);
+        
+        .ai-icon-pulse { 
+            width: 45px; 
+            height: 45px; 
+            background: rgba(255,255,255,0.1); 
+            border-radius: 14px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 20px; 
+            color: var(--primary); 
+            flex-shrink: 0; 
+            box-shadow: inset 0 0 10px rgba(6,182,212,0.3); 
         }
-        .ai-content { flex: 1; z-index: 1; }
-        .ai-title { font-size: 12px; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-        .ai-text { font-size: 13px; font-weight: 600; color: #E2E8F0; line-height: 1.5; }
+        
+        .ai-content { 
+            flex: 1; 
+            z-index: 1; 
+        }
+        
+        .ai-title { 
+            font-size: 12px; 
+            font-weight: 800; 
+            color: #94A3B8; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 6px; 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+        
+        /* முக்கிய திருத்தம்: தமிழ் எழுத்துக்களுக்கான பிரத்தியேக டிசைன் */
+        .ai-text { 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: #E2E8F0; 
+            line-height: 1.6; 
+            font-family: 'Noto Sans Tamil', sans-serif;
+            transition: opacity 0.4s ease;
+        }
 
-        .broadcast-card {
-            background: linear-gradient(135deg, #FFFBEB, #FEF3C7);
-            border-left: 4px solid var(--warning);
-            border-radius: 16px; padding: 15px; margin-bottom: 20px;
-            display: none; animation: slideUp 0.5s ease;
+        .broadcast-card { 
+            background: linear-gradient(135deg, #FFFBEB, #FEF3C7); 
+            border-left: 4px solid var(--warning); 
+            border-radius: 16px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            display: none; 
+            animation: slideUp 0.5s ease; 
         }
 
         /* LIVE TOKEN BOARD */
-        .live-token-board {
-            background: linear-gradient(135deg, var(--secondary), #1E293B);
-            border-radius: 24px; padding: 25px; color: white;
-            box-shadow: 0 15px 30px rgba(30, 58, 138, 0.2); margin-bottom: 25px;
-            position: relative; overflow: hidden;
+        .live-token-board { 
+            background: linear-gradient(135deg, var(--secondary), #1E293B); 
+            border-radius: 24px; 
+            padding: 25px; 
+            color: white; 
+            box-shadow: 0 15px 30px rgba(30, 58, 138, 0.2); 
+            margin-bottom: 25px; 
+            position: relative; 
+            overflow: hidden; 
         }
-        .live-token-board::before {
-            content: ''; position: absolute; right: -50px; top: -50px;
-            width: 200px; height: 200px; background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%); border-radius: 50%;
+        
+        .live-token-board::before { 
+            content: ''; 
+            position: absolute; 
+            right: -50px; 
+            top: -50px; 
+            width: 200px; 
+            height: 200px; 
+            background: radial-gradient(circle, rgba(6,182,212,0.15) 0%, transparent 70%); 
+            border-radius: 50%; 
         }
-        .token-data-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; position: relative; z-index: 2; }
-        .token-number { font-size: 45px; font-weight: 800; color: white; line-height: 1; }
-        .token-label { font-size: 11px; font-weight: 800; color: #94A3B8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 5px; }
-        .remaining-box { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px; border-radius: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.1); min-width: 100px; }
+        
+        .token-data-row { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            margin-bottom: 15px; 
+            position: relative; 
+            z-index: 2; 
+        }
+        
+        .token-number { 
+            font-size: 45px; 
+            font-weight: 800; 
+            color: white; 
+            line-height: 1; 
+        }
+        
+        .token-label { 
+            font-size: 11px; 
+            font-weight: 800; 
+            color: #94A3B8; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            margin-bottom: 5px; 
+        }
+        
+        .remaining-box { 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(10px); 
+            padding: 15px; 
+            border-radius: 16px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            min-width: 100px; 
+        }
 
-        /* ==========================================
-           SMART BOOKING & ACTION GRID
-           ========================================== */
-        .booking-grid { display: grid; grid-template-columns: 1fr; gap: 15px; margin-bottom: 25px; }
-        .book-card { 
-            background: var(--surface); padding: 20px; border-radius: 20px; 
-            display: flex; align-items: center; gap: 18px; cursor: pointer; 
-            box-shadow: var(--shadow-soft); transition: 0.3s; border: 1px solid transparent;
+        /* PILL REMINDER CARD */
+        .pill-card { 
+            background: linear-gradient(135deg, #FFF1F2, #FFE4E6); 
+            border-left: 4px solid var(--danger); 
+            border-radius: 16px; 
+            padding: 15px; 
+            margin-bottom: 20px; 
+            display: none; 
+            animation: slideUp 0.5s ease; 
+            box-shadow: var(--shadow-soft); 
         }
-        .book-card:hover { transform: translateX(5px); box-shadow: var(--shadow-hover); border-color: rgba(6,182,212,0.2); }
-        .book-icon { width: 55px; height: 55px; border-radius: 16px; display: flex; justify-content: center; align-items: center; font-size: 24px; flex-shrink: 0; }
+        
+        .pill-badge { 
+            background: white; 
+            padding: 5px 12px; 
+            border-radius: 12px; 
+            font-size: 11px; 
+            font-weight: 800; 
+            color: var(--danger); 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); 
+            display: flex; 
+            align-items: center; 
+            gap: 5px; 
+        }
+
+        /* BOOKING GRID & VAULT */
+        .booking-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; 
+            gap: 15px; 
+            margin-bottom: 25px; 
+        }
+        
+        .book-card { 
+            background: var(--surface); 
+            padding: 20px; 
+            border-radius: 20px; 
+            display: flex; 
+            align-items: center; 
+            gap: 18px; 
+            cursor: pointer; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+            border: 1px solid transparent; 
+        }
+        
+        .book-card:hover { 
+            transform: translateX(5px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: rgba(6,182,212,0.2); 
+        }
+        
+        .book-icon { 
+            width: 55px; 
+            height: 55px; 
+            border-radius: 16px; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 24px; 
+            flex-shrink: 0; 
+        }
+        
         .bc-general .book-icon { background: #E0F2FE; color: var(--primary); }
         .bc-specialist .book-icon { background: #EDE9FE; color: var(--purple); }
 
-        /* VAULT COMPONENTS */
-        .vault-filter { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
-        .vault-filter::-webkit-scrollbar { display: none; }
-        .v-tab { padding: 10px 16px; border-radius: 14px; font-size: 13px; font-weight: 800; background: white; color: var(--text-muted); cursor: pointer; white-space: nowrap; box-shadow: var(--shadow-soft); transition: 0.3s; }
-        .v-tab.active { background: var(--primary); color: white; box-shadow: 0 5px 15px rgba(6,182,212,0.3); }
-
-        .doc-item { background: white; border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 12px; box-shadow: var(--shadow-soft); cursor: pointer; transition: 0.3s; border: 1px solid transparent; }
-        .doc-item:hover { transform: translateX(5px); box-shadow: var(--shadow-hover); border-color: rgba(6,182,212,0.2); }
-        .doc-icon { width: 45px; height: 45px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0; }
-
-        .admin-tabs { display: flex; gap: 10px; overflow-x: auto; margin-bottom: 25px; padding-bottom: 10px; }
-        .admin-tabs::-webkit-scrollbar { display: none; }
-        .admin-tab { padding: 14px 20px; background: white; border-radius: 16px; font-size: 13px; font-weight: 800; color: var(--text-muted); cursor: pointer; white-space: nowrap; box-shadow: var(--shadow-soft); transition: 0.3s; }
-        .admin-tab.active { background: var(--secondary); color: white; box-shadow: 0 5px 15px rgba(15,23,42,0.2); }
-
-        .patient-list-item { background: white; border-radius: 20px; padding: 20px; margin-bottom: 15px; box-shadow: var(--shadow-soft); border: 1px solid transparent; transition: 0.3s; display: flex; justify-content: space-between; align-items: center; }
-        .patient-list-item:hover { border-color: rgba(6,182,212,0.3); box-shadow: var(--shadow-hover); }
-
-        /* ==========================================
-           CUSTOM POPUPS & MODALS (Replaces default prompts)
-           ========================================== */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(8px); z-index: 9999; display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s; }
-        .modal-overlay.active { display: flex; opacity: 1; }
-        .modal-content { background: var(--surface); width: 92%; max-width: 400px; border-radius: 28px; padding: 25px; box-shadow: 0 25px 50px rgba(0,0,0,0.3); transform: translateY(20px); transition: 0.3s; max-height: 85vh; overflow-y: auto; }
-        .modal-overlay.active .modal-content { transform: translateY(0); }
-
-        /* Custom Alert & Confirm Box */
-        .custom-popup { text-align: center; }
-        .custom-popup i { font-size: 50px; color: var(--warning); margin-bottom: 15px; }
-        .custom-popup h3 { font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 10px; }
-        .custom-popup p { font-size: 14px; font-weight: 600; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
-        .custom-popup input { width: 100%; padding: 15px; border-radius: 12px; border: 2px solid #E2E8F0; background: #F8FAFC; margin-bottom: 20px; font-size: 14px; font-weight: 600; outline: none; }
-        .custom-popup input:focus { border-color: var(--primary); }
-        .popup-buttons { display: flex; gap: 10px; justify-content: center; }
-
-        /* ULTRA PREMIUM IMAGE VIEWER MODAL */
-        .image-viewer-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.95); backdrop-filter: blur(15px);
-            z-index: 100000; display: none; flex-direction: column;
-            align-items: center; justify-content: center; padding: 20px;
+        .vault-filter { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            padding-bottom: 10px; 
+            margin-bottom: 15px; 
         }
-        .image-viewer-modal.active { display: flex; animation: fadeIn 0.3s ease forwards; }
-        .image-viewer-header { position: absolute; top: 20px; right: 20px; z-index: 2; }
-        .image-viewer-header i { font-size: 35px; color: white; cursor: pointer; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .image-viewer-content { width: 100%; max-width: 600px; display: flex; flex-direction: column; align-items: center; }
-        .image-viewer-img { width: 100%; max-height: 70vh; object-fit: contain; border-radius: 16px; box-shadow: 0 20px 50px rgba(0,0,0,0.8); border: 2px solid rgba(255,255,255,0.1); }
-        .image-viewer-info { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 15px 25px; border-radius: 16px; margin-top: 20px; text-align: center; border: 1px solid rgba(255,255,255,0.2); width: 100%; }
+        
+        .vault-filter::-webkit-scrollbar { 
+            display: none; 
+        }
+        
+        .v-tab { 
+            padding: 10px 16px; 
+            border-radius: 14px; 
+            font-size: 13px; 
+            font-weight: 800; 
+            background: white; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            white-space: nowrap; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+        }
+        
+        .v-tab.active { 
+            background: var(--primary); 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(6,182,212,0.3); 
+        }
 
+        .doc-item { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 15px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            margin-bottom: 12px; 
+            box-shadow: var(--shadow-soft); 
+            cursor: pointer; 
+            transition: 0.3s; 
+            border: 1px solid transparent; 
+        }
+        
+        .doc-item:hover { 
+            transform: translateX(5px); 
+            box-shadow: var(--shadow-hover); 
+            border-color: rgba(6,182,212,0.2); 
+        }
+        
+        .doc-icon { 
+            width: 45px; 
+            height: 45px; 
+            border-radius: 12px; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            font-size: 20px; 
+            flex-shrink: 0; 
+        }
+
+        .admin-tabs { 
+            display: flex; 
+            gap: 10px; 
+            overflow-x: auto; 
+            margin-bottom: 25px; 
+            padding-bottom: 10px; 
+        }
+        
+        .admin-tabs::-webkit-scrollbar { 
+            display: none; 
+        }
+        
+        .admin-tab { 
+            padding: 14px 20px; 
+            background: white; 
+            border-radius: 16px; 
+            font-size: 13px; 
+            font-weight: 800; 
+            color: var(--text-muted); 
+            cursor: pointer; 
+            white-space: nowrap; 
+            box-shadow: var(--shadow-soft); 
+            transition: 0.3s; 
+        }
+        
+        .admin-tab.active { 
+            background: var(--secondary); 
+            color: white; 
+            box-shadow: 0 5px 15px rgba(15,23,42,0.2); 
+        }
+
+        .patient-list-item { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 20px; 
+            margin-bottom: 15px; 
+            box-shadow: var(--shadow-soft); 
+            border: 1px solid transparent; 
+            transition: 0.3s; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            flex-wrap: wrap; 
+            gap: 10px; 
+        }
+        
+        .patient-list-item:hover { 
+            border-color: rgba(6,182,212,0.3); 
+            box-shadow: var(--shadow-hover); 
+        }
+
+        /* POPUPS & MODALS */
+        .modal-overlay { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(15, 23, 42, 0.7); 
+            backdrop-filter: blur(8px); 
+            z-index: 9999; 
+            display: none; 
+            align-items: center; 
+            justify-content: center; 
+            opacity: 0; 
+            transition: 0.3s; 
+        }
+        
+        .modal-overlay.active { 
+            display: flex; 
+            opacity: 1; 
+        }
+        
+        .modal-content { 
+            background: var(--surface); 
+            width: 92%; 
+            max-width: 450px; 
+            border-radius: 28px; 
+            padding: 25px; 
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3); 
+            transform: translateY(20px); 
+            transition: 0.3s; 
+            max-height: 85vh; 
+            overflow-y: auto; 
+        }
+        
+        .modal-overlay.active .modal-content { 
+            transform: translateY(0); 
+        }
+
+        .custom-popup { 
+            text-align: center; 
+        }
+        
+        .custom-popup i { 
+            font-size: 50px; 
+            color: var(--warning); 
+            margin-bottom: 15px; 
+        }
+        
+        .custom-popup h3 { 
+            font-size: 20px; 
+            font-weight: 800; 
+            color: var(--text-main); 
+            margin-bottom: 10px; 
+        }
+        
+        .custom-popup p { 
+            font-size: 14px; 
+            font-weight: 600; 
+            color: var(--text-muted); 
+            margin-bottom: 20px; 
+            line-height: 1.5; 
+        }
+        
+        .custom-popup input { 
+            width: 100%; 
+            padding: 15px; 
+            border-radius: 12px; 
+            border: 2px solid #E2E8F0; 
+            background: #F8FAFC; 
+            margin-bottom: 20px; 
+            font-size: 14px; 
+            font-weight: 600; 
+            outline: none; 
+        }
+        
+        .custom-popup input:focus { 
+            border-color: var(--primary); 
+        }
+        
+        .popup-buttons { 
+            display: flex; 
+            gap: 10px; 
+            justify-content: center; 
+        }
+
+        /* PREMIUM IMAGE VIEWER */
+        .image-viewer-modal { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0, 0, 0, 0.95); 
+            backdrop-filter: blur(15px); 
+            z-index: 100000; 
+            display: none; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            padding: 20px; 
+        }
+        
+        .image-viewer-modal.active { 
+            display: flex; 
+            animation: fadeIn 0.3s ease forwards; 
+        }
+        
+        .image-viewer-header { 
+            position: absolute; 
+            top: 20px; 
+            right: 20px; 
+            z-index: 2; 
+        }
+        
+        .image-viewer-header i { 
+            font-size: 35px; 
+            color: white; 
+            cursor: pointer; 
+            text-shadow: 0 5px 15px rgba(0,0,0,0.5); 
+        }
+        
+        .image-viewer-content { 
+            width: 100%; 
+            max-width: 600px; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+        }
+        
+        .image-viewer-img { 
+            width: 100%; 
+            max-height: 70vh; 
+            object-fit: contain; 
+            border-radius: 16px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8); 
+            border: 2px solid rgba(255,255,255,0.1); 
+        }
+        
+        .image-viewer-info { 
+            background: rgba(255,255,255,0.1); 
+            backdrop-filter: blur(10px); 
+            padding: 15px 25px; 
+            border-radius: 16px; 
+            margin-top: 20px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.2); 
+            width: 100%; 
+        }
+
+        /* FLOATING DOCK MENU */
         .floating-dock { 
-            position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); width: 92%; max-width: 450px; 
-            background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); display: flex; justify-content: space-around; 
-            padding: 15px 10px; border-radius: 35px; box-shadow: var(--shadow-hover); z-index: 900; 
+            position: fixed; 
+            bottom: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            width: 92%; 
+            max-width: 450px; 
+            background: rgba(255,255,255,0.95); 
+            backdrop-filter: blur(20px); 
+            display: flex; 
+            justify-content: space-around; 
+            padding: 15px 10px; 
+            border-radius: 35px; 
+            box-shadow: var(--shadow-hover); 
+            z-index: 900; 
             border: 1px solid rgba(255,255,255,0.5); 
         }
-        .dock-item { color: #94A3B8; font-size: 11px; font-weight: 800; text-align: center; width: 65px; cursor: pointer; transition: 0.3s; }
-        .dock-item i { font-size: 22px; margin-bottom: 5px; display: block; transition: 0.3s; }
-        .dock-item.active { color: var(--primary); transform: translateY(-5px); }
-        .dock-item.active i { filter: drop-shadow(0 5px 10px rgba(6,182,212,0.4)); }
-
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 10000; display: flex; flex-direction: column; gap: 10px; width: 90%; max-width: 400px; }
-        .toast { background: var(--text-main); color: white; padding: 15px 20px; border-radius: 16px; display: flex; align-items: center; gap: 15px; box-shadow: 0 15px 30px rgba(0,0,0,0.3); animation: toastEnter 0.4s ease forwards; cursor: pointer; }
-        @keyframes toastEnter { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
         
-        .notification-dot { position: absolute; top: 12px; right: 12px; width: 10px; height: 10px; background: var(--danger); border-radius: 50%; box-shadow: 0 0 10px var(--danger); display: none; animation: pulse-glow 1.5s infinite; }
+        .dock-item { 
+            color: #94A3B8; 
+            font-size: 11px; 
+            font-weight: 800; 
+            text-align: center; 
+            width: 65px; 
+            cursor: pointer; 
+            transition: 0.3s; 
+        }
         
-        .image-preview { width: 100%; max-height: 200px; border-radius: 16px; object-fit: contain; display: none; margin: 15px 0; background: #F1F5F9; padding: 10px; border: 2px dashed #CBD5E1; }
+        .dock-item i { 
+            font-size: 22px; 
+            margin-bottom: 5px; 
+            display: block; 
+            transition: 0.3s; 
+        }
+        
+        .dock-item.active { 
+            color: var(--primary); 
+            transform: translateY(-5px); 
+        }
+        
+        .dock-item.active i { 
+            filter: drop-shadow(0 5px 10px rgba(6,182,212,0.4)); 
+        }
 
-        .contact-pill { display: flex; align-items: center; gap: 10px; background: #F1F5F9; padding: 12px 15px; border-radius: 14px; margin-bottom: 10px; font-weight: 700; font-size: 14px; color: var(--text-main); text-decoration: none; transition: 0.3s;}
-        .contact-pill:hover { background: #E0F2FE; color: var(--primary); }
-        .contact-pill i { color: var(--primary); font-size: 18px; }
+        /* TOAST NOTIFICATIONS */
+        #toast-container { 
+            position: fixed; 
+            top: 20px; 
+            left: 50%; 
+            transform: translateX(-50%); 
+            z-index: 10000; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            width: 90%; 
+            max-width: 400px; 
+        }
+        
+        .toast { 
+            background: var(--text-main); 
+            color: white; 
+            padding: 15px 20px; 
+            border-radius: 16px; 
+            display: flex; 
+            align-items: center; 
+            gap: 15px; 
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3); 
+            animation: toastEnter 0.4s ease forwards; 
+            cursor: pointer; 
+        }
+        
+        @keyframes toastEnter { 
+            from { opacity: 0; transform: translateY(-20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .notification-dot { 
+            position: absolute; 
+            top: 12px; 
+            right: 12px; 
+            width: 10px; 
+            height: 10px; 
+            background: var(--danger); 
+            border-radius: 50%; 
+            box-shadow: 0 0 10px var(--danger); 
+            display: none; 
+            animation: pulse-glow 1.5s infinite; 
+        }
+        
+        .image-preview { 
+            width: 100%; 
+            max-height: 200px; 
+            border-radius: 16px; 
+            object-fit: contain; 
+            display: none; 
+            margin: 15px 0; 
+            background: #F1F5F9; 
+            padding: 10px; 
+            border: 2px dashed #CBD5E1; 
+        }
+
+        .contact-pill { 
+            display: flex; 
+            align-items: center; 
+            gap: 10px; 
+            background: #F1F5F9; 
+            padding: 12px 15px; 
+            border-radius: 14px; 
+            margin-bottom: 10px; 
+            font-weight: 700; 
+            font-size: 14px; 
+            color: var(--text-main); 
+            text-decoration: none; 
+            transition: 0.3s;
+        }
+        
+        .contact-pill:hover { 
+            background: #E0F2FE; 
+            color: var(--primary); 
+        }
+        
+        .contact-pill i { 
+            color: var(--primary); 
+            font-size: 18px; 
+        }
+        
+        /* Checkbox styling for Pill Reminder */
+        .pill-checkbox-container { 
+            display: flex; 
+            gap: 15px; 
+            margin-bottom: 15px; 
+            flex-wrap: wrap; 
+        }
+        
+        .pill-checkbox-container label { 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            font-size: 13px; 
+            font-weight: 700; 
+            cursor: pointer; 
+            background: #F1F5F9; 
+            padding: 8px 12px; 
+            border-radius: 10px; 
+        }
+        
+        .pill-checkbox-container input { 
+            cursor: pointer; 
+        }
     </style>
 </head>
 <body>
@@ -363,14 +1062,14 @@
         <div class="spinner"></div>
         <p style="font-size: 14px; font-weight: 800; color: var(--secondary);">Processing...</p>
     </div>
-
+    
     <div id="success-overlay">
         <div class="success-box">
             <i class="fa-solid fa-circle-check"></i>
             <h2 id="success-text">Success!</h2>
         </div>
     </div>
-
+    
     <div class="ambient-bg ambient-1"></div>
     <div class="ambient-bg ambient-2"></div>
     
@@ -391,7 +1090,7 @@
             <p id="confirm-text">This action cannot be undone.</p>
             <div class="popup-buttons">
                 <button class="btn btn-outline btn-sm" onclick="App.closeModal('modal-custom-confirm')" style="flex:1;">Cancel</button>
-                <button class="btn btn-danger btn-sm" id="confirm-yes-btn" style="flex:1;">Yes, Delete</button>
+                <button class="btn btn-danger btn-sm" id="confirm-yes-btn" style="flex:1;">Yes, Confirm</button>
             </div>
         </div>
     </div>
@@ -400,7 +1099,7 @@
         <div class="modal-content custom-popup">
             <i class="fa-solid fa-pen-to-square" style="color: var(--primary);"></i>
             <h3 id="prompt-title">Enter Details</h3>
-            <p id="prompt-text">Please provide a reason below:</p>
+            <p id="prompt-text">Please provide details below:</p>
             <input type="text" id="prompt-input" placeholder="Type here...">
             <div class="popup-buttons">
                 <button class="btn btn-outline btn-sm" onclick="App.closeModal('modal-custom-prompt')" style="flex:1;">Cancel</button>
@@ -416,16 +1115,13 @@
             </div>
             <h3 class="heading" style="font-size: 22px; margin-bottom: 10px;">Reset Password</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">Enter your registered email address. We will send a secure link to reset your password.</p>
-            
             <div class="input-group no-label">
                 <i class="fa-solid fa-envelope"></i>
                 <input type="email" id="forgot-email" placeholder="Enter Gmail Address">
             </div>
-            
             <div id="forgot-success-msg" style="display:none; background:#D1FAE5; color:#059669; padding:15px; border-radius:16px; font-size:13px; font-weight:800; text-align:center; margin-bottom:20px;">
                 <i class="fa-solid fa-paper-plane"></i> Reset link sent successfully!
             </div>
-            
             <button class="btn btn-primary" id="forgot-btn" onclick="App.sendResetLink()">Send Reset Link</button>
         </div>
     </div>
@@ -437,7 +1133,6 @@
             </div>
             <h3 class="heading" style="font-size: 22px; margin-bottom: 10px;">General Consultation</h3>
             <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 25px; line-height: 1.5;">Get an instant walk-in token. The next available duty doctor will attend to you shortly.</p>
-            
             <button class="btn btn-primary" onclick="App.confirmGeneralToken()">Generate Token Now</button>
             <button class="btn btn-outline" style="margin-top: 10px; border:none; box-shadow:none;" onclick="App.closeModal('modal-general-token')">Cancel</button>
         </div>
@@ -446,20 +1141,44 @@
     <div class="modal-overlay" id="modal-admin-patient">
         <div class="modal-content">
             <div class="flex-between" style="margin-bottom: 15px;">
-                <h3 class="heading" style="font-size: 20px;">Patient Details</h3>
+                <h3 class="heading" style="font-size: 20px;">Patient Control Panel</h3>
                 <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-admin-patient')"></i>
             </div>
             
             <input type="hidden" id="edit-p-id">
             
             <div style="background: #F8FAFC; padding: 15px; border-radius: 16px; margin-bottom: 20px; border: 1px solid #E2E8F0;">
-                <div class="input-group no-label" style="margin-bottom: 10px;"><i class="fa-solid fa-user"></i><input type="text" id="edit-p-name" placeholder="Name"></div>
-                <div class="input-group no-label" style="margin-bottom: 10px;"><i class="fa-solid fa-phone"></i><input type="tel" id="edit-p-phone" placeholder="Phone"></div>
-                <div class="input-group no-label" style="margin-bottom: 0;"><i class="fa-solid fa-calendar-days"></i><input type="number" id="edit-p-age" placeholder="Age"></div>
-                <button class="btn btn-secondary btn-sm" style="margin-top: 10px; width: 100%;" onclick="App.saveAdminPatientEdit()">Update Details</button>
+                <div class="input-group no-label" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-user"></i>
+                    <input type="text" id="edit-p-name" placeholder="Name">
+                </div>
+                <div class="input-group no-label" style="margin-bottom: 10px;">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="edit-p-phone" placeholder="Phone">
+                </div>
+                <div class="input-group no-label" style="margin-bottom: 0;">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <input type="number" id="edit-p-age" placeholder="Age">
+                </div>
+                
+                <h4 style="font-size: 13px; font-weight: 800; margin-top: 15px; margin-bottom: 10px; color: var(--danger);">
+                    <i class="fa-solid fa-pills"></i> Set Pill Reminders
+                </h4>
+                <div class="pill-checkbox-container">
+                    <label><input type="checkbox" id="edit-p-pill-m"> Morning</label>
+                    <label><input type="checkbox" id="edit-p-pill-a"> Afternoon</label>
+                    <label><input type="checkbox" id="edit-p-pill-n"> Night</label>
+                </div>
+                <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                    <input type="text" id="edit-p-pill-details" placeholder="Medicine Instructions (e.g., Dolo 650 after food)" style="font-size: 13px;">
+                </div>
+                
+                <button class="btn btn-secondary btn-sm" style="margin-top: 15px; width: 100%;" onclick="App.saveAdminPatientEdit()">Save Profile & Reminders</button>
             </div>
 
-            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px; color: var(--primary);"><i class="fa-solid fa-cloud-arrow-up"></i> Quick Upload to Vault</h4>
+            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px; color: var(--primary);">
+                <i class="fa-solid fa-camera"></i> Live Document Upload
+            </h4>
             
             <div class="input-group no-label no-icon" style="margin-bottom: 10px;">
                 <select id="quick-v-category">
@@ -477,13 +1196,15 @@
             
             <div class="input-group no-label" style="margin-bottom: 10px;">
                 <label style="background: #E0F2FE; color: var(--primary-dark); padding: 15px; border-radius: 16px; display: block; cursor: pointer; text-align: center; font-weight: 800; border: 2px dashed #BAE6FD;">
-                    <i class="fa-solid fa-image"></i> Select File
-                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleQuickVaultFile(event)">
+                    <i class="fa-solid fa-camera"></i> Take Photo / Select
+                    <input type="file" accept="image/*" capture="environment" style="display: none;" onchange="App.handleQuickVaultFile(event)">
                 </label>
             </div>
             <img id="quick-v-preview" class="image-preview">
             
-            <button class="btn btn-primary" onclick="App.quickUploadToVault()"><i class="fa-solid fa-paper-plane"></i> Upload & Notify Patient</button>
+            <button class="btn btn-primary" onclick="App.quickUploadToVault()">
+                <i class="fa-solid fa-paper-plane"></i> Upload to Patient Vault
+            </button>
         </div>
     </div>
 
@@ -494,9 +1215,24 @@
                 <i class="fa-solid fa-xmark" style="font-size: 20px; color: var(--text-muted); cursor: pointer;" onclick="App.closeModal('modal-edit-doctor')"></i>
             </div>
             <input type="hidden" id="edit-d-id">
-            <div class="input-group"><label>Doctor Name</label><div class="input-group no-label no-icon"><input type="text" id="edit-d-name"></div></div>
-            <div class="input-group"><label>Specialization</label><div class="input-group no-label no-icon"><input type="text" id="edit-d-spec"></div></div>
-            <div class="input-group"><label>Availability/Timing</label><div class="input-group no-label no-icon"><input type="text" id="edit-d-time"></div></div>
+            <div class="input-group">
+                <label>Doctor Name</label>
+                <div class="input-group no-label no-icon">
+                    <input type="text" id="edit-d-name">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Specialization</label>
+                <div class="input-group no-label no-icon">
+                    <input type="text" id="edit-d-spec">
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Availability/Timing</label>
+                <div class="input-group no-label no-icon">
+                    <input type="text" id="edit-d-time">
+                </div>
+            </div>
             <button class="btn btn-primary" onclick="App.saveAdminDoctorEdit()">Save Changes</button>
         </div>
     </div>
@@ -523,13 +1259,18 @@
                 <h1 class="heading">Welcome</h1>
                 <p style="font-weight: 700; color: var(--text-muted); margin-top: 8px;">Log in to Senthil Hospital</p>
             </div>
-            
-            <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="login-email" placeholder="Email Address"></div>
-            <div class="input-group no-label" style="margin-bottom: 15px;"><i class="fa-solid fa-lock"></i><input type="password" id="login-password" placeholder="Password"></div>
-            
-            <div style="text-align: right; margin-bottom: 25px;"><span style="font-size: 13px; font-weight: 800; color: var(--primary); cursor: pointer;" onclick="App.openModal('modal-forgot')">Forgot Password?</span></div>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="login-email" placeholder="Email Address">
+            </div>
+            <div class="input-group no-label" style="margin-bottom: 15px;">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="login-password" placeholder="Password">
+            </div>
+            <div style="text-align: right; margin-bottom: 25px;">
+                <span style="font-size: 13px; font-weight: 800; color: var(--primary); cursor: pointer;" onclick="App.openModal('modal-forgot')">Forgot Password?</span>
+            </div>
             <button class="btn btn-primary" onclick="App.login()">Secure Login <i class="fa-solid fa-arrow-right"></i></button>
-            
             <div class="flex-between" style="margin-top: 35px; padding: 0 10px;">
                 <span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-signup')">New User? <span style="color:var(--primary);">Sign Up</span></span>
                 <span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-admin-login')"><i class="fa-solid fa-shield-halved"></i> Staff Login</span>
@@ -539,39 +1280,70 @@
 
     <div id="screen-signup" class="screen">
         <div class="center-wrap">
-            <div style="text-align: center; margin-bottom: 30px;"><h1 class="heading">Create Profile</h1></div>
-            
-            <div class="input-group no-label"><i class="fa-solid fa-user"></i><input type="text" id="reg-name" placeholder="Full Name"></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group no-label"><i class="fa-solid fa-phone"></i><input type="tel" id="reg-phone" placeholder="Mobile No."></div>
-                <div class="input-group no-label"><i class="fa-solid fa-calendar-days"></i><input type="number" id="reg-age" placeholder="Age"></div>
+            <div style="text-align: center; margin-bottom: 30px;">
+                <h1 class="heading">Create Profile</h1>
             </div>
-            <div class="input-group no-label"><i class="fa-solid fa-envelope"></i><input type="email" id="reg-email" placeholder="Email Address"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-lock"></i><input type="password" id="reg-pass" placeholder="Create Password"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-check-double"></i><input type="password" id="reg-pass2" placeholder="Confirm Password"></div>
-            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-user"></i>
+                <input type="text" id="reg-name" placeholder="Full Name">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="input-group no-label">
+                    <i class="fa-solid fa-phone"></i>
+                    <input type="tel" id="reg-phone" placeholder="Mobile No.">
+                </div>
+                <div class="input-group no-label">
+                    <i class="fa-solid fa-calendar-days"></i>
+                    <input type="number" id="reg-age" placeholder="Age">
+                </div>
+            </div>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="reg-email" placeholder="Email Address">
+            </div>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="reg-pass" placeholder="Create Password">
+            </div>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-check-double"></i>
+                <input type="password" id="reg-pass2" placeholder="Confirm Password">
+            </div>
             <button class="btn btn-primary" onclick="App.signup()">Setup Account</button>
-            <div style="text-align: center; margin-top: 25px;"><span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Back to Login</span></div>
+            <div style="text-align: center; margin-top: 25px;">
+                <span style="color: var(--text-muted); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Back to Login</span>
+            </div>
         </div>
     </div>
 
     <div id="screen-admin-login" class="screen">
         <div class="center-wrap">
             <div style="text-align: center; margin-bottom: 40px;">
-                <i class="fa-solid fa-user-shield" style="font-size: 60px; color: var(--secondary); margin-bottom: 20px;"></i><h1 class="heading">Admin Panel</h1>
+                <i class="fa-solid fa-user-shield" style="font-size: 60px; color: var(--secondary); margin-bottom: 20px;"></i>
+                <h1 class="heading">Admin Panel</h1>
             </div>
-            <div class="input-group no-label"><i class="fa-solid fa-id-badge"></i><input type="text" id="admin-user" placeholder="Admin ID"></div>
-            <div class="input-group no-label"><i class="fa-solid fa-key"></i><input type="password" id="admin-pass" placeholder="Password"></div>
-            
+            <div class="input-group no-label">
+                <i class="fa-solid fa-id-badge"></i>
+                <input type="text" id="admin-user" placeholder="Admin ID">
+            </div>
+            <div class="input-group no-label">
+                <i class="fa-solid fa-key"></i>
+                <input type="password" id="admin-pass" placeholder="Password">
+            </div>
             <button class="btn btn-secondary" onclick="App.adminLogin()">Access Dashboard</button>
             <p style="text-align: center; font-size: 12px; color: var(--text-muted); font-weight: 700; margin-top: 15px;">Demo Credentials -> ID: admin | Pass: admin</p>
-            <div style="text-align: center; margin-top: 30px;"><span style="color: var(--primary); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Patient Login</span></div>
+            <div style="text-align: center; margin-top: 30px;">
+                <span style="color: var(--primary); font-weight: 800; cursor: pointer; font-size: 14px;" onclick="App.navigate('screen-login')"><i class="fa-solid fa-arrow-left"></i> Patient Login</span>
+            </div>
         </div>
     </div>
 
     <div id="screen-patient-home" class="screen">
         <div class="flex-between" style="margin-bottom: 25px;">
-            <div><p style="font-size: 13px; font-weight: 800; color: var(--text-muted);">Good Health,</p><h2 class="heading" id="ui-name" style="font-size: 24px;">User</h2></div>
+            <div>
+                <p style="font-size: 13px; font-weight: 800; color: var(--text-muted);">உங்களை வரவேற்கிறோம்,</p>
+                <h2 class="heading" id="ui-name" style="font-size: 24px;">User</h2>
+            </div>
             <div style="position: relative; width: 50px; height: 50px; background: var(--surface); border-radius: 16px; display: flex; justify-content: center; align-items: center; box-shadow: var(--shadow-soft); cursor: pointer;" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
                 <i class="fa-solid fa-bell" style="color: var(--primary); font-size: 20px;"></i>
                 <div class="notification-dot" id="ui-notif-dot"></div>
@@ -584,6 +1356,14 @@
                 <h4 style="font-size: 14px; font-weight: 800; color: #92400E; margin-bottom: 4px;" id="pb-title">Notice</h4>
                 <p style="font-size: 12px; color: #B45309; font-weight: 600; line-height: 1.5;" id="pb-msg">Message</p>
             </div>
+        </div>
+
+        <div id="patient-pill-reminder" class="pill-card">
+            <h4 style="font-size: 14px; font-weight: 800; color: #BE123C; margin-bottom: 12px;">
+                <i class="fa-solid fa-prescription-bottle-medical"></i> உங்கள் மாத்திரை நேரம் (Pill Reminder)
+            </h4>
+            <div id="pill-times" style="display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap;"></div>
+            <p id="pill-details" style="font-size: 13px; font-weight: 700; color: #9F1239; line-height: 1.5; font-family: 'Noto Sans Tamil', sans-serif;"></p>
         </div>
 
         <div id="patient-live-token-area" style="display: none;">
@@ -609,33 +1389,40 @@
         </div>
 
         <div class="ai-compact-card">
-            <div class="ai-icon-pulse"><i class="fa-solid fa-wand-magic-sparkles"></i></div>
+            <div class="ai-icon-pulse"><i class="fa-solid fa-heart-pulse"></i></div>
             <div class="ai-content">
-                <div class="ai-title">AI Insight <span id="ai-health-status" style="font-size:10px; padding:4px 10px; border-radius:8px; background:rgba(255,255,255,0.2); margin-left:8px; font-weight: 800; color: white;">Pending</span></div>
-                <div class="ai-text" id="ai-smart-tip">Update your profile vitals to receive personalized medical insights.</div>
+                <div class="ai-title">Senthil AI Health Coach <span id="ai-health-status" style="font-size:10px; padding:4px 10px; border-radius:8px; background:rgba(255,255,255,0.2); margin-left:8px; font-weight: 800; color: white;">தகவல்</span></div>
+                <div class="ai-text" id="ai-smart-tip">உடல்நல தரவுகளைச் சரிபார்க்கிறோம்...</div>
             </div>
         </div>
 
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px; color: var(--text-main);">Quick Booking</h3>
-        
         <div class="booking-grid">
             <div class="book-card bc-general" onclick="App.openModal('modal-general-token')">
                 <div class="book-icon"><i class="fa-solid fa-bolt"></i></div>
-                <div><h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">General Consultation</h4><p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px;">Walk-in token for duty doctor</p></div>
+                <div>
+                    <h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">General Consultation</h4>
+                    <p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px;">Walk-in token for duty doctor</p>
+                </div>
             </div>
             <div class="book-card bc-specialist" onclick="App.switchTab('screen-patient-book', 'nav-book')">
                 <div class="book-icon"><i class="fa-solid fa-user-doctor"></i></div>
-                <div><h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">Specialist Appointment</h4><p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px;">Book specific doctor & time</p></div>
+                <div>
+                    <h4 style="font-size: 16px; font-weight: 800; color: var(--text-main);">Specialist Appointment</h4>
+                    <p style="font-size: 12px; font-weight: 600; color: var(--text-muted); margin-top: 4px;">Book specific doctor & time</p>
+                </div>
             </div>
         </div>
 
         <h3 style="font-size: 18px; font-weight: 800; margin-bottom: 15px; color: var(--text-main);">My Records</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div class="card" style="padding: 20px; text-align: center; margin:0; cursor: pointer;" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
-                <i class="fa-solid fa-file-prescription" style="font-size: 30px; color: #0EA5E9; margin-bottom: 10px;"></i><h4 style="font-size: 13px; font-weight: 800;">Prescriptions</h4>
+                <i class="fa-solid fa-file-prescription" style="font-size: 30px; color: #0EA5E9; margin-bottom: 10px;"></i>
+                <h4 style="font-size: 13px; font-weight: 800;">Prescriptions</h4>
             </div>
             <div class="card" style="padding: 20px; text-align: center; margin:0; cursor: pointer;" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
-                <i class="fa-solid fa-vial-circle-check" style="font-size: 30px; color: #10B981; margin-bottom: 10px;"></i><h4 style="font-size: 13px; font-weight: 800;">Lab Reports</h4>
+                <i class="fa-solid fa-vial-circle-check" style="font-size: 30px; color: #10B981; margin-bottom: 10px;"></i>
+                <h4 style="font-size: 13px; font-weight: 800;">Lab Reports</h4>
             </div>
         </div>
     </div>
@@ -643,8 +1430,18 @@
     <div id="screen-patient-book" class="screen">
         <h2 class="heading" style="margin-bottom: 25px;">Book Specialist</h2>
         <div class="card">
-            <div class="input-group"><label>Select Department / Doctor</label><div class="input-group no-label no-icon"><select id="book-doctor"></select></div></div>
-            <div class="input-group"><label>Preferred Date</label><div class="input-group no-label no-icon"><input type="date" id="book-date"></div></div>
+            <div class="input-group">
+                <label>Select Department / Doctor</label>
+                <div class="input-group no-label no-icon">
+                    <select id="book-doctor"></select>
+                </div>
+            </div>
+            <div class="input-group">
+                <label>Preferred Date</label>
+                <div class="input-group no-label no-icon">
+                    <input type="date" id="book-date">
+                </div>
+            </div>
             <button class="btn btn-primary" onclick="App.confirmSpecialistBooking()">Confirm Appointment</button>
         </div>
     </div>
@@ -672,23 +1469,54 @@
             <h2 class="heading">Profile</h2>
             <button class="btn btn-success btn-sm" onclick="App.saveProfile()"><i class="fa-solid fa-check"></i> Save</button>
         </div>
-
+        
         <div class="card" style="padding: 20px;">
-            <div class="input-group" style="margin-bottom: 15px;"><label>Full Name</label><div class="input-group no-label no-icon" style="margin-bottom: 0;"><input type="text" id="prof-name"></div></div>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
-                <div class="input-group" style="margin-bottom: 0;"><label>Age</label><div class="input-group no-label no-icon" style="margin-bottom: 0;"><input type="number" id="prof-age"></div></div>
-                <div class="input-group" style="margin-bottom: 0;"><label>Phone</label><div class="input-group no-label no-icon" style="margin-bottom: 0;"><input type="tel" id="prof-phone"></div></div>
+            <div class="input-group" style="margin-bottom: 15px;">
+                <label>Full Name</label>
+                <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                    <input type="text" id="prof-name">
+                </div>
             </div>
-            <div class="input-group" style="margin-bottom: 0;"><label>Email</label><div class="input-group no-label no-icon" style="margin-bottom: 0;"><input type="email" id="prof-email" readonly style="opacity: 0.6;"></div></div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Age</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="number" id="prof-age">
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Phone</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="tel" id="prof-phone">
+                    </div>
+                </div>
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+                <label>Email</label>
+                <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                    <input type="email" id="prof-email" readonly style="opacity: 0.6;">
+                </div>
+            </div>
         </div>
 
         <div class="card" style="padding: 20px; background: linear-gradient(135deg, #F0F9FF, #FFFFFF);">
-            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 15px; color: var(--primary);"><i class="fa-solid fa-child-reaching"></i> Body Vitals (AI Analysis)</h4>
+            <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 15px; color: var(--primary);">
+                <i class="fa-solid fa-child-reaching"></i> Body Vitals (AI Analysis)
+            </h4>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                <div class="input-group" style="margin-bottom: 0;"><label>Height (cm)</label><div class="input-group no-label no-icon" style="margin-bottom: 0;"><input type="number" id="prof-height" placeholder="170" style="background: white;" onkeyup="App.calculateBMI()"></div></div>
-                <div class="input-group" style="margin-bottom: 0;"><label>Weight (kg)</label><div class="input-group no-label no-icon" style="margin-bottom: 0;"><input type="number" id="prof-weight" placeholder="65" style="background: white;" onkeyup="App.calculateBMI()"></div></div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Height (cm)</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="number" id="prof-height" placeholder="170" style="background: white;" onkeyup="App.calculateBMI()">
+                    </div>
+                </div>
+                <div class="input-group" style="margin-bottom: 0;">
+                    <label>Weight (kg)</label>
+                    <div class="input-group no-label no-icon" style="margin-bottom: 0;">
+                        <input type="number" id="prof-weight" placeholder="65" style="background: white;" onkeyup="App.calculateBMI()">
+                    </div>
+                </div>
             </div>
-            
             <div style="text-align: center; margin-top: 20px;">
                 <p style="font-size: 11px; font-weight: 800; color: var(--text-muted); text-transform: uppercase;">Current BMI Score</p>
                 <h3 style="font-size: 32px; font-weight: 800; color: var(--secondary);" id="bmi-display">--</h3>
@@ -698,9 +1526,18 @@
 
         <h3 style="font-size: 16px; font-weight: 800; margin-bottom: 15px; color: var(--text-main);">Hospital Contact Info</h3>
         <div class="card" style="padding: 20px;">
-            <a href="#" id="c-phone-link" class="contact-pill"><i class="fa-solid fa-phone"></i> <span id="c-phone-text">Loading...</span></a>
-            <a href="#" id="c-wa-link" class="contact-pill" style="color: #10B981;"><i class="fa-brands fa-whatsapp"></i> <span id="c-wa-text">Loading...</span></a>
-            <a href="#" id="c-email-link" class="contact-pill" style="color: #F43F5E; margin-bottom: 0;"><i class="fa-solid fa-envelope"></i> <span id="c-email-text">Loading...</span></a>
+            <a href="#" id="c-phone-link" class="contact-pill">
+                <i class="fa-solid fa-phone"></i> 
+                <span id="c-phone-text">Loading...</span>
+            </a>
+            <a href="#" id="c-wa-link" class="contact-pill" style="color: #10B981;">
+                <i class="fa-brands fa-whatsapp"></i> 
+                <span id="c-wa-text">Loading...</span>
+            </a>
+            <a href="#" id="c-email-link" class="contact-pill" style="color: #F43F5E; margin-bottom: 0;">
+                <i class="fa-solid fa-envelope"></i> 
+                <span id="c-email-text">Loading...</span>
+            </a>
         </div>
         
         <button class="btn btn-outline" style="color: var(--danger); border-color: #FEE2E2;" onclick="App.logout()">Log Out</button>
@@ -726,7 +1563,9 @@
 
         <div id="admin-queue" class="admin-tab-content">
             <div class="card" style="background: linear-gradient(135deg, var(--secondary), #1E293B); color: white; border: none; padding: 20px;">
-                <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 15px;"><i class="fa-solid fa-hashtag" style="color: var(--primary);"></i> Update Live Token</h4>
+                <h4 style="font-size: 15px; font-weight: 800; margin-bottom: 15px;">
+                    <i class="fa-solid fa-hashtag" style="color: var(--primary);"></i> Update Live Token
+                </h4>
                 <div style="display:flex; gap:10px; margin-bottom: 10px;">
                     <div class="input-group no-label no-icon" style="flex: 2; margin-bottom: 0;">
                         <select id="update-token-doc" style="background: rgba(255,255,255,0.1); color: white; border: 1px solid rgba(255,255,255,0.2);">
@@ -753,10 +1592,27 @@
 
         <div id="admin-doctors" class="admin-tab-content" style="display: none;">
             <div class="card">
-                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 20px;"><i class="fa-solid fa-user-doctor" style="color: var(--primary);"></i> Assign New Doctor</h4>
-                <div class="input-group"><label>Doctor Full Name</label><div class="input-group no-label no-icon"><input type="text" id="add-doc-name" placeholder="E.g., Dr. Ramesh"></div></div>
-                <div class="input-group"><label>Specialization / Department</label><div class="input-group no-label no-icon"><input type="text" id="add-doc-spec" placeholder="E.g., Orthopedics"></div></div>
-                <div class="input-group"><label>Consultation Timing / Days</label><div class="input-group no-label no-icon"><input type="text" id="add-doc-time" placeholder="E.g., Mon-Sat (10AM to 1PM)"></div></div>
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 20px;">
+                    <i class="fa-solid fa-user-doctor" style="color: var(--primary);"></i> Assign New Doctor
+                </h4>
+                <div class="input-group">
+                    <label>Doctor Full Name</label>
+                    <div class="input-group no-label no-icon">
+                        <input type="text" id="add-doc-name" placeholder="E.g., Dr. Ramesh">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Specialization / Department</label>
+                    <div class="input-group no-label no-icon">
+                        <input type="text" id="add-doc-spec" placeholder="E.g., Orthopedics">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Consultation Timing / Days</label>
+                    <div class="input-group no-label no-icon">
+                        <input type="text" id="add-doc-time" placeholder="E.g., Mon-Sat (10AM to 1PM)">
+                    </div>
+                </div>
                 <button class="btn btn-secondary" onclick="App.adminAddDoctor()">Add Doctor to System</button>
             </div>
             <h3 style="font-size: 16px; font-weight: 800; margin: 25px 0 15px 0;">Active Doctors</h3>
@@ -765,29 +1621,60 @@
 
         <div id="admin-settings" class="admin-tab-content" style="display: none;">
             <div class="card" style="background: linear-gradient(135deg, var(--secondary), #1E293B); color: white; border: none;">
-                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;"><i class="fa-solid fa-bullhorn" style="color: var(--warning);"></i> Broadcast Notification</h4>
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">
+                    <i class="fa-solid fa-bullhorn" style="color: var(--warning);"></i> Broadcast Notification
+                </h4>
                 <p style="font-size: 12px; color: #94A3B8; margin-bottom: 15px;">Send a message to all patients' home screen.</p>
-                <div class="input-group no-label no-icon"><input type="text" id="bc-title" placeholder="Notice Title" style="background: rgba(255,255,255,0.1); color: white;"></div>
-                <div class="input-group no-label no-icon"><textarea id="bc-msg" placeholder="Message details..." style="background: rgba(255,255,255,0.1); color: white; min-height: 80px;"></textarea></div>
+                <div class="input-group no-label no-icon">
+                    <input type="text" id="bc-title" placeholder="Notice Title" style="background: rgba(255,255,255,0.1); color: white;">
+                </div>
+                <div class="input-group no-label no-icon">
+                    <textarea id="bc-msg" placeholder="Message details..." style="background: rgba(255,255,255,0.1); color: white; min-height: 80px;"></textarea>
+                </div>
                 <button class="btn btn-warning" style="background: var(--warning); color: white;" onclick="App.sendBroadcast()">Publish Notice</button>
                 <button class="btn btn-outline btn-sm" style="margin-top: 10px; width: 100%; border-color: rgba(255,255,255,0.2); color: white; background: transparent;" onclick="App.clearBroadcast()">Remove Notice</button>
             </div>
-
+            
             <div class="card">
-                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;"><i class="fa-solid fa-address-book" style="color: var(--primary);"></i> Edit Hospital Contact Info</h4>
-                <div class="input-group"><label>Phone Number</label><div class="input-group no-label no-icon"><input type="tel" id="set-phone"></div></div>
-                <div class="input-group"><label>WhatsApp Number</label><div class="input-group no-label no-icon"><input type="tel" id="set-wa"></div></div>
-                <div class="input-group"><label>Email Address</label><div class="input-group no-label no-icon"><input type="email" id="set-email"></div></div>
+                <h4 style="font-size: 16px; font-weight: 800; margin-bottom: 15px;">
+                    <i class="fa-solid fa-address-book" style="color: var(--primary);"></i> Edit Hospital Contact Info
+                </h4>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <div class="input-group no-label no-icon">
+                        <input type="tel" id="set-phone">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>WhatsApp Number</label>
+                    <div class="input-group no-label no-icon">
+                        <input type="tel" id="set-wa">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <div class="input-group no-label no-icon">
+                        <input type="email" id="set-email">
+                    </div>
+                </div>
                 <button class="btn btn-primary" onclick="App.updateContactInfo()">Update Contact Info</button>
             </div>
         </div>
     </div>
 
     <div class="floating-dock" id="patient-dock" style="display: none;">
-        <div class="dock-item active" id="nav-home" onclick="App.switchTab('screen-patient-home', 'nav-home')"><i class="fa-solid fa-house"></i></div>
-        <div class="dock-item" id="nav-queue" onclick="App.switchTab('screen-patient-queue', 'nav-queue')"><i class="fa-solid fa-calendar-check"></i></div>
-        <div class="dock-item" id="nav-vault" onclick="App.switchTab('screen-patient-vault', 'nav-vault')"><i class="fa-solid fa-folder-open"></i></div>
-        <div class="dock-item" id="nav-profile" onclick="App.switchTab('screen-patient-profile', 'nav-profile')"><i class="fa-solid fa-user"></i></div>
+        <div class="dock-item active" id="nav-home" onclick="App.switchTab('screen-patient-home', 'nav-home')">
+            <i class="fa-solid fa-house"></i>
+        </div>
+        <div class="dock-item" id="nav-queue" onclick="App.switchTab('screen-patient-queue', 'nav-queue')">
+            <i class="fa-solid fa-calendar-check"></i>
+        </div>
+        <div class="dock-item" id="nav-vault" onclick="App.switchTab('screen-patient-vault', 'nav-vault')">
+            <i class="fa-solid fa-folder-open"></i>
+        </div>
+        <div class="dock-item" id="nav-profile" onclick="App.switchTab('screen-patient-profile', 'nav-profile')">
+            <i class="fa-solid fa-user"></i>
+        </div>
     </div>
 
     <script>
@@ -797,32 +1684,38 @@
                 const splashScreen = document.getElementById('splash-screen');
                 if (splashScreen) {
                     splashScreen.style.opacity = '0';
-                    setTimeout(function() { splashScreen.style.display = 'none'; }, 800);
+                    setTimeout(function() { 
+                        splashScreen.style.display = 'none'; 
+                    }, 800);
                 }
             }, 2500); 
         });
 
-        // --- 2. AI Health Database (Dynamic Tips) ---
+        // --- 2. Advanced AI Health Database (PERFECT TAMIL) ---
+        // குறிப்பு: தமிழ்ச் சொற்கள் உடையாமல் வர Typewriter effect நீக்கப்பட்டுள்ளது.
         const AI_Coach_Tips = {
+            general: [
+                "தினமும் குறைந்தது 8 கிளாஸ் தண்ணீர் குடிப்பது உங்கள் ஒட்டுமொத்த உடல் நலத்திற்கு மிகவும் நல்லது.",
+                "இதய ஆரோக்கியத்தை மேம்படுத்த, தினமும் குறைந்தது 30 நிமிடம் நடைப்பயிற்சி மேற்கொள்ளவும்.",
+                "சர்க்கரை நோயைத் தவிர்க்க, இனிப்புகள் மற்றும் மைதாவால் செய்யப்பட்ட உணவுகளைக் குறைத்துக் கொள்வது அவசியம்.",
+                "நல்ல தூக்கம் உடலின் நோய் எதிர்ப்பு சக்தியை அதிகரிக்கும். தினமும் 7-8 மணி நேரம் ஆழ்ந்து தூங்குங்கள்.",
+                "உணவில் அதிக அளவில் காய்கறிகள் மற்றும் கீரை வகைகளைச் சேர்த்துக் கொள்வது ரத்த சோகையைத் தடுக்கும்."
+            ],
             underweight: [
-                "Focus on nutrient-dense foods like nuts, seeds, and lean proteins.",
-                "Add an extra healthy meal or protein shake to your daily routine.",
-                "Ensure you're eating enough healthy fats like avocados and olive oil."
+                "உடற்பகுப்பாய்வு: உங்கள் எடை குறைவாக உள்ளது. எடையை ஆரோக்கியமாக அதிகரிக்க நட்ஸ், முட்டை மற்றும் புரதம் நிறைந்த உணவுகளை அதிகம் சேர்த்துக் கொள்ளுங்கள்.",
+                "உடற்பகுப்பாய்வு: சத்தான உணவுகளுடன், காலையிலும் மாலையிலும் ஒரு டம்ளர் பால் குடிப்பது உடல் எடையை சீராக உயர்த்த உதவும்."
             ],
             normal: [
-                "Great job! Maintain your balanced diet and active lifestyle.",
-                "Continue your 30-minute daily activity. Consistency is the key.",
-                "Your vitals look excellent. Remember to stay hydrated."
+                "உடற்பகுப்பாய்வு: மிகச் சிறப்பு! உங்கள் உடல் எடை மிகவும் ஆரோக்கியமாக உள்ளது. இதே ஆரோக்கியமான உணவுப் பழக்கத்தைத் தொடர்ந்து கடைப்பிடிக்கவும்.",
+                "உடற்பகுப்பாய்வு: உங்கள் BMI சீராக உள்ளது. நோய்கள் வராமல் தடுக்க தினமும் எளிய உடற்பயிற்சிகளை தொடர்ந்து செய்து வரவும்."
             ],
             overweight: [
-                "Consider substituting refined carbs with whole grains and vegetables.",
-                "A daily brisk walk for 45 minutes can significantly improve cardiovascular health.",
-                "Focus on portion control. Drinking a glass of water before meals can help."
+                "உடற்பகுப்பாய்வு: உங்கள் எடை சற்று அதிகமாக உள்ளது. துரித உணவுகளைத் தவிர்த்து, தினமும் உடற்பயிற்சி செய்வதன் மூலம் எடையைக் குறைக்கலாம்.",
+                "உடற்பகுப்பாய்வு: உணவின் அளவைக் கட்டுப்படுத்துங்கள். சாப்பிடுவதற்கு முன் ஒரு டம்ளர் தண்ணீர் குடிப்பது உடல் எடையைக் குறைக்க உதவும்."
             ],
             obese: [
-                "We highly recommend scheduling a consultation with our general physician.",
-                "Start with light, low-impact exercises like swimming or walking.",
-                "Limit added sugars and processed foods entirely."
+                "உடற்பகுப்பாய்வு: உங்கள் உடல் பருமன் அதிக அபாய கட்டத்தில் உள்ளது. உடனடியாக நமது மருத்துவரை அணுகி தகுந்த ஆலோசனை பெறுவது மிக மிக அவசியம்.",
+                "உடற்பகுப்பாய்வு: கொழுப்பு நிறைந்த உணவுகள் மற்றும் சர்க்கரை பானங்களை முற்றிலுமாகத் தவிர்க்கவும். மருத்துவரின் அறிவுரைப்படி நடக்கவும்."
             ]
         };
 
@@ -839,7 +1732,24 @@
             state: {
                 currentUser: null,
                 users: [
-                    { id: 1, name: "Anantharaj", email: "ananth@gmail.com", phone: "9876543210", password: "123", age: "32", height: "175", weight: "70", role: "patient", pendingNotification: "" }
+                    { 
+                        id: 1, 
+                        name: "Anantharaj", 
+                        email: "ananth@gmail.com", 
+                        phone: "9876543210", 
+                        password: "123", 
+                        age: "32", 
+                        height: "175", 
+                        weight: "70", 
+                        role: "patient", 
+                        pendingNotification: "",
+                        pillTimings: { 
+                            morning: false, 
+                            afternoon: false, 
+                            night: false, 
+                            details: "" 
+                        }
+                    }
                 ],
                 doctors: [
                     { id: 101, name: "Dr. Sivasankar", spec: "Cardiology", time: "Mon-Sat (10AM-2PM)" },
@@ -847,9 +1757,19 @@
                 ],
                 appointments: [],
                 documents: [], 
-                broadcast: { active: false, title: "", message: "" },
-                hospitalInfo: { phone: "+91 9876543210", email: "care@senthil.com", whatsapp: "9876543210" },
-                liveTokens: { "0": { value: 0, msg: "" } }, // DoctorId -> {value: int, msg: str}
+                broadcast: { 
+                    active: false, 
+                    title: "", 
+                    message: "" 
+                },
+                hospitalInfo: { 
+                    phone: "+91 9876543210", 
+                    email: "care@senthil.com", 
+                    whatsapp: "9876543210" 
+                },
+                liveTokens: { 
+                    "0": { value: 0, msg: "" } 
+                },
                 tempImageBase64: ""
             },
 
@@ -864,7 +1784,9 @@
                 
                 document.getElementById('confirm-yes-btn').onclick = function() {
                     App.closeModal('modal-custom-confirm');
-                    if (App.customConfirmCallback) App.customConfirmCallback();
+                    if (App.customConfirmCallback) {
+                        App.customConfirmCallback();
+                    }
                 };
                 
                 App.openModal('modal-custom-confirm');
@@ -879,7 +1801,9 @@
                 document.getElementById('prompt-yes-btn').onclick = function() {
                     let val = document.getElementById('prompt-input').value.trim();
                     App.closeModal('modal-custom-prompt');
-                    if (App.customPromptCallback) App.customPromptCallback(val);
+                    if (App.customPromptCallback) {
+                        App.customPromptCallback(val);
+                    }
                 };
                 
                 App.openModal('modal-custom-prompt');
@@ -889,42 +1813,69 @@
                 document.getElementById('success-text').innerText = textMsg;
                 const overlay = document.getElementById('success-overlay');
                 overlay.style.display = 'flex';
+                
                 // Trigger reflow for animation
                 void overlay.offsetWidth;
                 overlay.style.opacity = '1';
                 
-                setTimeout(function() {
-                    overlay.style.opacity = '0';
-                    setTimeout(function() { overlay.style.display = 'none'; }, 300);
+                setTimeout(function() { 
+                    overlay.style.opacity = '0'; 
+                    setTimeout(function() { 
+                        overlay.style.display = 'none'; 
+                    }, 300); 
                 }, 1500);
             },
 
-            // State Management & Cloud Sync (ANTI-STUCK)
+            // --- State Management & Cloud Sync (Zero-Lag Background Sync) ---
             loadData: function() { 
-                const savedData = localStorage.getItem('senthil_master_final_v1'); 
+                const savedData = localStorage.getItem('senthil_master_final_v3'); 
                 if (savedData !== null) { 
                     const parsed = JSON.parse(savedData);
                     App.state = { ...App.state, ...parsed }; 
                 }
-                const sessionUser = localStorage.getItem('senthil_master_session_v1');
-                if (sessionUser !== null) { App.state.currentUser = JSON.parse(sessionUser); }
+                const sessionUser = localStorage.getItem('senthil_master_session_v3');
+                if (sessionUser !== null) { 
+                    App.state.currentUser = JSON.parse(sessionUser); 
+                }
             },
             
             saveData: function() { 
-                localStorage.setItem('senthil_master_final_v1', JSON.stringify(App.state)); 
-                if (App.state.currentUser !== null) {
-                    localStorage.setItem('senthil_master_session_v1', JSON.stringify(App.state.currentUser));
-                } else {
-                    localStorage.removeItem('senthil_master_session_v1');
+                localStorage.setItem('senthil_master_final_v3', JSON.stringify(App.state)); 
+                if (App.state.currentUser !== null) { 
+                    localStorage.setItem('senthil_master_session_v3', JSON.stringify(App.state.currentUser)); 
+                } else { 
+                    localStorage.removeItem('senthil_master_session_v3'); 
                 }
             },
 
-            // Asynchronous Firebase Sync (Will not block the UI)
             syncDataFirebase: function() {
                 if(typeof db !== 'undefined' && db !== null) {
-                    db.collection("users").get().then(snap => { if(!snap.empty) { App.state.users = snap.docs.map(doc => doc.data()); App.saveData(); } }).catch(e=>console.log(e));
-                    db.collection("appointments").get().then(snap => { if(!snap.empty) { App.state.appointments = snap.docs.map(doc => doc.data()); App.saveData(); } }).catch(e=>console.log(e));
-                    db.collection("documents").get().then(snap => { if(!snap.empty) { App.state.documents = snap.docs.map(doc => doc.data()); App.saveData(); } }).catch(e=>console.log(e));
+                    
+                    // Sync Users
+                    db.collection("users").get().then(snap => { 
+                        if(!snap.empty) { 
+                            App.state.users = snap.docs.map(doc => doc.data()); 
+                            App.saveData(); 
+                        } 
+                    }).catch(e=>{ console.log("User sync error", e); });
+                    
+                    // Sync Appointments
+                    db.collection("appointments").get().then(snap => { 
+                        if(!snap.empty) { 
+                            App.state.appointments = snap.docs.map(doc => doc.data()); 
+                            App.saveData(); 
+                        } 
+                    }).catch(e=>{});
+                    
+                    // Sync Documents
+                    db.collection("documents").get().then(snap => { 
+                        if(!snap.empty) { 
+                            App.state.documents = snap.docs.map(doc => doc.data()); 
+                            App.saveData(); 
+                        } 
+                    }).catch(e=>{});
+                    
+                    // Sync Settings (Live Tokens, Broadcast, Doctors)
                     db.collection("system").doc("settings").get().then(snap => { 
                         if(snap.exists) {
                             const data = snap.data();
@@ -932,20 +1883,27 @@
                             if(data.broadcast) App.state.broadcast = data.broadcast;
                             if(data.hospitalInfo) App.state.hospitalInfo = data.hospitalInfo;
                             if(data.liveTokens) App.state.liveTokens = data.liveTokens;
+                            
                             App.saveData();
                             
-                            // Re-render based on active screen
-                            if(document.getElementById('screen-patient-home').classList.contains('active')) {
-                                App.renderPatientBroadcast(); App.renderLiveTokenPatient(); App.updateAICoach();
+                            // Live UI Updates based on active screen
+                            if(document.getElementById('screen-patient-home').classList.contains('active')) { 
+                                App.renderPatientBroadcast(); 
+                                App.renderLiveTokenPatient(); 
+                                App.updateAICoach(); 
+                                App.renderPillReminder(); 
                             }
-                            if(document.getElementById('screen-patient-profile').classList.contains('active')) {
-                                App.renderContactInfo();
+                            if(document.getElementById('screen-patient-profile').classList.contains('active')) { 
+                                App.renderContactInfo(); 
                             }
-                            if(document.getElementById('screen-patient-book').classList.contains('active')) {
-                                App.populateDoctorDropdown();
+                            if(document.getElementById('screen-patient-book').classList.contains('active')) { 
+                                App.populateDoctorDropdown(); 
+                            }
+                            if(document.getElementById('screen-admin-dashboard').classList.contains('active')) { 
+                                App.renderAdminPatients(document.getElementById('admin-search').value.toLowerCase()); 
                             }
                         } 
-                    }).catch(e=>console.log(e));
+                    }).catch(e=>{});
                 }
             },
 
@@ -963,18 +1921,23 @@
                         window.db = firebase.firestore();
                         window.cloudStorage = firebase.storage();
                     }
-                } catch(e) { console.log(e); }
+                } catch(e) { 
+                    console.log("Firebase Init Skip", e); 
+                }
 
                 App.loadData();
                 App.syncDataFirebase(); 
                 
                 if (App.state.currentUser !== null) {
-                    if (App.state.currentUser.role === 'admin') { App.initAdmin(); } 
-                    else { App.initPatient(); }
+                    if (App.state.currentUser.role === 'admin') { 
+                        App.initAdmin(); 
+                    } else { 
+                        App.initPatient(); 
+                    }
                 }
             },
 
-            // Core UI Utilities
+            // --- UI Notifications & Navigation ---
             showToast: function(messageText, messageType = 'success') {
                 const toastContainer = document.getElementById('toast-container'); 
                 const toastElement = document.createElement('div'); 
@@ -987,49 +1950,86 @@
                     <i class="fa-solid ${iconClass}" style="font-size: 22px; color: ${iconColor};"></i>
                     <div style="font-size: 14px; font-weight: 700;">${messageText}</div>
                 `;
+                
                 toastContainer.appendChild(toastElement); 
-                setTimeout(function() { toastElement.style.animation = 'toastEnter 0.4s reverse forwards'; setTimeout(function() { toastElement.remove(); }, 400); }, 3000);
+                
+                setTimeout(function() { 
+                    toastElement.style.animation = 'toastEnter 0.4s reverse forwards'; 
+                    setTimeout(function() { 
+                        toastElement.remove(); 
+                    }, 400); 
+                }, 3000);
             },
 
             navigate: function(screenId) { 
                 const allScreens = document.querySelectorAll('.screen');
-                for (let i = 0; i < allScreens.length; i++) { allScreens[i].classList.remove('active'); }
-                document.getElementById(screenId).classList.add('active'); window.scrollTo(0,0); 
+                for (let i = 0; i < allScreens.length; i++) { 
+                    allScreens[i].classList.remove('active'); 
+                }
+                document.getElementById(screenId).classList.add('active'); 
+                window.scrollTo(0,0); 
             },
 
             switchTab: function(screenId, navElementId) { 
                 App.navigate(screenId); 
-                App.syncDataFirebase(); // Trigger background sync on every tab switch
+                
+                // Background sync on tab switch
+                App.syncDataFirebase(); 
                 
                 const dockItemsList = document.querySelectorAll('.dock-item');
-                for (let i = 0; i < dockItemsList.length; i++) { dockItemsList[i].classList.remove('active'); }
-                if (navElementId !== null) { document.getElementById(navElementId).classList.add('active'); }
+                for (let i = 0; i < dockItemsList.length; i++) { 
+                    dockItemsList[i].classList.remove('active'); 
+                }
                 
-                if (screenId === 'screen-patient-book') { App.populateDoctorDropdown(); }
-                if (screenId === 'screen-patient-queue') { App.renderQueueHistory(); }
-                if (screenId === 'screen-patient-vault') { App.renderPatientVault('all'); }
-                if (screenId === 'screen-patient-profile') { App.loadProfileData(); App.renderContactInfo(); }
-                if (screenId === 'screen-patient-home') { App.updateAICoach(); App.renderPatientBroadcast(); App.renderLiveTokenPatient(); }
+                if (navElementId !== null) { 
+                    document.getElementById(navElementId).classList.add('active'); 
+                }
+                
+                // Specific actions per screen
+                if (screenId === 'screen-patient-book') { 
+                    App.populateDoctorDropdown(); 
+                }
+                if (screenId === 'screen-patient-queue') { 
+                    App.renderQueueHistory(); 
+                }
+                if (screenId === 'screen-patient-vault') { 
+                    App.renderPatientVault('all'); 
+                }
+                if (screenId === 'screen-patient-profile') { 
+                    App.loadProfileData(); 
+                    App.renderContactInfo(); 
+                }
+                if (screenId === 'screen-patient-home') { 
+                    App.updateAICoach(); 
+                    App.renderPatientBroadcast(); 
+                    App.renderLiveTokenPatient(); 
+                    App.renderPillReminder(); 
+                }
             },
 
-            openModal: function(id) { document.getElementById(id).classList.add('active'); },
-            closeModal: function(id) { document.getElementById(id).classList.remove('active'); },
+            openModal: function(id) { 
+                document.getElementById(id).classList.add('active'); 
+            },
+            
+            closeModal: function(id) { 
+                document.getElementById(id).classList.remove('active'); 
+            },
 
             populateDoctorDropdown: function() {
                 let doctorOptionsHTML = `<option value="">Select Specialist...</option>`;
-                for (let i = 0; i < App.state.doctors.length; i++) {
-                    doctorOptionsHTML += `<option value="${App.state.doctors[i].id}">${App.state.doctors[i].name} (${App.state.doctors[i].spec})</option>`;
+                for (let i = 0; i < App.state.doctors.length; i++) { 
+                    doctorOptionsHTML += `<option value="${App.state.doctors[i].id}">${App.state.doctors[i].name} (${App.state.doctors[i].spec})</option>`; 
                 }
                 document.getElementById('book-doctor').innerHTML = doctorOptionsHTML;
             },
 
-            // Authentication
+            // --- Authentication ---
             signup: function() {
-                const nameIn = document.getElementById('reg-name').value.trim();
+                const nameIn = document.getElementById('reg-name').value.trim(); 
                 const phoneIn = document.getElementById('reg-phone').value.trim();
-                const ageIn = document.getElementById('reg-age').value.trim();
+                const ageIn = document.getElementById('reg-age').value.trim(); 
                 const emailIn = document.getElementById('reg-email').value.trim();
-                const pass1 = document.getElementById('reg-pass').value;
+                const pass1 = document.getElementById('reg-pass').value; 
                 const pass2 = document.getElementById('reg-pass2').value;
 
                 if (nameIn === '' || phoneIn === '' || ageIn === '' || emailIn === '' || pass1 === '' || pass2 === '') { 
@@ -1039,55 +2039,96 @@
                     return App.showToast('Passwords do not match!', 'error'); 
                 }
 
-                const newUser = { id: Date.now(), name: nameIn, phone: phoneIn, age: ageIn, email: emailIn, password: pass1, height: "", weight: "", role: 'patient', pendingNotification: "" }; 
+                const newUser = { 
+                    id: Date.now(), 
+                    name: nameIn, 
+                    phone: phoneIn, 
+                    age: ageIn, 
+                    email: emailIn, 
+                    password: pass1, 
+                    height: "", 
+                    weight: "", 
+                    role: 'patient', 
+                    pendingNotification: "", 
+                    pillTimings: { 
+                        morning: false, 
+                        afternoon: false, 
+                        night: false, 
+                        details: "" 
+                    } 
+                }; 
                 
-                if(typeof db !== 'undefined' && db !== null) {
-                    db.collection("users").doc(newUser.id.toString()).set(newUser).catch(e=>console.log(e));
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("users").doc(newUser.id.toString()).set(newUser).catch(e=>{}); 
                 }
-
-                App.state.users.push(newUser); App.state.currentUser = newUser; 
-                App.saveData(); App.showSuccessAnim("Account Created!"); setTimeout(function() { App.initPatient(); }, 1500);
+                
+                App.state.users.push(newUser); 
+                App.state.currentUser = newUser; 
+                App.saveData(); 
+                App.showSuccessAnim("Account Created!"); 
+                
+                setTimeout(function() { 
+                    App.initPatient(); 
+                }, 1500);
             },
 
             login: function() {
-                const emailIn = document.getElementById('login-email').value.trim();
+                const emailIn = document.getElementById('login-email').value.trim(); 
                 const passIn = document.getElementById('login-password').value;
                 
                 let matchedUser = null;
-                for (let i = 0; i < App.state.users.length; i++) {
+                for (let i = 0; i < App.state.users.length; i++) { 
                     if (App.state.users[i].email === emailIn && App.state.users[i].password === passIn) { 
-                        matchedUser = App.state.users[i]; break; 
-                    }
+                        matchedUser = App.state.users[i]; 
+                        break; 
+                    } 
                 }
                 
                 if (matchedUser !== null) { 
                     App.state.currentUser = { ...matchedUser, role: 'patient' }; 
-                    App.saveData(); return App.initPatient(); 
+                    App.saveData(); 
+                    return App.initPatient(); 
                 }
+                
                 App.showToast('Invalid Email or Password', 'error');
             },
 
             sendResetLink: function() {
                 const emailIn = document.getElementById('forgot-email').value.trim();
-                if(emailIn === '') return App.showToast('Enter your email address', 'error');
-                const btn = document.getElementById('forgot-btn');
+                if(emailIn === '') {
+                    return App.showToast('Enter your email address', 'error');
+                }
+                
+                const btn = document.getElementById('forgot-btn'); 
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
-                setTimeout(function() { btn.innerHTML = 'Send Reset Link'; document.getElementById('forgot-success-msg').style.display = 'block'; document.getElementById('forgot-email').value = ''; }, 1500);
+                
+                setTimeout(function() { 
+                    btn.innerHTML = 'Send Reset Link'; 
+                    document.getElementById('forgot-success-msg').style.display = 'block'; 
+                    document.getElementById('forgot-email').value = ''; 
+                }, 1500);
             },
 
             adminLogin: function() {
-                const adminUser = document.getElementById('admin-user').value.trim();
+                const adminUser = document.getElementById('admin-user').value.trim(); 
                 const adminPass = document.getElementById('admin-pass').value.trim();
+                
                 if (adminUser === 'admin' && adminPass === 'admin') { 
                     document.getElementById('patient-dock').style.display = 'none'; 
                     App.state.currentUser = { id: 'admin1', name: 'Admin', role: 'admin' }; 
-                    App.saveData(); App.initAdmin(); 
-                } else { App.showToast("Wrong Admin ID or Password", 'error'); }
+                    App.saveData(); 
+                    App.initAdmin(); 
+                } else { 
+                    App.showToast("Wrong Admin ID or Password", 'error'); 
+                }
             },
 
             logout: function() { 
-                App.state.currentUser = null; document.getElementById('patient-dock').style.display = 'none'; 
-                App.saveData(); App.navigate('screen-login'); App.showToast('Logged out securely'); 
+                App.state.currentUser = null; 
+                document.getElementById('patient-dock').style.display = 'none'; 
+                App.saveData(); 
+                App.navigate('screen-login'); 
+                App.showToast('Logged out securely'); 
             },
 
             // --- PATIENT MODULES ---
@@ -1100,248 +2141,375 @@
 
             checkNotifications: function() {
                 let userRef = null;
-                for (let i = 0; i < App.state.users.length; i++) {
-                    if (App.state.users[i].id === App.state.currentUser.id) { userRef = App.state.users[i]; break; }
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === App.state.currentUser.id) { 
+                        userRef = App.state.users[i]; 
+                        break; 
+                    } 
                 }
+                
                 if (userRef && userRef.pendingNotification && userRef.pendingNotification !== "") {
                     App.showToast(userRef.pendingNotification, 'success');
                     document.getElementById('ui-notif-dot').style.display = 'block'; 
-                    userRef.pendingNotification = ""; App.saveData();
+                    userRef.pendingNotification = ""; 
+                    App.saveData();
                     
-                    if(typeof db !== 'undefined' && db !== null) {
-                        db.collection("users").doc(userRef.id.toString()).update({ pendingNotification: "" }).catch(e=>{});
+                    if(typeof db !== 'undefined' && db !== null) { 
+                        db.collection("users").doc(userRef.id.toString()).update({ pendingNotification: "" }).catch(e=>{}); 
                     }
-                } else {
-                    document.getElementById('ui-notif-dot').style.display = 'none';
+                } else { 
+                    document.getElementById('ui-notif-dot').style.display = 'none'; 
                 }
             },
 
             renderPatientBroadcast: function() {
                 const area = document.getElementById('patient-broadcast-area');
-                if(App.state.broadcast && App.state.broadcast.active) {
-                    document.getElementById('pb-title').innerText = App.state.broadcast.title;
-                    document.getElementById('pb-msg').innerText = App.state.broadcast.message;
-                    area.style.display = 'flex';
-                } else { area.style.display = 'none'; }
+                if(App.state.broadcast && App.state.broadcast.active) { 
+                    document.getElementById('pb-title').innerText = App.state.broadcast.title; 
+                    document.getElementById('pb-msg').innerText = App.state.broadcast.message; 
+                    area.style.display = 'flex'; 
+                } else { 
+                    area.style.display = 'none'; 
+                }
             },
 
+            renderPillReminder: function() {
+                let activeUser = null;
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === App.state.currentUser.id) { 
+                        activeUser = App.state.users[i]; 
+                        break; 
+                    } 
+                }
+                
+                const pillCard = document.getElementById('patient-pill-reminder');
+                
+                if (activeUser && activeUser.pillTimings && (activeUser.pillTimings.morning || activeUser.pillTimings.afternoon || activeUser.pillTimings.night)) {
+                    let pillHtml = '';
+                    
+                    if(activeUser.pillTimings.morning) {
+                        pillHtml += `<div class="pill-badge"><i class="fa-solid fa-sun"></i> காலை (Morning)</div>`;
+                    }
+                    if(activeUser.pillTimings.afternoon) {
+                        pillHtml += `<div class="pill-badge"><i class="fa-solid fa-cloud-sun"></i> மதியம் (Afternoon)</div>`;
+                    }
+                    if(activeUser.pillTimings.night) {
+                        pillHtml += `<div class="pill-badge"><i class="fa-solid fa-moon"></i> இரவு (Night)</div>`;
+                    }
+                    
+                    document.getElementById('pill-times').innerHTML = pillHtml;
+                    document.getElementById('pill-details').innerText = "மருந்து: " + (activeUser.pillTimings.details || "மருத்துவரின் ஆலோசனைப்படி");
+                    pillCard.style.display = 'block';
+                } else {
+                    pillCard.style.display = 'none';
+                }
+            },
+
+            // முக்கிய திருத்தம்: தமிழ் எழுத்துக்கள் உடையாமல் வர Typewriter effect நீக்கம்
             updateAICoach: function() {
-                const terminalElement = document.getElementById('ai-smart-tip');
+                const terminalElement = document.getElementById('ai-smart-tip'); 
                 const badgeElement = document.getElementById('ai-health-status');
                 
-                let activeUser = null;
-                for (let i = 0; i < App.state.users.length; i++) {
-                    if (App.state.users[i].id === App.state.currentUser.id) { activeUser = App.state.users[i]; break; }
+                let activeUser = null; 
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === App.state.currentUser.id) { 
+                        activeUser = App.state.users[i]; 
+                        break; 
+                    } 
                 }
 
-                let textToType = "Scanning health profile... Update your BMI to receive personalized medical insights.";
+                let finalTipText = "உங்கள் உடல்நல தரவுகளைச் சரிபார்க்கிறோம்... சிறந்த மருத்துவ ஆலோசனைகளைப் பெற உங்கள் ப்ரொபைலில் BMI-ஐ உள்ளிடவும்.";
 
-                if (activeUser && activeUser.height && activeUser.weight && activeUser.height > 0) {
-                    const heightMeters = parseFloat(activeUser.height) / 100;
-                    const weightKg = parseFloat(activeUser.weight);
+                // 50% chance to show general tip, 50% chance to show BMI tip (if BMI exists)
+                const showGeneralTip = (Math.random() > 0.5) || !(activeUser && activeUser.height && activeUser.weight && activeUser.height > 0);
+
+                if (showGeneralTip) {
+                    badgeElement.innerText = "பொதுவான குறிப்பு"; 
+                    badgeElement.style.background = "rgba(255,255,255,0.2)"; 
+                    badgeElement.style.color = "white";
+                    finalTipText = AI_Coach_Tips.general[Math.floor(Math.random() * AI_Coach_Tips.general.length)];
+                } else if (activeUser && activeUser.height && activeUser.weight && activeUser.height > 0) {
+                    const heightMeters = parseFloat(activeUser.height) / 100; 
+                    const weightKg = parseFloat(activeUser.weight); 
                     const bmi = (weightKg / (heightMeters * heightMeters)).toFixed(1);
 
                     let healthCat = '';
-                    if (bmi < 18.5) { healthCat = 'underweight'; badgeElement.innerText = "UNHEALTHY"; badgeElement.style.background = "#F43F5E"; badgeElement.style.color = "white"; }
-                    else if (bmi < 25) { healthCat = 'normal'; badgeElement.innerText = "HEALTHY"; badgeElement.style.background = "#10B981"; badgeElement.style.color = "white"; }
-                    else if (bmi < 30) { healthCat = 'overweight'; badgeElement.innerText = "UNHEALTHY"; badgeElement.style.background = "#F43F5E"; badgeElement.style.color = "white"; }
-                    else { healthCat = 'obese'; badgeElement.innerText = "UNHEALTHY"; badgeElement.style.background = "#BE123C"; badgeElement.style.color = "white"; }
-
-                    const randomTip = AI_Coach_Tips[healthCat][Math.floor(Math.random() * AI_Coach_Tips[healthCat].length)];
-                    textToType = `Analysis: BMI is ${bmi}. ${randomTip}`;
-                } else {
-                    badgeElement.innerText = "Pending"; badgeElement.style.background = "rgba(255,255,255,0.2)"; badgeElement.style.color = "white";
-                }
-
-                terminalElement.innerHTML = '';
-                let index = 0;
-                function typeWriter() {
-                    if (index < textToType.length && document.getElementById('screen-patient-home').classList.contains('active')) {
-                        terminalElement.innerHTML += textToType.charAt(index);
-                        index++; setTimeout(typeWriter, 35); 
+                    if (bmi < 18.5) { 
+                        healthCat = 'underweight'; 
+                        badgeElement.innerText = "கவனம் தேவை"; 
+                        badgeElement.style.background = "#F43F5E"; 
+                        badgeElement.style.color = "white"; 
+                    } else if (bmi < 25) { 
+                        healthCat = 'normal'; 
+                        badgeElement.innerText = "ஆரோக்கியம்"; 
+                        badgeElement.style.background = "#10B981"; 
+                        badgeElement.style.color = "white"; 
+                    } else if (bmi < 30) { 
+                        healthCat = 'overweight'; 
+                        badgeElement.innerText = "கவனம் தேவை"; 
+                        badgeElement.style.background = "#F43F5E"; 
+                        badgeElement.style.color = "white"; 
+                    } else { 
+                        healthCat = 'obese'; 
+                        badgeElement.innerText = "அதிக ஆபத்து"; 
+                        badgeElement.style.background = "#BE123C"; 
+                        badgeElement.style.color = "white"; 
                     }
+
+                    finalTipText = AI_Coach_Tips[healthCat][Math.floor(Math.random() * AI_Coach_Tips[healthCat].length)];
                 }
-                typeWriter();
+
+                // FIX: Instead of typing char by char, directly insert text and fade it in
+                terminalElement.style.opacity = 0;
+                terminalElement.innerHTML = finalTipText;
+                
+                setTimeout(() => {
+                    terminalElement.style.opacity = 1;
+                }, 150);
             },
 
             loadProfileData: function() {
-                let user = null;
-                for (let i = 0; i < App.state.users.length; i++) {
-                    if (App.state.users[i].id === App.state.currentUser.id) { user = App.state.users[i]; break; }
+                let user = null; 
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === App.state.currentUser.id) { 
+                        user = App.state.users[i]; 
+                        break; 
+                    } 
                 }
+                
                 if (user !== null) {
-                    document.getElementById('prof-name').value = user.name || '';
+                    document.getElementById('prof-name').value = user.name || ''; 
                     document.getElementById('prof-age').value = user.age || '';
-                    document.getElementById('prof-phone').value = user.phone || '';
+                    document.getElementById('prof-phone').value = user.phone || ''; 
                     document.getElementById('prof-email').value = user.email || '';
-                    document.getElementById('prof-height').value = user.height || '';
+                    document.getElementById('prof-height').value = user.height || ''; 
                     document.getElementById('prof-weight').value = user.weight || '';
                 }
                 App.calculateBMI();
             },
 
             calculateBMI: function() {
-                const hVal = document.getElementById('prof-height').value;
+                const hVal = document.getElementById('prof-height').value; 
                 const wVal = document.getElementById('prof-weight').value;
-                const display = document.getElementById('bmi-display');
-                const textDisplay = document.getElementById('bmi-text-display');
+                const display = document.getElementById('bmi-display'); 
                 const badge = document.getElementById('bmi-status-badge');
-                const marker = document.getElementById('bmi-marker-pointer');
 
                 if (hVal > 0 && wVal > 0) {
                     const bmi = (parseFloat(wVal) / ((parseFloat(hVal)/100) * (parseFloat(hVal)/100))).toFixed(1);
-                    display.innerText = bmi; textDisplay.innerText = "YOUR CURRENT BMI";
+                    display.innerText = bmi;
                     
-                    let position = 0;
-                    if (bmi < 18.5) { badge.innerText = "UNHEALTHY (Under)"; badge.style.background = "#FEE2E2"; badge.style.color = "#E11D48"; position = (bmi / 18.5) * 25; }
-                    else if (bmi <= 24.9) { badge.innerText = "HEALTHY"; badge.style.background = "#D1FAE5"; badge.style.color = "#059669"; position = 25 + (((bmi - 18.5) / 6.4) * 25); }
-                    else if (bmi <= 29.9) { badge.innerText = "UNHEALTHY (Over)"; badge.style.background = "#FEE2E2"; badge.style.color = "#E11D48"; position = 50 + (((bmi - 25) / 4.9) * 25); }
-                    else { badge.innerText = "UNHEALTHY (Obese)"; badge.style.background = "#FFE4E6"; badge.style.color = "#BE123C"; position = 75 + (((bmi - 30) / 10) * 25); }
-                    
-                    if(position > 98) position = 98;
-                    marker.style.left = `${position}%`;
-
-                } else {
-                    display.innerText = "--"; textDisplay.innerText = "ENTER VITALS";
-                    badge.innerText = "Pending"; badge.style.background = "#E2E8F0"; badge.style.color = "#64748B"; marker.style.left = "0%";
+                    if (bmi < 18.5) { 
+                        badge.innerText = "UNHEALTHY (Under)"; 
+                        badge.style.background = "#FEE2E2"; 
+                        badge.style.color = "#E11D48"; 
+                    } else if (bmi <= 24.9) { 
+                        badge.innerText = "HEALTHY"; 
+                        badge.style.background = "#D1FAE5"; 
+                        badge.style.color = "#059669"; 
+                    } else if (bmi <= 29.9) { 
+                        badge.innerText = "UNHEALTHY (Over)"; 
+                        badge.style.background = "#FEE2E2"; 
+                        badge.style.color = "#E11D48"; 
+                    } else { 
+                        badge.innerText = "UNHEALTHY (Obese)"; 
+                        badge.style.background = "#FFE4E6"; 
+                        badge.style.color = "#BE123C"; 
+                    }
+                } else { 
+                    display.innerText = "--"; 
+                    badge.innerText = "Pending"; 
+                    badge.style.background = "#E2E8F0"; 
+                    badge.style.color = "#64748B"; 
                 }
             },
 
             saveProfile: function() {
-                let userIndex = -1;
-                for (let i = 0; i < App.state.users.length; i++) {
-                    if (App.state.users[i].id === App.state.currentUser.id) { userIndex = i; break; }
+                let userIndex = -1; 
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === App.state.currentUser.id) { 
+                        userIndex = i; 
+                        break; 
+                    } 
                 }
                 
                 if (userIndex !== -1) {
-                    App.state.users[userIndex].name = document.getElementById('prof-name').value;
+                    App.state.users[userIndex].name = document.getElementById('prof-name').value; 
                     App.state.users[userIndex].age = document.getElementById('prof-age').value;
-                    App.state.users[userIndex].phone = document.getElementById('prof-phone').value;
-                    App.state.users[userIndex].height = document.getElementById('prof-height').value;
+                    App.state.users[userIndex].phone = document.getElementById('prof-phone').value; 
+                    App.state.users[userIndex].height = document.getElementById('prof-height').value; 
                     App.state.users[userIndex].weight = document.getElementById('prof-weight').value;
                     
                     App.state.currentUser = { ...App.state.users[userIndex], role: 'patient' }; 
                     App.saveData(); 
                     document.getElementById('ui-name').innerText = App.state.users[userIndex].name;
-                    App.showSuccessAnim('Profile Saved!'); App.updateAICoach();
                     
-                    if(typeof db !== 'undefined' && db !== null) {
-                        db.collection("users").doc(App.state.currentUser.id.toString()).update(App.state.currentUser).catch(e=>{});
+                    App.showSuccessAnim('Profile Saved!'); 
+                    App.updateAICoach();
+                    
+                    if(typeof db !== 'undefined' && db !== null) { 
+                        db.collection("users").doc(App.state.currentUser.id.toString()).update(App.state.currentUser).catch(e=>{}); 
                     }
                 }
             },
 
             renderContactInfo: function() {
                 const info = App.state.hospitalInfo;
-                document.getElementById('c-phone-link').href = "tel:" + info.phone;
+                document.getElementById('c-phone-link').href = "tel:" + info.phone; 
                 document.getElementById('c-phone-text').innerText = info.phone;
-                document.getElementById('c-wa-link').href = "https://wa.me/" + info.whatsapp;
+                document.getElementById('c-wa-link').href = "https://wa.me/" + info.whatsapp; 
                 document.getElementById('c-wa-text').innerText = "WhatsApp Us";
-                document.getElementById('c-email-link').href = "mailto:" + info.email;
+                document.getElementById('c-email-link').href = "mailto:" + info.email; 
                 document.getElementById('c-email-text').innerText = info.email;
             },
 
-            // Patient Booking & Token
+            // --- Patient Booking ---
             confirmGeneralToken: function() {
                 const todayDate = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-                let tokenNum = 1;
-                for (let i = 0; i < App.state.appointments.length; i++) {
-                    if (App.state.appointments[i].type === "Walk-in" && App.state.appointments[i].date === todayDate) { tokenNum++; }
-                }
-
-                const newAppt = { 
-                    id: Date.now(), userId: App.state.currentUser.id, doctorId: 0, 
-                    doctorName: 'General Consultation', date: todayDate, status: "Pending", type: "Walk-in", token: tokenNum
-                };
-
-                App.state.appointments.push(newAppt); App.saveData(); App.closeModal('modal-general-token'); 
-                App.showSuccessAnim('Token Generated!'); 
-                setTimeout(function() { App.switchTab('screen-patient-queue', 'nav-queue'); }, 1500);
+                let tokenNum = 1; 
                 
-                if(typeof db !== 'undefined' && db !== null) { db.collection("appointments").doc(newAppt.id.toString()).set(newAppt).catch(e=>{}); }
+                for (let i = 0; i < App.state.appointments.length; i++) { 
+                    if (App.state.appointments[i].type === "Walk-in" && App.state.appointments[i].date === todayDate) { 
+                        tokenNum++; 
+                    } 
+                }
+                
+                const newAppt = { 
+                    id: Date.now(), 
+                    userId: App.state.currentUser.id, 
+                    doctorId: 0, 
+                    doctorName: 'General Consultation', 
+                    date: todayDate, 
+                    status: "Pending", 
+                    type: "Walk-in", 
+                    token: tokenNum 
+                };
+                
+                App.state.appointments.push(newAppt); 
+                App.saveData(); 
+                App.closeModal('modal-general-token'); 
+                App.showSuccessAnim('Token Generated!'); 
+                
+                setTimeout(function() { 
+                    App.switchTab('screen-patient-queue', 'nav-queue'); 
+                }, 1500);
+                
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("appointments").doc(newAppt.id.toString()).set(newAppt).catch(e=>{}); 
+                }
             },
 
             confirmSpecialistBooking: function() {
-                const docId = document.getElementById('book-doctor').value;
+                const docId = document.getElementById('book-doctor').value; 
                 const bookDate = document.getElementById('book-date').value;
-
-                if (docId === '' || bookDate === '') { return App.showToast('Select doctor & date', 'error'); }
-
-                let docName = '';
-                for(let i=0; i<App.state.doctors.length; i++) { if(App.state.doctors[i].id == docId) { docName = App.state.doctors[i].name; break; } }
-
-                const newAppt = { 
-                    id: Date.now(), userId: App.state.currentUser.id, doctorId: parseInt(docId), 
-                    doctorName: docName, date: bookDate, status: "Pending", type: "Specialist", token: "-"
-                };
-
-                App.state.appointments.push(newAppt); App.saveData(); 
-                App.showSuccessAnim('Request Sent!'); 
-                setTimeout(function() { App.switchTab('screen-patient-queue', 'nav-queue'); }, 1500);
                 
-                if(typeof db !== 'undefined' && db !== null) { db.collection("appointments").doc(newAppt.id.toString()).set(newAppt).catch(e=>{}); }
+                if (docId === '' || bookDate === '') { 
+                    return App.showToast('Select doctor & date', 'error'); 
+                }
+                
+                let docName = ''; 
+                for(let i=0; i<App.state.doctors.length; i++) { 
+                    if(App.state.doctors[i].id == docId) { 
+                        docName = App.state.doctors[i].name; 
+                        break; 
+                    } 
+                }
+                
+                const newAppt = { 
+                    id: Date.now(), 
+                    userId: App.state.currentUser.id, 
+                    doctorId: parseInt(docId), 
+                    doctorName: docName, 
+                    date: bookDate, 
+                    status: "Pending", 
+                    type: "Specialist", 
+                    token: "-" 
+                };
+                
+                App.state.appointments.push(newAppt); 
+                App.saveData(); 
+                App.showSuccessAnim('Request Sent!'); 
+                
+                setTimeout(function() { 
+                    App.switchTab('screen-patient-queue', 'nav-queue'); 
+                }, 1500);
+                
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("appointments").doc(newAppt.id.toString()).set(newAppt).catch(e=>{}); 
+                }
             },
 
             renderLiveTokenPatient: function() {
-                let myAppts = [];
+                let myAppts = []; 
                 const todayDate = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-
-                for (let i = 0; i < App.state.appointments.length; i++) {
+                
+                for (let i = 0; i < App.state.appointments.length; i++) { 
                     if (App.state.appointments[i].userId === App.state.currentUser.id && App.state.appointments[i].status === "Pending" && App.state.appointments[i].date === todayDate) { 
                         myAppts.push(App.state.appointments[i]); 
-                    }
+                    } 
                 }
 
                 const liveArea = document.getElementById('patient-live-token-area');
+                
                 if (myAppts.length > 0 && myAppts[0].type === "Walk-in") {
-                    const myTok = myAppts[0].token;
+                    const myTok = myAppts[0].token; 
                     const docIdStr = myAppts[0].doctorId.toString();
                     
-                    let runningTok = 0; let msg = "";
-                    if (App.state.liveTokens && App.state.liveTokens[docIdStr]) {
-                        runningTok = App.state.liveTokens[docIdStr].value || 0;
-                        msg = App.state.liveTokens[docIdStr].msg || "";
+                    let runningTok = 0; 
+                    let msg = "";
+                    
+                    if (App.state.liveTokens && App.state.liveTokens[docIdStr]) { 
+                        runningTok = App.state.liveTokens[docIdStr].value || 0; 
+                        msg = App.state.liveTokens[docIdStr].msg || ""; 
                     }
                     
-                    let remaining = myTok - runningTok;
+                    let remaining = myTok - runningTok; 
                     if(remaining < 0) remaining = 0;
-
-                    document.getElementById('tk-mine').innerText = myTok;
-                    document.getElementById('tk-doc-name').innerText = myAppts[0].doctorName;
-                    document.getElementById('tk-running').innerText = runningTok;
+                    
+                    document.getElementById('tk-mine').innerText = myTok; 
+                    document.getElementById('tk-doc-name').innerText = myAppts[0].doctorName; 
+                    document.getElementById('tk-running').innerText = runningTok; 
                     document.getElementById('tk-remaining').innerText = remaining;
                     
-                    if(msg !== "") {
-                        document.getElementById('tk-reason-box').style.display = 'block';
-                        document.getElementById('tk-reason-text').innerText = "Notice: " + msg;
-                    } else {
-                        document.getElementById('tk-reason-box').style.display = 'none';
+                    if(msg !== "") { 
+                        document.getElementById('tk-reason-box').style.display = 'block'; 
+                        document.getElementById('tk-reason-text').innerText = "Notice: " + msg; 
+                    } else { 
+                        document.getElementById('tk-reason-box').style.display = 'none'; 
                     }
                     
                     liveArea.style.display = 'block';
-                } else {
-                    liveArea.style.display = 'none';
+                } else { 
+                    liveArea.style.display = 'none'; 
                 }
             },
 
             renderQueueHistory: function() {
-                let myAppts = [];
-                for (let i = 0; i < App.state.appointments.length; i++) {
-                    if (App.state.appointments[i].userId === App.state.currentUser.id) { myAppts.push(App.state.appointments[i]); }
+                let myAppts = []; 
+                for (let i = 0; i < App.state.appointments.length; i++) { 
+                    if (App.state.appointments[i].userId === App.state.currentUser.id) { 
+                        myAppts.push(App.state.appointments[i]); 
+                    } 
                 }
+                
                 myAppts.reverse(); 
 
                 if (myAppts.length === 0) { 
-                    document.getElementById('patient-history-container').innerHTML = `<p style="font-size:13px; font-weight:700; color:var(--text-muted); text-align:center; padding:20px;">No appointments found.</p>`; return; 
+                    document.getElementById('patient-history-container').innerHTML = `<p style="font-size:13px; font-weight:700; color:var(--text-muted); text-align:center; padding:20px;">No appointments found.</p>`; 
+                    return; 
                 }
                 
                 let htmlOut = '';
                 for (let i = 0; i < myAppts.length; i++) {
                     let a = myAppts[i]; 
                     
-                    let tokenDisplay = a.type === "Walk-in" ? `<span style="background:#E0F2FE; color:#0EA5E9; padding:4px 10px; border-radius:10px; font-weight:800; font-size:11px;">Token #${a.token}</span>` : `<span style="background:#EDE9FE; color:#8B5CF6; padding:4px 10px; border-radius:10px; font-weight:800; font-size:11px;">Specialist</span>`;
-                    let reasonHTML = a.reason ? `<p style="font-size:11px; font-weight:800; color:var(--danger); margin-top:10px; background:#FFE4E6; padding:8px; border-radius:8px;">Note: ${a.reason}</p>` : '';
-
+                    let tokenDisplay = a.type === "Walk-in" ? 
+                        `<span style="background:#E0F2FE; color:#0EA5E9; padding:4px 10px; border-radius:10px; font-weight:800; font-size:11px;">Token #${a.token}</span>` : 
+                        `<span style="background:#EDE9FE; color:#8B5CF6; padding:4px 10px; border-radius:10px; font-weight:800; font-size:11px;">Specialist</span>`;
+                        
+                    let reasonHTML = a.reason ? 
+                        `<p style="font-size:11px; font-weight:800; color:var(--danger); margin-top:10px; background:#FFE4E6; padding:8px; border-radius:8px;">Note: ${a.reason}</p>` : 
+                        '';
+                        
                     htmlOut += `
                     <div class="card" style="padding: 20px;">
                         <div class="flex-between" style="margin-bottom:10px;">
@@ -1358,35 +2526,41 @@
                 document.getElementById('patient-history-container').innerHTML = htmlOut;
             },
 
-            // Patient Vault System
-            filterVault: function(categoryName, element) {
-                const tabs = document.querySelectorAll('.v-tab');
-                for (let i = 0; i < tabs.length; i++) { tabs[i].classList.remove('active'); }
-                element.classList.add('active'); App.renderPatientVault(categoryName);
+            filterVault: function(categoryName, element) { 
+                const tabs = document.querySelectorAll('.v-tab'); 
+                for (let i = 0; i < tabs.length; i++) { 
+                    tabs[i].classList.remove('active'); 
+                } 
+                element.classList.add('active'); 
+                App.renderPatientVault(categoryName); 
             },
 
             renderPatientVault: function(filterCategory) {
                 let myDocs = [];
                 for (let i = 0; i < App.state.documents.length; i++) {
-                    if (App.state.documents[i].userId === App.state.currentUser.id) {
-                        if (filterCategory === 'all' || App.state.documents[i].type === filterCategory) { myDocs.push(App.state.documents[i]); }
+                    if (App.state.documents[i].userId === App.state.currentUser.id) { 
+                        if (filterCategory === 'all' || App.state.documents[i].type === filterCategory) { 
+                            myDocs.push(App.state.documents[i]); 
+                        } 
                     }
                 }
+                
                 myDocs.reverse(); 
                 document.getElementById('ui-notif-dot').style.display = 'none';
 
                 if (myDocs.length === 0) { 
                     document.getElementById('patient-vault-list').innerHTML = `
-                        <div style="text-align:center; padding:40px;">
-                            <i class="fa-solid fa-folder-open" style="font-size:60px; color:#cbd5e1; margin-bottom:20px;"></i>
-                            <p style="font-size:14px; font-weight:700; color:var(--text-muted);">No records found here.</p>
-                        </div>
-                    `; return; 
+                    <div style="text-align:center; padding:40px;">
+                        <i class="fa-solid fa-folder-open" style="font-size:60px; color:#cbd5e1; margin-bottom:20px;"></i>
+                        <p style="font-size:14px; font-weight:700; color:var(--text-muted);">No records found here.</p>
+                    </div>`; 
+                    return; 
                 }
                 
                 let htmlOutput = '';
                 for (let i = 0; i < myDocs.length; i++) {
-                    let doc = myDocs[i]; let catMeta = VaultCategoryMeta[doc.type] || VaultCategoryMeta['prescription'];
+                    let doc = myDocs[i]; 
+                    let catMeta = VaultCategoryMeta[doc.type] || VaultCategoryMeta['prescription'];
                     
                     htmlOutput += `
                     <div class="doc-item" onclick="App.viewImage('${doc.fileUrl}', '${doc.title}')">
@@ -1403,43 +2577,53 @@
                 document.getElementById('patient-vault-list').innerHTML = htmlOutput;
             },
 
-            viewImage: function(imageSourceUrl, documentTitle) {
+            viewImage: function(imageSourceUrl, documentTitle) { 
                 document.getElementById('fs-premium-img').src = imageSourceUrl; 
                 document.getElementById('fs-premium-title').innerText = documentTitle; 
-                document.getElementById('fs-premium-date').innerText = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
-                document.getElementById('premium-image-view').classList.add('active');
+                document.getElementById('fs-premium-date').innerText = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); 
+                document.getElementById('premium-image-view').classList.add('active'); 
             },
             
-            closePremiumImageView: function() { document.getElementById('premium-image-view').classList.remove('active'); },
+            closePremiumImageView: function() { 
+                document.getElementById('premium-image-view').classList.remove('active'); 
+            },
 
             // ==========================================
-            // ADMIN DASHBOARD
+            // ADMIN DASHBOARD & CONTROLS
             // ==========================================
             initAdmin: function() { 
                 App.navigate('screen-admin-dashboard'); 
                 document.getElementById('admin-search').value = ''; 
-                App.populateLiveTokenDoctors();
+                App.populateLiveTokenDoctors(); 
                 App.renderAdminAppts(); 
-                App.renderAdminPatients();
-                App.renderAdminVault(); 
-                App.renderAdminDoctors();
-                App.loadSettingsData();
+                App.renderAdminPatients(); 
+                App.renderAdminDoctors(); 
+                App.loadSettingsData(); 
                 App.showToast('Admin Connected'); 
             },
 
             switchAdminTab: function(tabId, element) { 
-                const contents = document.querySelectorAll('.admin-tab-content');
-                for (let i = 0; i < contents.length; i++) { contents[i].style.display = 'none'; }
-                const tabs = document.querySelectorAll('.admin-tab');
-                for (let i = 0; i < tabs.length; i++) { tabs[i].classList.remove('active'); }
-                document.getElementById(tabId).style.display = 'block'; element.classList.add('active'); 
+                const contents = document.querySelectorAll('.admin-tab-content'); 
+                for (let i = 0; i < contents.length; i++) { 
+                    contents[i].style.display = 'none'; 
+                }
                 
-                document.getElementById('admin-search').value = ''; App.handleAdminSearch();
+                const tabs = document.querySelectorAll('.admin-tab'); 
+                for (let i = 0; i < tabs.length; i++) { 
+                    tabs[i].classList.remove('active'); 
+                }
+                
+                document.getElementById(tabId).style.display = 'block'; 
+                element.classList.add('active'); 
+                
+                document.getElementById('admin-search').value = ''; 
+                App.handleAdminSearch();
             },
 
-            handleAdminSearch: function() {
-                const query = document.getElementById('admin-search').value.toLowerCase();
-                App.renderAdminAppts(query); App.renderAdminPatients(query);
+            handleAdminSearch: function() { 
+                const query = document.getElementById('admin-search').value.toLowerCase(); 
+                App.renderAdminAppts(query); 
+                App.renderAdminPatients(query); 
             },
             
             populateLiveTokenDoctors: function() {
@@ -1451,39 +2635,64 @@
             },
 
             adminUpdateLiveToken: function() {
-                const docIdStr = document.getElementById('update-token-doc').value;
-                const tokenVal = parseInt(document.getElementById('update-token-val').value);
+                const docIdStr = document.getElementById('update-token-doc').value; 
+                const tokenVal = parseInt(document.getElementById('update-token-val').value); 
                 const reasonMsg = document.getElementById('update-token-msg').value.trim();
                 
-                if(isNaN(tokenVal)) return App.showToast("Enter a valid token number", "error");
-
-                if(!App.state.liveTokens) App.state.liveTokens = {};
-                App.state.liveTokens[docIdStr] = { value: tokenVal, msg: reasonMsg };
-
-                App.saveData(); App.showSuccessAnim("Live Tracker Updated!"); document.getElementById('update-token-val').value = '';
+                if(isNaN(tokenVal)) {
+                    return App.showToast("Enter a valid token number", "error");
+                }
                 
-                if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ liveTokens: App.state.liveTokens }, {merge: true}).catch(e=>{}); }
+                if(!App.state.liveTokens) {
+                    App.state.liveTokens = {}; 
+                }
+                
+                App.state.liveTokens[docIdStr] = { value: tokenVal, msg: reasonMsg };
+                
+                App.saveData(); 
+                App.showSuccessAnim("Live Tracker Updated!"); 
+                document.getElementById('update-token-val').value = '';
+                
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("system").doc("settings").set({ liveTokens: App.state.liveTokens }, {merge: true}).catch(e=>{}); 
+                }
             },
 
             renderAdminAppts: function(searchQuery = "") {
-                let apptsCopy = [...App.state.appointments].reverse();
+                let apptsCopy = [...App.state.appointments].reverse(); 
                 let htmlOutput = '';
-
-                if (searchQuery !== "") {
-                    apptsCopy = apptsCopy.filter(a => {
-                        let pName = ''; let pPhone = '';
-                        for (let j = 0; j < App.state.users.length; j++) { if (App.state.users[j].id === a.userId) { pName = App.state.users[j].name.toLowerCase(); pPhone = App.state.users[j].phone; break; } }
-                        return pName.includes(searchQuery) || pPhone.includes(searchQuery) || a.doctorName.toLowerCase().includes(searchQuery) || (a.token && a.token.toString() === searchQuery);
-                    });
+                
+                if (searchQuery !== "") { 
+                    apptsCopy = apptsCopy.filter(a => { 
+                        let pName = ''; let pPhone = ''; 
+                        for (let j = 0; j < App.state.users.length; j++) { 
+                            if (App.state.users[j].id === a.userId) { 
+                                pName = App.state.users[j].name.toLowerCase(); 
+                                pPhone = App.state.users[j].phone; 
+                                break; 
+                            } 
+                        } 
+                        return pName.includes(searchQuery) || pPhone.includes(searchQuery) || a.doctorName.toLowerCase().includes(searchQuery) || (a.token && a.token.toString() === searchQuery); 
+                    }); 
                 }
-
+                
                 if (apptsCopy.length === 0) { 
-                    document.getElementById('admin-appt-list').innerHTML = '<p style="font-size:13px; font-weight:700; text-align:center; padding:20px; color:var(--text-muted);">No appointments found.</p>'; return; 
+                    document.getElementById('admin-appt-list').innerHTML = '<p style="font-size:13px; font-weight:700; text-align:center; padding:20px; color:var(--text-muted);">No appointments found.</p>'; 
+                    return; 
                 }
 
                 for (let i = 0; i < apptsCopy.length; i++) {
-                    let a = apptsCopy[i]; let patientName = 'Unknown Patient'; let pPhone = '';
-                    for (let j = 0; j < App.state.users.length; j++) { if (App.state.users[j].id === a.userId) { patientName = App.state.users[j].name; pPhone = App.state.users[j].phone; break; } }
+                    let a = apptsCopy[i]; 
+                    let patientName = 'Unknown Patient'; 
+                    let pPhone = '';
+                    
+                    for (let j = 0; j < App.state.users.length; j++) { 
+                        if (App.state.users[j].id === a.userId) { 
+                            patientName = App.state.users[j].name; 
+                            pPhone = App.state.users[j].phone; 
+                            break; 
+                        } 
+                    }
                     
                     let actBtn = '';
                     if (a.status === 'Pending') {
@@ -1495,9 +2704,9 @@
                     } else if (a.status === 'Approved' || a.status === 'Rescheduled') {
                         actBtn = `<button class="btn btn-primary btn-sm" onclick="App.changeApptStatus(${a.id}, 'Completed', ${a.userId})">Mark Completed</button>`;
                     }
-
+                    
                     let tokenDisplay = a.type === "Walk-in" ? `| Token #${a.token}` : `| Specialist`;
-
+                    
                     htmlOutput += `
                     <div class="card" style="padding:20px;">
                         <div class="flex-between" style="margin-bottom:10px;">
@@ -1505,7 +2714,9 @@
                             <span class="badge ${a.status.toLowerCase()}">${a.status}</span>
                         </div>
                         <p style="font-size:12px; color:var(--text-muted); font-weight:700; margin-bottom:15px;">Phone: ${pPhone} <br> ${a.doctorName} | Date: ${a.date} ${tokenDisplay}</p>
-                        <div style="display:flex; gap:10px; flex-wrap: wrap;">${actBtn}</div>
+                        <div style="display:flex; gap:10px; flex-wrap: wrap;">
+                            ${actBtn}
+                        </div>
                     </div>`;
                 }
                 document.getElementById('admin-appt-list').innerHTML = htmlOutput;
@@ -1515,49 +2726,60 @@
                 for (let i = 0; i < App.state.appointments.length; i++) { 
                     if (App.state.appointments[i].id === appointmentId) { 
                         App.state.appointments[i].status = newStatus; 
-                        for (let k = 0; k < App.state.users.length; k++) {
-                            if (App.state.users[k].id === patientId) { App.state.users[k].pendingNotification = `Your appointment is ${newStatus}`; break; }
+                        
+                        for (let k = 0; k < App.state.users.length; k++) { 
+                            if (App.state.users[k].id === patientId) { 
+                                App.state.users[k].pendingNotification = `Your appointment is ${newStatus}`; 
+                                break; 
+                            } 
                         }
+                        
                         if(typeof db !== 'undefined' && db !== null) { 
                             db.collection("appointments").doc(appointmentId.toString()).update({status: newStatus}).catch(e=>{}); 
-                            db.collection("users").doc(patientId.toString()).update({pendingNotification: `Your appointment is ${newStatus}`}).catch(e=>{});
+                            db.collection("users").doc(patientId.toString()).update({pendingNotification: `Your appointment is ${newStatus}`}).catch(e=>{}); 
                         }
                         break; 
                     } 
                 }
-                App.saveData(); App.handleAdminSearch(); 
+                App.saveData(); 
+                App.handleAdminSearch(); 
             },
 
-            // Premium Custom Prompts for Reschedule/Cancel
-            triggerCancelPrompt: function(appointmentId, patientId) {
-                App.showCustomPrompt("Cancel Appointment", "Please enter the reason for cancellation:", function(reason) {
-                    if(!reason) reason = "Admin Cancelled";
-                    App.processStatusUpdate(appointmentId, 'Cancelled', patientId, reason, "");
-                });
+            triggerCancelPrompt: function(appointmentId, patientId) { 
+                App.showCustomPrompt("Cancel Appointment", "Please enter the reason for cancellation:", function(reason) { 
+                    if(!reason) reason = "Admin Cancelled"; 
+                    App.processStatusUpdate(appointmentId, 'Cancelled', patientId, reason, ""); 
+                }); 
             },
-
-            triggerReschedulePrompt: function(appointmentId, patientId) {
-                App.showCustomPrompt("Reschedule Appointment", "Enter new Date/Time (e.g. May 20, 10AM):", function(newDate) {
-                    if(!newDate) return;
-                    App.processStatusUpdate(appointmentId, 'Rescheduled', patientId, "Date changed by Admin", newDate);
-                });
+            
+            triggerReschedulePrompt: function(appointmentId, patientId) { 
+                App.showCustomPrompt("Reschedule Appointment", "Enter new Date/Time (e.g. May 20, 10AM):", function(newDate) { 
+                    if(!newDate) return; 
+                    App.processStatusUpdate(appointmentId, 'Rescheduled', patientId, "Date changed by Admin", newDate); 
+                }); 
             },
 
             processStatusUpdate: function(appointmentId, actionType, patientId, reason, newDate) {
                 for (let i = 0; i < App.state.appointments.length; i++) { 
                     if (App.state.appointments[i].id === appointmentId) { 
                         App.state.appointments[i].status = actionType; 
-                        App.state.appointments[i].reason = reason;
-                        if(newDate !== "") { App.state.appointments[i].date = newDate; }
+                        App.state.appointments[i].reason = reason; 
+                        
+                        if(newDate !== "") { 
+                            App.state.appointments[i].date = newDate; 
+                        }
                         
                         let notifyMsg = `Appointment ${actionType}. Note: ${reason}`;
                         
-                        for (let k = 0; k < App.state.users.length; k++) {
-                            if (App.state.users[k].id === patientId) { App.state.users[k].pendingNotification = notifyMsg; break; }
+                        for (let k = 0; k < App.state.users.length; k++) { 
+                            if (App.state.users[k].id === patientId) { 
+                                App.state.users[k].pendingNotification = notifyMsg; 
+                                break; 
+                            } 
                         }
-
+                        
                         if(typeof db !== 'undefined' && db !== null) { 
-                            let updateData = {status: actionType, reason: reason};
+                            let updateData = {status: actionType, reason: reason}; 
                             if(newDate !== "") updateData.date = newDate;
                             db.collection("appointments").doc(appointmentId.toString()).update(updateData).catch(e=>{}); 
                             db.collection("users").doc(patientId.toString()).update({pendingNotification: notifyMsg}).catch(e=>{}); 
@@ -1565,170 +2787,295 @@
                         break; 
                     } 
                 }
-                App.saveData(); App.handleAdminSearch(); 
+                App.saveData(); 
+                App.handleAdminSearch(); 
             },
 
-            // Admin Patient Manage
+            // --- Admin Patient Management ---
             renderAdminPatients: function(searchQuery = "") {
-                let usersCopy = [];
-                for (let i = 0; i < App.state.users.length; i++) { if (App.state.users[i].role === 'patient') { usersCopy.push(App.state.users[i]); } }
-                if (searchQuery !== "") { usersCopy = usersCopy.filter(u => u.name.toLowerCase().includes(searchQuery) || u.phone.includes(searchQuery) || u.id.toString().includes(searchQuery)); }
+                let usersCopy = []; 
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].role === 'patient') { 
+                        usersCopy.push(App.state.users[i]); 
+                    } 
+                }
+                
+                if (searchQuery !== "") { 
+                    usersCopy = usersCopy.filter(u => u.name.toLowerCase().includes(searchQuery) || u.phone.includes(searchQuery) || u.id.toString().includes(searchQuery)); 
+                }
 
                 let htmlOutput = '';
-                if (usersCopy.length === 0) { document.getElementById('admin-patients-list').innerHTML = '<p style="font-size:13px; font-weight:700; text-align:center; padding:20px; color:var(--text-muted);">No patients match search.</p>'; return; }
+                if (usersCopy.length === 0) { 
+                    document.getElementById('admin-patients-list').innerHTML = '<p style="font-size:13px; font-weight:700; text-align:center; padding:20px; color:var(--text-muted);">No patients match search.</p>'; 
+                    return; 
+                }
 
                 for (let i = 0; i < usersCopy.length; i++) {
                     let u = usersCopy[i];
                     htmlOutput += `
                     <div class="patient-list-item">
-                        <div><h4 style="font-size:15px; font-weight:800; color:var(--text-main);">${u.name}</h4><p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-top:4px;">ID: ${u.id} | Ph: ${u.phone}</p></div>
-                        <button class="btn btn-primary btn-sm" style="box-shadow:none;" onclick="App.openPatientAdminView(${u.id})">Manage</button>
+                        <div>
+                            <h4 style="font-size:15px; font-weight:800; color:var(--text-main);">${u.name}</h4>
+                            <p style="font-size:12px; font-weight:700; color:var(--text-muted); margin-top:4px;">ID: ${u.id} | Ph: ${u.phone}</p>
+                        </div>
+                        <div style="display: flex; gap: 5px;">
+                            <button class="btn btn-primary btn-sm" style="box-shadow:none;" onclick="App.openPatientAdminView(${u.id})">Manage</button>
+                            <button class="btn btn-outline btn-sm" style="box-shadow:none; color: var(--danger);" onclick="App.adminDeletePatient(${u.id})"><i class="fa-solid fa-trash"></i></button>
+                        </div>
                     </div>`;
                 }
                 document.getElementById('admin-patients-list').innerHTML = htmlOutput;
             },
 
             openPatientAdminView: function(userId) {
-                let p = null;
-                for (let i = 0; i < App.state.users.length; i++) { if (App.state.users[i].id === userId) { p = App.state.users[i]; break; } }
+                let p = null; 
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === userId) { 
+                        p = App.state.users[i]; 
+                        break; 
+                    } 
+                }
+                
                 if(p) {
-                    document.getElementById('edit-p-id').value = p.id;
-                    document.getElementById('edit-p-name').value = p.name || '';
-                    document.getElementById('edit-p-phone').value = p.phone || '';
+                    document.getElementById('edit-p-id').value = p.id; 
+                    document.getElementById('edit-p-name').value = p.name || ''; 
+                    document.getElementById('edit-p-phone').value = p.phone || ''; 
                     document.getElementById('edit-p-age').value = p.age || '';
                     
-                    document.getElementById('quick-v-title').value = '';
-                    document.getElementById('quick-v-preview').style.display = 'none';
-                    App.state.tempImageBase64 = '';
+                    // Populate Pill info securely
+                    if(p.pillTimings) {
+                        document.getElementById('edit-p-pill-m').checked = p.pillTimings.morning || false;
+                        document.getElementById('edit-p-pill-a').checked = p.pillTimings.afternoon || false;
+                        document.getElementById('edit-p-pill-n').checked = p.pillTimings.night || false;
+                        document.getElementById('edit-p-pill-details').value = p.pillTimings.details || "";
+                    } else {
+                        document.getElementById('edit-p-pill-m').checked = false; 
+                        document.getElementById('edit-p-pill-a').checked = false; 
+                        document.getElementById('edit-p-pill-n').checked = false; 
+                        document.getElementById('edit-p-pill-details').value = "";
+                    }
+
+                    document.getElementById('quick-v-title').value = ''; 
+                    document.getElementById('quick-v-preview').style.display = 'none'; 
+                    App.state.tempImageBase64 = ''; 
+                    
                     App.openModal('modal-admin-patient');
                 }
             },
 
             saveAdminPatientEdit: function() {
-                const pId = parseInt(document.getElementById('edit-p-id').value);
-                const n = document.getElementById('edit-p-name').value.trim();
-                const ph = document.getElementById('edit-p-phone').value.trim();
+                const pId = parseInt(document.getElementById('edit-p-id').value); 
+                const n = document.getElementById('edit-p-name').value.trim(); 
+                const ph = document.getElementById('edit-p-phone').value.trim(); 
                 const a = document.getElementById('edit-p-age').value.trim();
+                
+                const pm = document.getElementById('edit-p-pill-m').checked; 
+                const pa = document.getElementById('edit-p-pill-a').checked; 
+                const pn = document.getElementById('edit-p-pill-n').checked; 
+                const pdet = document.getElementById('edit-p-pill-details').value.trim();
+
+                const updatedPillSettings = { morning: pm, afternoon: pa, night: pn, details: pdet };
 
                 for (let i = 0; i < App.state.users.length; i++) {
                     if (App.state.users[i].id === pId) {
-                        App.state.users[i].name = n; App.state.users[i].phone = ph; App.state.users[i].age = a;
-                        if(typeof db !== 'undefined' && db !== null) { db.collection("users").doc(pId.toString()).update({name: n, phone: ph, age: a}).catch(e=>{}); }
+                        App.state.users[i].name = n; 
+                        App.state.users[i].phone = ph; 
+                        App.state.users[i].age = a;
+                        App.state.users[i].pillTimings = updatedPillSettings;
+                        
+                        if(typeof db !== 'undefined' && db !== null) { 
+                            db.collection("users").doc(pId.toString()).update({
+                                name: n, 
+                                phone: ph, 
+                                age: a, 
+                                pillTimings: updatedPillSettings
+                            }).catch(e=>{}); 
+                        }
                         break;
                     }
                 }
-                App.saveData(); App.closeModal('modal-admin-patient'); App.showSuccessAnim('Patient Updated!'); App.handleAdminSearch();
+                App.saveData(); 
+                App.closeModal('modal-admin-patient'); 
+                App.showSuccessAnim('Patient Updated!'); 
+                App.handleAdminSearch();
             },
 
+            adminDeletePatient: function(id) {
+                App.showCustomConfirm("Delete Patient", "Are you sure you want to permanently delete this patient from the database?", function() {
+                    let newUsers = []; 
+                    for(let i=0; i<App.state.users.length; i++) { 
+                        if(App.state.users[i].id !== id) {
+                            newUsers.push(App.state.users[i]); 
+                        }
+                    }
+                    App.state.users = newUsers; 
+                    App.saveData(); 
+                    App.showToast("Patient Removed"); 
+                    App.renderAdminPatients();
+                    
+                    if(typeof db !== 'undefined' && db !== null) { 
+                        db.collection("users").doc(id.toString()).delete().catch(e=>{}); 
+                    }
+                });
+            },
+
+            // --- File Handling & Vault ---
             handleQuickVaultFile: function(event) {
-                const file = event.target.files[0]; const reader = new FileReader(); 
+                const file = event.target.files[0]; 
+                const reader = new FileReader(); 
                 reader.onloadend = function() { 
                     App.state.tempImageBase64 = reader.result; 
                     document.getElementById('quick-v-preview').src = reader.result; 
                     document.getElementById('quick-v-preview').style.display = 'block'; 
                 }; 
-                if (file) { reader.readAsDataURL(file); }
+                if (file) { 
+                    reader.readAsDataURL(file); 
+                }
             },
 
-            // REAL FIREBASE UPLOAD (ANTI-STUCK PROMISE LOGIC)
             quickUploadToVault: function() {
-                const patientId = parseInt(document.getElementById('edit-p-id').value);
-                const category = document.getElementById('quick-v-category').value;
+                const patientId = parseInt(document.getElementById('edit-p-id').value); 
+                const category = document.getElementById('quick-v-category').value; 
                 const title = document.getElementById('quick-v-title').value.trim();
+                
+                if (!patientId || App.state.tempImageBase64 === "" || title === "") { 
+                    return App.showToast("Select Image and Enter Title", "error"); 
+                }
 
-                if (!patientId || App.state.tempImageBase64 === "" || title === "") { return App.showToast("Select Image and Enter Title", "error"); }
-
-                const dateStr = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'});
+                const dateStr = new Date().toLocaleDateString('en-US', {month:'short', day:'numeric', year:'numeric'}); 
                 let catMeta = VaultCategoryMeta[category];
-
-                // Remove modal instantly and show processing
+                
                 App.closeModal('modal-admin-patient');
                 
                 if(typeof cloudStorage !== 'undefined' && cloudStorage !== null && db !== null) {
-                    const uniqueName = `vault_${patientId}_${Date.now()}.jpg`;
+                    const uniqueName = `vault_${patientId}_${Date.now()}.jpg`; 
                     const storageRef = cloudStorage.ref(`medical_vault/${uniqueName}`);
                     
                     storageRef.putString(App.state.tempImageBase64, 'data_url').then(snapshot => {
                         storageRef.getDownloadURL().then(downloadUrl => {
                             const newDoc = { id: Date.now(), userId: patientId, type: category, title: title, fileUrl: downloadUrl, date: dateStr };
-                            db.collection("documents").doc(newDoc.id.toString()).set(newDoc).then(() => {
-                                db.collection("users").doc(patientId.toString()).update({ pendingNotification: `New ${catMeta.label} uploaded!` });
-                                App.finalizeQuickUpload(newDoc, patientId, catMeta);
+                            db.collection("documents").doc(newDoc.id.toString()).set(newDoc).then(() => { 
+                                db.collection("users").doc(patientId.toString()).update({ pendingNotification: `New ${catMeta.label} uploaded!` }); 
+                                App.finalizeQuickUpload(newDoc, patientId, catMeta); 
                             });
                         });
                     }).catch(e => { 
-                        console.log("Firebase storage fail, using local.");
                         App.fallbackLocalUpload(patientId, category, title, dateStr, catMeta); 
                     });
-                } else {
-                    App.fallbackLocalUpload(patientId, category, title, dateStr, catMeta);
+                } else { 
+                    App.fallbackLocalUpload(patientId, category, title, dateStr, catMeta); 
                 }
             },
 
-            fallbackLocalUpload: function(patientId, category, title, dateStr, catMeta) {
-                const newDoc = { id: Date.now(), userId: patientId, type: category, title: title, fileUrl: App.state.tempImageBase64, date: dateStr };
-                App.finalizeQuickUpload(newDoc, patientId, catMeta);
+            fallbackLocalUpload: function(patientId, category, title, dateStr, catMeta) { 
+                const newDoc = { id: Date.now(), userId: patientId, type: category, title: title, fileUrl: App.state.tempImageBase64, date: dateStr }; 
+                App.finalizeQuickUpload(newDoc, patientId, catMeta); 
             },
 
             finalizeQuickUpload: function(newDoc, patientId, catMeta) {
                 App.state.documents.push(newDoc);
-                for (let i = 0; i < App.state.users.length; i++) {
-                    if (App.state.users[i].id === patientId) { App.state.users[i].pendingNotification = `New ${catMeta.label} uploaded!`; break; }
+                
+                for (let i = 0; i < App.state.users.length; i++) { 
+                    if (App.state.users[i].id === patientId) { 
+                        App.state.users[i].pendingNotification = `New ${catMeta.label} uploaded!`; 
+                        break; 
+                    } 
                 }
-                App.state.tempImageBase64 = ""; document.getElementById('quick-v-preview').style.display = 'none'; document.getElementById('quick-v-title').value = '';
-                App.saveData(); App.showSuccessAnim("Uploaded Successfully!");
+                
+                App.state.tempImageBase64 = ""; 
+                document.getElementById('quick-v-preview').style.display = 'none'; 
+                document.getElementById('quick-v-title').value = ''; 
+                
+                App.saveData(); 
+                App.showSuccessAnim("Uploaded Successfully!");
             },
 
-            // Admin Doctors (Add, Edit, Delete with Confirm)
+            // --- Admin Doctor Management ---
             adminAddDoctor: function() {
-                const dName = document.getElementById('add-doc-name').value.trim();
-                const dSpec = document.getElementById('add-doc-spec').value.trim();
+                const dName = document.getElementById('add-doc-name').value.trim(); 
+                const dSpec = document.getElementById('add-doc-spec').value.trim(); 
                 const dTime = document.getElementById('add-doc-time').value.trim();
-                if(dName === '' || dSpec === '' || dTime === '') return App.showToast("Enter all details", "error");
-
-                const newDoc = { id: Date.now(), name: dName, spec: dSpec, time: dTime };
+                
+                if(dName === '' || dSpec === '' || dTime === '') {
+                    return App.showToast("Enter all details", "error");
+                }
+                
+                const newDoc = { id: Date.now(), name: dName, spec: dSpec, time: dTime }; 
                 App.state.doctors.push(newDoc);
                 
-                if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}).catch(e=>{}); }
-
-                App.saveData(); App.showSuccessAnim("Doctor Assigned!");
-                document.getElementById('add-doc-name').value = ''; document.getElementById('add-doc-spec').value = ''; document.getElementById('add-doc-time').value = '';
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}).catch(e=>{}); 
+                }
+                
+                App.saveData(); 
+                App.showSuccessAnim("Doctor Assigned!"); 
+                
+                document.getElementById('add-doc-name').value = ''; 
+                document.getElementById('add-doc-spec').value = ''; 
+                document.getElementById('add-doc-time').value = ''; 
+                
                 App.renderAdminDoctors();
             },
 
             openEditDoc: function(id) {
-                let d = null;
-                for(let i=0; i<App.state.doctors.length; i++) { if(App.state.doctors[i].id === id) { d = App.state.doctors[i]; break; } }
-                if(d) {
-                    document.getElementById('edit-d-id').value = d.id;
-                    document.getElementById('edit-d-name').value = d.name;
-                    document.getElementById('edit-d-spec').value = d.spec;
-                    document.getElementById('edit-d-time').value = d.time || '';
-                    App.openModal('modal-edit-doctor');
+                let d = null; 
+                for(let i=0; i<App.state.doctors.length; i++) { 
+                    if(App.state.doctors[i].id === id) { 
+                        d = App.state.doctors[i]; 
+                        break; 
+                    } 
+                }
+                if(d) { 
+                    document.getElementById('edit-d-id').value = d.id; 
+                    document.getElementById('edit-d-name').value = d.name; 
+                    document.getElementById('edit-d-spec').value = d.spec; 
+                    document.getElementById('edit-d-time').value = d.time || ''; 
+                    App.openModal('modal-edit-doctor'); 
                 }
             },
 
             saveAdminDoctorEdit: function() {
-                const id = parseInt(document.getElementById('edit-d-id').value);
-                const n = document.getElementById('edit-d-name').value.trim();
-                const s = document.getElementById('edit-d-spec').value.trim();
+                const id = parseInt(document.getElementById('edit-d-id').value); 
+                const n = document.getElementById('edit-d-name').value.trim(); 
+                const s = document.getElementById('edit-d-spec').value.trim(); 
                 const t = document.getElementById('edit-d-time').value.trim();
-
-                for(let i=0; i<App.state.doctors.length; i++) {
-                    if(App.state.doctors[i].id === id) { App.state.doctors[i].name = n; App.state.doctors[i].spec = s; App.state.doctors[i].time = t; break; }
+                
+                for(let i=0; i<App.state.doctors.length; i++) { 
+                    if(App.state.doctors[i].id === id) { 
+                        App.state.doctors[i].name = n; 
+                        App.state.doctors[i].spec = s; 
+                        App.state.doctors[i].time = t; 
+                        break; 
+                    } 
                 }
-
-                if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}).catch(e=>{}); }
-
-                App.saveData(); App.closeModal('modal-edit-doctor'); App.showSuccessAnim('Doctor Updated!'); App.renderAdminDoctors();
+                
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}).catch(e=>{}); 
+                }
+                
+                App.saveData(); 
+                App.closeModal('modal-edit-doctor'); 
+                App.showSuccessAnim('Doctor Updated!'); 
+                App.renderAdminDoctors();
             },
 
             adminRemoveDoctor: function(id) {
                 App.showCustomConfirm("Delete Doctor", "Are you sure you want to remove this doctor from the hospital system?", function() {
-                    let newDocs = [];
-                    for(let i=0; i<App.state.doctors.length; i++) { if(App.state.doctors[i].id !== id) newDocs.push(App.state.doctors[i]); }
-                    App.state.doctors = newDocs; App.saveData(); App.showToast("Doctor Removed"); App.renderAdminDoctors();
-                    if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}).catch(e=>{}); }
+                    let newDocs = []; 
+                    for(let i=0; i<App.state.doctors.length; i++) { 
+                        if(App.state.doctors[i].id !== id) {
+                            newDocs.push(App.state.doctors[i]); 
+                        }
+                    }
+                    
+                    App.state.doctors = newDocs; 
+                    App.saveData(); 
+                    App.showToast("Doctor Removed"); 
+                    App.renderAdminDoctors();
+                    
+                    if(typeof db !== 'undefined' && db !== null) { 
+                        db.collection("system").doc("settings").set({ doctors: App.state.doctors }, {merge: true}).catch(e=>{}); 
+                    }
                 });
             },
 
@@ -1752,46 +3099,61 @@
                 document.getElementById('admin-doc-list').innerHTML = html;
             },
 
-            // Admin Settings
-            loadSettingsData: function() {
-                document.getElementById('set-phone').value = App.state.hospitalInfo.phone;
-                document.getElementById('set-wa').value = App.state.hospitalInfo.whatsapp;
-                document.getElementById('set-email').value = App.state.hospitalInfo.email;
+            // --- Admin Settings ---
+            loadSettingsData: function() { 
+                document.getElementById('set-phone').value = App.state.hospitalInfo.phone; 
+                document.getElementById('set-wa').value = App.state.hospitalInfo.whatsapp; 
+                document.getElementById('set-email').value = App.state.hospitalInfo.email; 
             },
-
-            updateContactInfo: function() {
-                App.state.hospitalInfo.phone = document.getElementById('set-phone').value.trim();
-                App.state.hospitalInfo.whatsapp = document.getElementById('set-wa').value.trim();
-                App.state.hospitalInfo.email = document.getElementById('set-email').value.trim();
+            
+            updateContactInfo: function() { 
+                App.state.hospitalInfo.phone = document.getElementById('set-phone').value.trim(); 
+                App.state.hospitalInfo.whatsapp = document.getElementById('set-wa').value.trim(); 
+                App.state.hospitalInfo.email = document.getElementById('set-email').value.trim(); 
                 
-                if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ hospitalInfo: App.state.hospitalInfo }, {merge: true}).catch(e=>{}); }
-
-                App.saveData(); App.showSuccessAnim("Contact Updated!");
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("system").doc("settings").set({ hospitalInfo: App.state.hospitalInfo }, {merge: true}).catch(e=>{}); 
+                } 
+                App.saveData(); 
+                App.showSuccessAnim("Contact Updated!"); 
             },
-
-            sendBroadcast: function() {
-                const title = document.getElementById('bc-title').value.trim();
-                const msg = document.getElementById('bc-msg').value.trim();
-                if(title === '' || msg === '') return App.showToast("Enter Notice details", "error");
-
-                App.state.broadcast = { active: true, title: title, message: msg };
+            
+            sendBroadcast: function() { 
+                const title = document.getElementById('bc-title').value.trim(); 
+                const msg = document.getElementById('bc-msg').value.trim(); 
                 
-                if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ broadcast: App.state.broadcast }, {merge: true}).catch(e=>{}); }
-
-                App.saveData(); document.getElementById('bc-title').value = ''; document.getElementById('bc-msg').value = '';
-                App.showSuccessAnim("Broadcast Sent!");
+                if(title === '' || msg === '') {
+                    return App.showToast("Enter Notice details", "error"); 
+                }
+                
+                App.state.broadcast = { active: true, title: title, message: msg }; 
+                
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("system").doc("settings").set({ broadcast: App.state.broadcast }, {merge: true}).catch(e=>{}); 
+                } 
+                
+                App.saveData(); 
+                document.getElementById('bc-title').value = ''; 
+                document.getElementById('bc-msg').value = ''; 
+                App.showSuccessAnim("Broadcast Sent!"); 
             },
-
-            clearBroadcast: function() {
-                App.state.broadcast = { active: false, title: "", message: "" };
-                if(typeof db !== 'undefined' && db !== null) { db.collection("system").doc("settings").set({ broadcast: App.state.broadcast }, {merge: true}).catch(e=>{}); }
-                App.saveData(); App.showToast("Broadcast Removed");
+            
+            clearBroadcast: function() { 
+                App.state.broadcast = { active: false, title: "", message: "" }; 
+                
+                if(typeof db !== 'undefined' && db !== null) { 
+                    db.collection("system").doc("settings").set({ broadcast: App.state.broadcast }, {merge: true}).catch(e=>{}); 
+                } 
+                
+                App.saveData(); 
+                App.showToast("Broadcast Removed"); 
             }
         };
 
         window.App = App;
-        window.addEventListener('DOMContentLoaded', function() { App.initApp(); });
-
+        window.addEventListener('DOMContentLoaded', function() { 
+            App.initApp(); 
+        });
     </script>
 </body>
 </html>
