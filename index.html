@@ -2110,6 +2110,19 @@
             },
 
             adminLogin: function() {
+                // Check Firebase Admin Session first
+                const adminSession = localStorage.getItem('senthil_admin_session');
+                if (adminSession) {
+                    try {
+                        const session = JSON.parse(adminSession);
+                        if (session.isAdmin) {
+                            App.state.currentUser = { id: session.uid, name: session.name || 'Admin', role: 'admin' };
+                            App.saveData();
+                            App.initAdmin();
+                            return;
+                        }
+                    } catch(e) {}
+                }
                 const adminUser = document.getElementById('admin-user').value.trim(); 
                 const adminPass = document.getElementById('admin-pass').value.trim();
                 
