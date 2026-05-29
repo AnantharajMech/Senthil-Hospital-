@@ -349,8 +349,8 @@
                 <button class="btn btn-primary" id="send-otp-btn">
                     <i class="fas fa-paper-plane"></i> OTP அனுப்பு
                 </button>
-                <div id="recaptcha-container"></div>
-                <div class="recaptcha-notice">
+                <div id="recaptcha-container" style="display:none"></div>
+                <div style="display:none">
                     <i class="fas fa-shield-alt"></i> reCAPTCHA மூலம் பாதுகாக்கப்பட்டுள்ளது
                 </div>
             </div>
@@ -450,7 +450,7 @@
 
         // Setup reCAPTCHA
         window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
-            'size': 'normal',
+            'size': 'invisible',
             'callback': (token) => {
                 console.log('reCAPTCHA verified');
             }
