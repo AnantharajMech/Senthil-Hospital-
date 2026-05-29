@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="ta">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Senthil Hospital - Login with Mobile & Gmail</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+
+    <style>
+        :root {
+            --primary: #06B6D4;
+            --primary-dark: #0891B2;
+            --secondary: #0F172A;
+            --accent: #10B981;
+            --danger: #F43F5E;
+            --bg-color: #F8FAFC;
+            --surface: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --shadow-soft: 0 10px 30px rgba(0, 0, 0, 0.04);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', sans-serif;
+        }
+
+        body {
+            background: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+
+        .login-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-header i {
+            font-size: 50px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .login-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 5px;
+        }
+
+        .login-header p {
+            font-size: 14px;
+            color: var(--text-muted);
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 25px;
+            background: #F1F5F9;
+            padding: 5px;
+            border-radius: 12px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            color: var(--text-muted);
+        }
+
+        .auth-tab.active {
+            background: var(--surface);
+            color: var(--primary);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .auth-form {
+            display: none;
+            animation: slideIn 0.3s ease;
+        }
+
+        .auth-form.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 800;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+            padding-left: 5px;
+        }
+
+        .input-group i {
+            position: absolute;
+            left: 16px;
+            top: 46px;
+            color: #94A3B8;
+            font-size: 18px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 16px 16px 16px 50px;
+            border: none;
+            border-radius: 14px;
+            font-size: 15px;
+            background: #F1F5F9;
+            color: var(--text-main);
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .input-group input:focus {
+            background: var(--surface);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+            outline: none;
+        }
+
+        .input-group input:focus + i {
+            color: var(--primary);
+        }
+
+        .otp-inputs {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .otp-input {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #E2E8F0;
+            border-radius: 12px;
+            font-size: 20px;
+            font-weight: 800;
+            text-align: center;
+            transition: 0.3s;
+        }
+
+        .otp-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(6, 182, 212, 0.2);
+        }
+
+        .otp-input.error {
+            border-color: var(--danger);
+            background: rgba(244, 63, 94, 0.05);
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            box-shadow: 0 8px 20px rgba(6, 182, 212, 0.3);
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+        }
+
+        .btn-google {
+            background: var(--surface);
+            color: var(--text-main);
+            border: 2px solid #E2E8F0;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .btn-google:hover {
+            border-color: var(--primary);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .divider-line {
+            flex: 1;
+            height: 1px;
+            background: #E2E8F0;
+        }
+
+        .divider-text {
+            padding: 0 15px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .timer {
+            text-align: center;
+            color: var(--primary);
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .resend-btn {
+            background: none;
+            border: none;
+            color: var(--primary);
+            cursor: pointer;
+            font-weight: 700;
+            text-decoration: underline;
+        }
+
+        .error-message {
+            background: rgba(244, 63, 94, 0.1);
+            color: var(--danger);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .error-message.show {
+            display: block;
+        }
+
+        .success-message {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--accent);
+            padding: 12px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            font-weight: 600;
+            display: none;
+        }
+
+        .success-message.show {
+            display: block;
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .recaptcha-notice {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        #recaptcha-container {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-header">
+            <i class="fas fa-hospital-user"></i>
+            <h1>Senthil Healthcare</h1>
+            <p>உங்கள் ஆரோக்கியத்தின் பாதுகாப்பு</p>
+        </div>
+
+        <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="mobile">
+                <i class="fas fa-phone"></i> மொபைல்
+            </button>
+            <button class="auth-tab" data-tab="email">
+                <i class="fas fa-envelope"></i> ஈமெயில்
+            </button>
+        </div>
+
+        <!-- Mobile OTP Authentication -->
+        <div id="mobile-auth" class="auth-form active">
+            <div class="error-message" id="mobile-error"></div>
+            <div class="success-message" id="mobile-success"></div>
+
+            <!-- Step 1: Enter Phone Number -->
+            <div id="phone-step">
+                <div class="input-group">
+                    <label>மொபைல் நம்பர்</label>
+                    <input type="tel" id="phone-number" placeholder="9876543210" maxlength="10">
+                    <i class="fas fa-phone"></i>
+                </div>
+                <button class="btn btn-primary" id="send-otp-btn">
+                    <i class="fas fa-paper-plane"></i> OTP அனுப்பு
+                </button>
+                <div id="recaptcha-container"></div>
+                <div class="recaptcha-notice">
+                    <i class="fas fa-shield-alt"></i> reCAPTCHA மூலம் பாதுகாக்கப்பட்டுள்ளது
+                </div>
+            </div>
+
+            <!-- Step 2: Enter OTP -->
+            <div id="otp-step" style="display: none;">
+                <div class="timer">
+                    <span id="timer-display">02:00</span>
+                </div>
+                <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px; font-size: 14px;">
+                    உங்கள் மொபைலுக்கு அனுப்பப்பட்ட OTP ஐ உள்ளிடுங்கள்
+                </p>
+                <div class="otp-inputs" id="otp-inputs"></div>
+                <button class="btn btn-primary" id="verify-otp-btn">
+                    <i class="fas fa-check"></i> OTP சரிபார்க்கவும்
+                </button>
+                <button class="resend-btn" id="resend-btn" style="display: none; width: 100%; padding: 12px; margin-top: 10px;">
+                    மீண்டும் OTP அனுப்பு
+                </button>
+            </div>
+        </div>
+
+        <!-- Email/Gmail Authentication -->
+        <div id="email-auth" class="auth-form">
+            <div class="error-message" id="email-error"></div>
+            <div class="success-message" id="email-success"></div>
+
+            <div class="input-group">
+                <label>ஈமெயில் முகவரி</label>
+                <input type="email" id="email-input" placeholder="your@gmail.com">
+                <i class="fas fa-envelope"></i>
+            </div>
+
+            <div class="input-group">
+                <label>கடவுச்சொல்</label>
+                <input type="password" id="password-input" placeholder="••••••••">
+                <i class="fas fa-lock"></i>
+            </div>
+
+            <button class="btn btn-primary" id="email-login-btn">
+                <i class="fas fa-sign-in-alt"></i> உள்நுழைக
+            </button>
+
+            <div class="divider">
+                <div class="divider-line"></div>
+                <div class="divider-text">அல்லது</div>
+                <div class="divider-line"></div>
+            </div>
+
+            <button class="btn btn-google" id="google-login-btn">
+                <i class="fab fa-google"></i> Google இல் உள்நுழைக
+            </button>
+
+            <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 15px;">
+                கணக்கு இல்லையா? <a href="#signup" style="color: var(--primary); text-decoration: none; font-weight: 700;">பதிவு செய்க</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+
+        // Tab Switching
+        document.querySelectorAll('.auth-tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const tabName = this.getAttribute('data-tab');
+                document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+                document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+                this.classList.add('active');
+                document.getElementById(tabName + '-auth').classList.add('active');
+            });
+        });
+
+        // ===== MOBILE OTP AUTHENTICATION =====
+        let confirmationResult;
+        let timerInterval;
+        const phoneInput = document.getElementById('phone-number');
+        const sendOtpBtn = document.getElementById('send-otp-btn');
+        const phoneStep = document.getElementById('phone-step');
+        const otpStep = document.getElementById('otp-step');
+        const verifyOtpBtn = document.getElementById('verify-otp-btn');
+        const mobileError = document.getElementById('mobile-error');
+        const mobileSuccess = document.getElementById('mobile-success');
+        const resendBtn = document.getElementById('resend-btn');
+
+        // Setup reCAPTCHA
+        window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', {
+            'size': 'normal',
+            'callback': (token) => {
+                console.log('reCAPTCHA verified');
+            }
+        });
+
+        // Send OTP
+        sendOtpBtn.addEventListener('click', async () => {
+            const phone = phoneInput.value.trim();
+            
+            if (!phone || phone.length !== 10 || !/^\d+$/.test(phone)) {
+                showMobileError('தயவு செய்து செல்லுபடியாகும் 10 இலக்க மொபைல் நம்பர் உள்ளிடுங்கள்');
+                return;
+            }
+
+            const fullPhone = '+91' + phone;
+            sendOtpBtn.disabled = true;
+            sendOtpBtn.innerHTML = '<div class="spinner"></div> அனுப்புகிறது...';
+
+            try {
+                confirmationResult = await auth.signInWithPhoneNumber(fullPhone, window.recaptchaVerifier);
+                showMobileSuccess('OTP உங்கள் மொபைலுக்கு அனுப்பப்பட்டுவிட்டது');
+                phoneStep.style.display = 'none';
+                otpStep.style.display = 'block';
+                startTimer();
+                setupOtpInputs();
+            } catch (error) {
+                showMobileError('OTP அனுப்பத் தவறிவிட்டது: ' + error.message);
+                sendOtpBtn.disabled = false;
+                sendOtpBtn.innerHTML = '<i class="fas fa-paper-plane"></i> OTP அனுப்பு';
+            }
+        });
+
+        // Setup OTP Input Fields
+        function setupOtpInputs() {
+            const container = document.getElementById('otp-inputs');
+            container.innerHTML = '';
+            for (let i = 0; i < 6; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = '1';
+                input.className = 'otp-input';
+                input.inputMode = 'numeric';
+                input.addEventListener('input', (e) => {
+                    e.target.value = e.target.value.replace(/[^0-9]/g, '');
+                    if (e.target.value && i < 5) {
+                        container.children[i + 1].focus();
+                    }
+                });
+                input.addEventListener('keydown', (e) => {
+                    if (e.key === 'Backspace' && !e.target.value && i > 0) {
+                        container.children[i - 1].focus();
+                    }
+                });
+                container.appendChild(input);
+            }
+            container.children[0].focus();
+        }
+
+        // Verify OTP
+        verifyOtpBtn.addEventListener('click', async () => {
+            const otpInputs = document.querySelectorAll('.otp-input');
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+
+            if (otp.length !== 6) {
+                showMobileError('தயவு செய்து சரியான OTP ஐ உள்ளிடுங்கள்');
+                return;
+            }
+
+            verifyOtpBtn.disabled = true;
+            verifyOtpBtn.innerHTML = '<div class="spinner"></div> சரிபார்க்கிறது...';
+
+            try {
+                await confirmationResult.confirm(otp);
+                showMobileSuccess('உள்நுழைவு வெற்றிகரமாக நிறைவடைந்துவிட்டது!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } catch (error) {
+                showMobileError('தவறான OTP. மீண்டும் முயற்சி செய்யவும்');
+                document.querySelectorAll('.otp-input').forEach(input => {
+                    input.classList.add('error');
+                    input.value = '';
+                });
+                verifyOtpBtn.disabled = false;
+                verifyOtpBtn.innerHTML = '<i class="fas fa-check"></i> OTP சரிபார்க்கவும்';
+            }
+        });
+
+        // Timer Function
+        function startTimer() {
+            let seconds = 120;
+            resendBtn.style.display = 'none';
+            timerInterval = setInterval(() => {
+                const mins = Math.floor(seconds / 60);
+                const secs = seconds % 60;
+                document.getElementById('timer-display').textContent = 
+                    `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+                
+                if (seconds <= 0) {
+                    clearInterval(timerInterval);
+                    resendBtn.style.display = 'block';
+                }
+                seconds--;
+            }, 1000);
+        }
+
+        // Resend OTP
+        resendBtn.addEventListener('click', () => {
+            phoneStep.style.display = 'block';
+            otpStep.style.display = 'none';
+            document.querySelectorAll('.otp-input').forEach(input => input.value = '');
+            phoneInput.value = '';
+        });
+
+        // Show/Hide Error Messages
+        function showMobileError(message) {
+            mobileError.textContent = message;
+            mobileError.classList.add('show');
+            setTimeout(() => mobileError.classList.remove('show'), 5000);
+        }
+
+        function showMobileSuccess(message) {
+            mobileSuccess.textContent = message;
+            mobileSuccess.classList.add('show');
+            setTimeout(() => mobileSuccess.classList.remove('show'), 5000);
+        }
+
+        // ===== EMAIL/GMAIL AUTHENTICATION =====
+        const emailInput = document.getElementById('email-input');
+        const passwordInput = document.getElementById('password-input');
+        const emailLoginBtn = document.getElementById('email-login-btn');
+        const googleLoginBtn = document.getElementById('google-login-btn');
+        const emailError = document.getElementById('email-error');
+        const emailSuccess = document.getElementById('email-success');
+
+        // Email/Password Login
+        emailLoginBtn.addEventListener('click', async () => {
+            const email = emailInput.value.trim();
+            const password = passwordInput.value;
+
+            if (!email || !password) {
+                showEmailError('தயவு செய்து ஈமெயில் மற்றும் கடவுச்சொல் உள்ளிடுங���கள்');
+                return;
+            }
+
+            emailLoginBtn.disabled = true;
+            emailLoginBtn.innerHTML = '<div class="spinner"></div> உள்நுழைகிறது...';
+
+            try {
+                await auth.signInWithEmailAndPassword(email, password);
+                showEmailSuccess('உள்நுழைவு வெற்றிகரமாக நிறைவடைந்துவிட்டது!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } catch (error) {
+                showEmailError('உள்நுழைவு தவறிவிட்டது: ' + error.message);
+                emailLoginBtn.disabled = false;
+                emailLoginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> உள்நுழைக';
+            }
+        });
+
+        // Google Login
+        googleLoginBtn.addEventListener('click', async () => {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            googleLoginBtn.disabled = true;
+            googleLoginBtn.innerHTML = '<div class="spinner"></div> Google ல் உள்நுழைகிறது...';
+
+            try {
+                await auth.signInWithPopup(provider);
+                showEmailSuccess('Google மூலம் உள்நுழைவு வெற்றிகரமாக!');
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } catch (error) {
+                showEmailError('Google உள்நுழைவு தவறிவிட்டது: ' + error.message);
+                googleLoginBtn.disabled = false;
+                googleLoginBtn.innerHTML = '<i class="fab fa-google"></i> Google இல் உள்நுழைக';
+            }
+        });
+
+        function showEmailError(message) {
+            emailError.textContent = message;
+            emailError.classList.add('show');
+            setTimeout(() => emailError.classList.remove('show'), 5000);
+        }
+
+        function showEmailSuccess(message) {
+            emailSuccess.textContent = message;
+            emailSuccess.classList.add('show');
+        }
+
+        // Check if user is already logged in
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                window.location.href = 'index.html';
+            }
+        });
+    </script>
+</body>
+</html>
