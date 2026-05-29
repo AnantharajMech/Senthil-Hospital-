@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Senthil Hospital - Hospital Management</title>
+    <title>சென்தில் மருத்துவமனை - Hospital Management</title>
     
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Mukta+Malar:wght@400;600;700;800&family=Noto+Sans+Tamil:wght@400;600;700&display=swap" rel="stylesheet">
@@ -36,7 +36,7 @@
             margin: 0; 
             padding: 0; 
             box-sizing: border-box; 
-            font-family: 'Plus Jakarta Sans', 'Noto Sans Tamil', sans-serif; 
+            font-family: 'Noto Sans Tamil', 'Plus Jakarta Sans', sans-serif; 
         }
 
         body { 
@@ -201,6 +201,7 @@
             background: #F1F5F9; 
             color: var(--text-main); 
             font-weight: 600; 
+            font-family: 'Noto Sans Tamil', sans-serif;
         }
         
         .input-group.no-icon input, 
@@ -229,6 +230,7 @@
             align-items: center; 
             justify-content: center; 
             gap: 10px; 
+            font-family: 'Noto Sans Tamil', sans-serif;
         }
         
         .btn-primary { 
@@ -255,12 +257,20 @@
             background: linear-gradient(135deg, var(--accent), #059669); 
             color: white; 
         }
+
+        .btn-outline {
+            background: white;
+            color: var(--text-main);
+            border: 1px solid #E2E8F0;
+            box-shadow: var(--shadow-soft);
+        }
         
         .heading { 
             font-size: 28px; 
             font-weight: 800; 
             color: var(--text-main); 
             margin-bottom: 20px;
+            font-family: 'Noto Sans Tamil', sans-serif;
         }
 
         .card { 
@@ -323,6 +333,7 @@
             width: 65px; 
             cursor: pointer; 
             transition: 0.3s; 
+            font-family: 'Noto Sans Tamil', sans-serif;
         }
         
         .dock-item i { 
@@ -357,6 +368,7 @@
             align-items: center; 
             gap: 15px; 
             animation: slideDown 0.3s ease; 
+            font-family: 'Noto Sans Tamil', sans-serif;
         }
 
         .toast.error {
@@ -385,13 +397,17 @@
         .mt-20 {
             margin-top: 20px;
         }
+
+        p {
+            font-family: 'Noto Sans Tamil', sans-serif;
+        }
     </style>
 </head>
 <body>
     <!-- Global Loader -->
     <div id="global-loader">
         <div class="spinner"></div>
-        <p style="margin-top: 20px; font-weight: 600;">சொதக்கிக்கொள்ளுவது...</p>
+        <p style="margin-top: 20px; font-weight: 600;">சற்று பொறுங்கள்...</p>
     </div>
 
     <!-- Success Overlay -->
@@ -399,7 +415,7 @@
         <div class="success-box">
             <i class="fas fa-check-circle"></i>
             <h2>வெற்றி!</h2>
-            <p id="success-message" style="margin-top: 10px; color: var(--text-muted);">செயல்பாடு வெற்றிகரமாக முடிந்தது</p>
+            <p id="success-message" style="margin-top: 10px; color: var(--text-muted);">கோரிக்கை வெற்றிகரமாக முடிந்துவிட்டது</p>
         </div>
     </div>
 
@@ -408,8 +424,8 @@
         <div class="splash-icon">
             <i class="fas fa-hospital"></i>
         </div>
-        <div class="splash-title">Senthil Hospital</div>
-        <div class="splash-subtitle">சென்தில் மருத்துவமனை</div>
+        <div class="splash-title">சென்தில் மருத்துவமனை</div>
+        <div class="splash-subtitle">Hospital Management System</div>
     </div>
 
     <!-- Toast Container -->
@@ -420,27 +436,27 @@
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
             <div class="text-center" style="margin-bottom: 40px;">
                 <i class="fas fa-hospital" style="font-size: 60px; color: var(--primary); margin-bottom: 15px; display: block;"></i>
-                <h1 class="heading">மருத்துவமனை நிர்வாகம்</h1>
-                <p style="color: var(--text-muted);">உங்கள் கணக்কில் உள்நுழையவும்</p>
+                <h1 class="heading">சென்தில் மருத்துவமனை</h1>
+                <p style="color: var(--text-muted); font-size: 16px; font-family: 'Noto Sans Tamil';">உங்கள் கணக்கில் உள்நுழையவும்</p>
             </div>
 
             <div class="input-group">
-                <label>ईமेल முகவரி</label>
-                <input type="email" id="login-email" placeholder="உங்கள் ईමेल">
+                <label>மின்னஞ்சல் முகவரி</label>
+                <input type="email" id="login-email" placeholder="உங்கள் மின்னஞ்சலை உள்ளிடவும்">
                 <i class="fas fa-envelope"></i>
             </div>
 
             <div class="input-group">
                 <label>கடவுச்சொல்</label>
-                <input type="password" id="login-password" placeholder="உங்கள் கடவுச்சொல்">
+                <input type="password" id="login-password" placeholder="கடவுச்சொல்லை உள்ளிடவும்">
                 <i class="fas fa-lock"></i>
             </div>
 
             <button class="btn btn-primary" onclick="handleLogin()">உள்நுழைக</button>
 
             <div class="text-center mt-20">
-                <p style="color: var(--text-muted); margin-bottom: 15px;">கணக்கு இல்லையா?</p>
-                <button class="btn btn-secondary" onclick="switchToRegister()">பதிவு செய்க</button>
+                <p style="color: var(--text-muted); margin-bottom: 15px; font-size: 16px;">இன்னும் கணக்கு இல்லையா?</p>
+                <button class="btn btn-secondary" onclick="switchToRegister()">புதிய கணக்கு உருவாக்க</button>
             </div>
         </div>
     </div>
@@ -450,34 +466,34 @@
         <div style="width: 100%; max-width: 400px; margin: 0 auto;">
             <div class="text-center" style="margin-bottom: 30px;">
                 <i class="fas fa-user-plus" style="font-size: 50px; color: var(--primary); margin-bottom: 15px; display: block;"></i>
-                <h1 class="heading">புதிய கணக்கு உருவாக்கவும்</h1>
+                <h1 class="heading">புதிய கணக்கு உருவாக்குக</h1>
             </div>
 
             <div class="input-group">
                 <label>பெயர்</label>
-                <input type="text" id="register-name" placeholder="உங்கள் பெயர்">
+                <input type="text" id="register-name" placeholder="உங்கள் முழு பெயரை உள்ளிடவும்">
                 <i class="fas fa-user"></i>
             </div>
 
             <div class="input-group">
-                <label>ईमेल முகவரி</label>
-                <input type="email" id="register-email" placeholder="உங்கள் ईமेल">
+                <label>மின்னஞ்சல் முகவரி</label>
+                <input type="email" id="register-email" placeholder="உங்கள் மின்னஞ்சலை உள்ளிடவும்">
                 <i class="fas fa-envelope"></i>
             </div>
 
             <div class="input-group">
                 <label>கடவுச்சொல்</label>
-                <input type="password" id="register-password" placeholder="குறைந்தபட்சம் 6 எழுத்துகள்">
+                <input type="password" id="register-password" placeholder="குறைந்தபட்சம் 6 எழுத்துகளுடன்">
                 <i class="fas fa-lock"></i>
             </div>
 
             <div class="input-group">
                 <label>கடவுச்சொல் உறுதிசெய்க</label>
-                <input type="password" id="register-confirm" placeholder="கடவுச்சொல்ை மீண்டும் உள்ளிடவும்">
+                <input type="password" id="register-confirm" placeholder="கடவுச்சொல்லை மீண்டும் உள்ளிடவும்">
                 <i class="fas fa-lock"></i>
             </div>
 
-            <button class="btn btn-primary" onclick="handleRegister()">பதிவு செய்க</button>
+            <button class="btn btn-primary" onclick="handleRegister()">கணக்கு உருவாக்குக</button>
 
             <div class="text-center mt-20">
                 <button class="btn btn-outline" onclick="switchToLogin()">உள்நுழைய பக்கத்திற்குத் திரும்பவும்</button>
@@ -488,21 +504,21 @@
     <!-- Dashboard Screen -->
     <div id="dashboard-screen" class="screen">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
-            <h1 class="heading" style="margin-bottom: 0;">உங்களை வரவேற்கிறோம்!</h1>
+            <h1 class="heading" style="margin-bottom: 0;">வரவேற்கிறோம்!</h1>
             <button class="btn btn-secondary btn-sm" onclick="handleLogout()" style="width: 60px; padding: 10px;"><i class="fas fa-sign-out-alt"></i></button>
         </div>
 
         <div class="card">
-            <h2 style="margin-bottom: 15px;"><i class="fas fa-user"></i> கணக்கு விபரம்</h2>
-            <p id="user-name" style="font-weight: 600; color: var(--text-main); margin-bottom: 10px;"></p>
-            <p id="user-email" style="color: var(--text-muted);"></p>
-            <button class="btn btn-primary mt-20" onclick="switchToAppointment()">சந்திப்பு பதிவுசெய்க</button>
+            <h2 style="margin-bottom: 15px; font-family: 'Noto Sans Tamil';"><i class="fas fa-user"></i> கணக்கு விபரம்</h2>
+            <p id="user-name" style="font-weight: 600; color: var(--text-main); margin-bottom: 10px; font-family: 'Noto Sans Tamil';"></p>
+            <p id="user-email" style="color: var(--text-muted); font-family: 'Noto Sans Tamil';"></p>
+            <button class="btn btn-primary mt-20" onclick="switchToAppointment()">சந்திப்பு பதிவு செய்க</button>
         </div>
 
         <div class="card">
-            <h2 style="margin-bottom: 15px;"><i class="fas fa-list"></i> சந்திப்புகள்</h2>
+            <h2 style="margin-bottom: 15px; font-family: 'Noto Sans Tamil';"><i class="fas fa-list"></i> சந்திப்புகள்</h2>
             <div id="appointments-list">
-                <p style="color: var(--text-muted);">இன்னும் சந்திப்புகள் இல்லை</p>
+                <p style="color: var(--text-muted); font-family: 'Noto Sans Tamil';">சந்திப்புகள் எதுவும் இல்லை</p>
             </div>
         </div>
     </div>
@@ -511,7 +527,7 @@
     <div id="appointment-screen" class="screen">
         <div style="margin-bottom: 30px;">
             <button class="btn btn-secondary btn-sm" onclick="switchToDashboard()" style="width: 60px; padding: 10px; margin-bottom: 20px;"><i class="fas fa-arrow-left"></i></button>
-            <h1 class="heading">சந்திப்பு பதிவுசெய்க</h1>
+            <h1 class="heading">சந்திப்பு பதிவு செய்க</h1>
         </div>
 
         <div class="card">
@@ -519,9 +535,9 @@
                 <label>மருத்துவர்</label>
                 <select id="doctor-select">
                     <option value="">-- தேர்ந்தெடுக்கவும் --</option>
-                    <option value="dr-kumar">Dr. குமார் - சாதாரண மருத்துவம்</option>
-                    <option value="dr-priya">Dr. பிரியா - தந்தப்பல் சிகிత்சை</option>
-                    <option value="dr-ravi">Dr. ரவி - கண் மருத்துவம்</option>
+                    <option value="dr-kumar">Dr. குமார் - பொது மருத்துவம்</option>
+                    <option value="dr-priya">Dr. பிரியா - வைத்திய சாரம்</option>
+                    <option value="dr-ravi">Dr. ரவி - நயன வைத்திய சாரம்</option>
                 </select>
                 <i class="fas fa-stethoscope"></i>
             </div>
@@ -547,12 +563,12 @@
             </div>
 
             <div class="input-group">
-                <label>விளக்கம்</label>
-                <textarea id="appointment-notes" placeholder="சந்திப்பு பற்றிய விளக்கம் கொடுக்கவும்" style="min-height: 100px;"></textarea>
+                <label>நோய் விளக்கம்</label>
+                <textarea id="appointment-notes" placeholder="உங்கள் நோய் பற்றிய விளக்கம் கொடுக்கவும்" style="min-height: 100px;"></textarea>
                 <i class="fas fa-sticky-note" style="top: 50px;"></i>
             </div>
 
-            <button class="btn btn-primary" onclick="bookAppointment()">சந்திப்பு பதிவுசெய்க</button>
+            <button class="btn btn-primary" onclick="bookAppointment()">சந்திப்பு பதிவு செய்க</button>
         </div>
     </div>
 
@@ -568,7 +584,7 @@
         </div>
         <div class="dock-item" onclick="handleLogout()">
             <i class="fas fa-sign-out-alt"></i>
-            <div>வெளியேறுக</div>
+            <div>வெளியேறு</div>
         </div>
     </div>
 
@@ -589,7 +605,7 @@
             console.log("✅ Firebase initialized successfully");
         } catch (error) {
             console.error("❌ Firebase initialization error:", error);
-            showToast("Firebase সংযোগ ত্রুটি!", 'error');
+            showToast("Firebase சংயோग பிழை!", 'error');
         }
 
         const auth = firebase.auth();
@@ -645,17 +661,17 @@
             const password = document.getElementById('login-password').value.trim();
 
             if (!email) {
-                showToast('ईमेल அவசியம்!', 'error');
+                showToast('மின்னஞ்சல் அவசியமாகும்!', 'error');
                 return;
             }
 
             if (!validateEmail(email)) {
-                showToast('ईमेल வாய்ப்பு இல்லை!', 'error');
+                showToast('சரியான மின்னஞ்சலை உள்ளிடவும்!', 'error');
                 return;
             }
 
             if (!password) {
-                showToast('கடவுச்சொல் அவசியம்!', 'error');
+                showToast('கடவுச்சொல் அவசியமாகும்!', 'error');
                 return;
             }
 
@@ -674,11 +690,11 @@
                 if (userDoc.exists) {
                     const userData = userDoc.data();
                     document.getElementById('user-name').textContent = `பெயர்: ${userData.name}`;
-                    document.getElementById('user-email').textContent = `ईमेल: ${userData.email}`;
+                    document.getElementById('user-email').textContent = `மின்னஞ்சல்: ${userData.email}`;
                 }
 
                 hideLoader();
-                showToast('வெற்றிகரமாக உள்நுழைந்தீர்கள்!', 'success');
+                showToast('உள்நுழைக வெற்றிகரமாக முடிந়தது!', 'success');
                 switchToDashboard();
                 document.getElementById('dock').style.display = 'flex';
                 loadAppointments();
@@ -689,7 +705,7 @@
                 if (error.code === 'auth/user-not-found') {
                     showToast('பயனர் கண்டுபிடிக்கப்படவில்லை!', 'error');
                 } else if (error.code === 'auth/wrong-password') {
-                    showToast('கடவுச்சொல் தவறு!', 'error');
+                    showToast('கடவுச்சொல் தவறாக உள்ளது!', 'error');
                 } else {
                     showToast(`உள்நுழைக பிழை: ${error.message}`, 'error');
                 }
@@ -704,17 +720,17 @@
             const confirm = document.getElementById('register-confirm').value;
 
             if (!name) {
-                showToast('பெயர் அவசியம்!', 'error');
+                showToast('பெயர் அவசியமாகும்!', 'error');
                 return;
             }
 
             if (!email) {
-                showToast('ईमेल அவசியம்!', 'error');
+                showToast('மின்னஞ்சல் அவசியமாகும்!', 'error');
                 return;
             }
 
             if (!validateEmail(email)) {
-                showToast('ईमेल வாய்ப்பு இல்லை!', 'error');
+                showToast('சரியான மின்னஞ்சலை உள்ளிடவும்!', 'error');
                 return;
             }
 
@@ -724,7 +740,7 @@
             }
 
             if (password !== confirm) {
-                showToast('கடவுச்சொல் பொருந்தவில்லை!', 'error');
+                showToast('கடவுச்சொல்கள் பொருந்தவில்லை!', 'error');
                 return;
             }
 
@@ -742,7 +758,7 @@
                 });
 
                 hideLoader();
-                showToast('பதிவு வெற்றிகரமாக முடிந்தது!', 'success');
+                showToast('கணக்கு வெற்றிகரமாக உருவாக்கப்பட்டது!', 'success');
                 
                 // Clear form
                 document.getElementById('register-name').value = '';
@@ -756,9 +772,9 @@
                 hideLoader();
                 console.error("Register error:", error);
                 if (error.code === 'auth/email-already-in-use') {
-                    showToast('இந்த ईमेल ஏற்கனவே பயன்படுத்தப்பட்டுள்ளது!', 'error');
+                    showToast('இந்த மின்னஞ்சல் ஏற்கனவே பயன்படுத்தப்பட்டுள்ளது!', 'error');
                 } else {
-                    showToast(`பதிவு பிழை: ${error.message}`, 'error');
+                    showToast(`கணக்கு உருவாக்கும் பிழை: ${error.message}`, 'error');
                 }
             }
         }
@@ -777,17 +793,17 @@
             const notes = document.getElementById('appointment-notes').value;
 
             if (!doctor) {
-                showToast('மருத்துவர் தேர்ந்தெடுக்கவும்!', 'error');
+                showToast('மருத்துவர்களை தேர்ந்தெடுக்கவும்!', 'error');
                 return;
             }
 
             if (!date) {
-                showToast('தேதி தேர்ந்தெடுக்கவும்!', 'error');
+                showToast('தேதியை தேர்ந்தெடுக்கவும்!', 'error');
                 return;
             }
 
             if (!time) {
-                showToast('நேரம் தேர்ந்தெடுக்கவும்!', 'error');
+                showToast('நேரத்தை தேர்ந்தெடுக்கவும்!', 'error');
                 return;
             }
 
@@ -838,7 +854,7 @@
                 list.innerHTML = '';
 
                 if (querySnapshot.empty) {
-                    list.innerHTML = '<p style="color: var(--text-muted);">இன்னும் சந்திப்புகள் இல்லை</p>';
+                    list.innerHTML = '<p style="color: var(--text-muted); font-family: \'Noto Sans Tamil\';">சந்திப்புகள் எதுவும் இல்லை</p>';
                     return;
                 }
 
@@ -848,14 +864,14 @@
                     card.className = 'card';
                     card.innerHTML = `
                         <div style="display: flex; justify-content: space-between; align-items: start;">
-                            <div>
+                            <div style="font-family: 'Noto Sans Tamil';">
                                 <p style="font-weight: 700; margin-bottom: 5px;">${data.doctor}</p>
                                 <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 3px;">📅 ${data.date}</p>
                                 <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 3px;">🕐 ${data.time}</p>
                                 <p style="color: var(--text-muted); font-size: 14px;">${data.notes}</p>
                             </div>
-                            <span style="background: ${data.status === 'pending' ? 'var(--warning)' : 'var(--accent)'}; color: white; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700;">
-                                ${data.status === 'pending' ? 'நிலுவையில் உள்ளது' : 'உறுதிசெய்யப்பட்டது'}
+                            <span style="background: ${data.status === 'pending' ? 'var(--warning)' : 'var(--accent)'}; color: white; padding: 5px 12px; border-radius: 8px; font-size: 12px; font-weight: 700; white-space: nowrap;">
+                                ${data.status === 'pending' ? 'நிலுவையில்' : 'உறுதிசெய்யப்பட்டது'}
                             </span>
                         </div>
                     `;
