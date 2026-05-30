@@ -2094,20 +2094,34 @@
                 App.showToast('Invalid Email or Password', 'error');
             },
 
-            sendResetLink: function() {
+            sendResetLink: async function() {
                 const emailIn = document.getElementById('forgot-email').value.trim();
                 if(emailIn === '') {
                     return App.showToast('Enter your email address', 'error');
                 }
                 
                 const btn = document.getElementById('forgot-btn'); 
+                const originalText = btn.innerHTML;
+                btn.disabled = true;
                 btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...';
                 
-                setTimeout(function() { 
-                    btn.innerHTML = 'Send Reset Link'; 
-                    document.getElementById('forgot-success-msg').style.display = 'block'; 
-                    document.getElementById('forgot-email').value = ''; 
-                }, 1500);
+                try {
+                    if (typeof auth !== 'undefined') {
+                        await auth.sendPasswordResetEmail(emailIn);
+                        document.getElementById('forgot-success-msg').style.display = 'block'; 
+                        document.getElementById('forgot-email').value = ''; 
+                        App.showToast("Reset link sent to your email", 'success');
+                    } else {
+                        throw new Error("Firebase Auth not initialized");
+                    }
+                } catch (e) {
+                    let msg = "Failed to send reset link";
+                    if (e.code === 'auth/user-not-found') msg = "No account found with this email";
+                    App.showToast(msg, 'error');
+                } finally {
+                    btn.disabled = false;
+                    btn.innerHTML = originalText;
+                }
             },
 
             adminLogin: function() {
@@ -2370,7 +2384,10 @@
                 const info = App.state.hospitalInfo;
                 document.getElementById('c-phone-link').href = "tel:" + info.phone; 
                 document.getElementById('c-phone-text').innerText = info.phone;
-                document.getElementById('c-wa-link').href = "https://wa.me/" + info.whatsapp; 
+                // Adding country code +91 for India WhatsApp
+                let waNumber = info.whatsapp.replace(/\D/g, '');
+                if (waNumber.length === 10) waNumber = "91" + waNumber;
+                document.getElementById('c-wa-link').href = "https://wa.me/" + waNumber; 
                 document.getElementById('c-wa-text').innerText = "WhatsApp Us";
                 document.getElementById('c-email-link').href = "mailto:" + info.email; 
                 document.getElementById('c-email-text').innerText = info.email;
