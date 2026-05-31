@@ -848,19 +848,46 @@
             left: 0; 
             width: 100%; 
             height: 100%; 
-            background: rgba(0, 0, 0, 0.95); 
-            backdrop-filter: blur(15px); 
+            background: rgba(15, 23, 42, 0.98); 
+            backdrop-filter: blur(20px); 
             z-index: 100000; 
             display: none; 
             flex-direction: column; 
             align-items: center; 
             justify-content: center; 
             padding: 20px; 
+            animation: fadeIn 0.3s ease;
         }
         
         .image-viewer-modal.active { 
             display: flex; 
-            animation: fadeIn 0.3s ease forwards; 
+        }
+        
+        .image-viewer-img {
+            max-width: 100%;
+            max-height: 75vh;
+            border-radius: 24px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+            border: 5px solid rgba(255,255,255,0.1);
+            transform: scale(0.9);
+            animation: zoomIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .image-viewer-info {
+            margin-top: 30px;
+            text-align: center;
+            background: rgba(255,255,255,0.08);
+            padding: 20px 40px;
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            width: 90%;
+            max-width: 450px;
+            backdrop-filter: blur(10px);
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
         }
         
         .image-viewer-header { 
@@ -1178,33 +1205,37 @@
             </div>
 
             <h4 style="font-size: 14px; font-weight: 800; margin-bottom: 10px; color: var(--primary);">
-                <i class="fa-solid fa-camera"></i> Live Document Upload
+                <i class="fa-solid fa-file-medical"></i> Patient Report Upload
             </h4>
             
             <div class="input-group no-label no-icon" style="margin-bottom: 10px;">
                 <select id="quick-v-category">
-                    <option value="prescription">Prescription</option>
-                    <option value="lab">Lab Report</option>
-                    <option value="scan">Scan / X-Ray</option>
+                    <option value="prescription">Prescription (மருந்துச் சீட்டு)</option>
+                    <option value="lab">Lab Report (லேப் ரிப்போர்ட்)</option>
+                    <option value="scan">Scan / X-Ray (ஸ்கேன்)</option>
                     <option value="discharge">Discharge Summary</option>
                     <option value="bill">Medical Bill</option>
                 </select>
             </div>
             
             <div class="input-group no-label no-icon" style="margin-bottom: 10px;">
-                <input type="text" id="quick-v-title" placeholder="Document Title (e.g. Blood Test)">
+                <input type="text" id="quick-v-title" placeholder="Report Title (e.g. Blood Test)">
             </div>
             
-            <div class="input-group no-label" style="margin-bottom: 10px;">
-                <label style="background: #E0F2FE; color: var(--primary-dark); padding: 15px; border-radius: 16px; display: block; cursor: pointer; text-align: center; font-weight: 800; border: 2px dashed #BAE6FD;">
-                    <i class="fa-solid fa-camera"></i> Take Photo / Select
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;">
+                <label style="background: #F0FDF4; color: #166534; padding: 15px; border-radius: 16px; display: block; cursor: pointer; text-align: center; font-weight: 800; border: 2px dashed #BBF7D0; font-size: 12px;">
+                    <i class="fa-solid fa-camera" style="display: block; font-size: 20px; margin-bottom: 5px;"></i> Take Photo
                     <input type="file" accept="image/*" capture="environment" style="display: none;" onchange="App.handleQuickVaultFile(event)">
                 </label>
+                <label style="background: #EFF6FF; color: #1E40AF; padding: 15px; border-radius: 16px; display: block; cursor: pointer; text-align: center; font-weight: 800; border: 2px dashed #BFDBFE; font-size: 12px;">
+                    <i class="fa-solid fa-image" style="display: block; font-size: 20px; margin-bottom: 5px;"></i> Upload Photo
+                    <input type="file" accept="image/*" style="display: none;" onchange="App.handleQuickVaultFile(event)">
+                </label>
             </div>
-            <img id="quick-v-preview" class="image-preview">
+            <img id="quick-v-preview" class="image-preview" style="border-radius: 12px; margin-bottom: 15px; border: 2px solid #E2E8F0;">
             
             <button class="btn btn-primary" onclick="App.quickUploadToVault()">
-                <i class="fa-solid fa-paper-plane"></i> Upload to Patient Vault
+                <i class="fa-solid fa-cloud-arrow-up"></i> Save & Upload Report
             </button>
         </div>
     </div>
